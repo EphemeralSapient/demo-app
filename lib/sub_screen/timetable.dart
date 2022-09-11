@@ -217,6 +217,6 @@ class timetable_expand extends StatefulWidget {
 class _timetable_expandState extends State<timetable_expand> {
   @override
   Widget build(BuildContext context) {
-   return  
+   return SizedBox();
   }
 }
