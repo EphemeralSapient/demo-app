@@ -52,6 +52,7 @@ Future<String?> validate(int typo) async {
       Map<String, dynamic> getData = get.data! as Map<String, dynamic>;
 
       global.accObj = global.accObj!.fromJSON(getData);
+      global.accObj!.hashes = {};
 
     }
     

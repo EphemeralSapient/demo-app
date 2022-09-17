@@ -10,6 +10,7 @@ import './global.dart' as global;
 
 bool isLock = false;
 bool firstCheck = false;
+bool isNew = false;
 
 // Function gets invoked when dashboard gets started
 void initUpdater(bool? override) async {
@@ -26,6 +27,7 @@ void initUpdater(bool? override) async {
       await Future.delayed(const Duration(milliseconds: 250));
     }
     debugPrint("Class value got assigned | ${global.accObj!.classBelong}");
+    isNew = true;    
   }
 
   if(global.prefs!.getBool("classPending") == true) {
@@ -46,7 +48,7 @@ void initUpdater(bool? override) async {
 
       //Self init the hash since there's no value in hash map yet.
       if(newData.hashes.isEmpty == true){
-        var s = "Self init hash value";
+        var s = "Self init hash value ${DateTime.now().toString()}";
         global.Database!.update(global.Database!.addCollection("acc", "/acc"), global.loggedUID!, {"hashes" : {"timetable_timing" : s, "timetable_subject" : s }});
       }
 

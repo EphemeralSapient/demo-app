@@ -112,3 +112,9 @@ Widget textWidgetWithBool(String text, bool enable) {
     color: (enable==true) ? Theme.of(rootCTX!).textSelectionTheme.cursorColor : Theme.of(rootCTX!).textSelectionTheme.selectionColor
   ),);
 }
+
+Widget textWidgetWithTransparency(String text, double trans) {
+  return Text(text, style: TextStyle(
+    color: Theme.of(rootCTX!).textSelectionTheme.selectionColor!.withOpacity(trans),
+  ),);
+}
