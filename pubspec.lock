@@ -520,6 +520,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.2.1"
+  ota_update:
+    dependency: "direct main"
+    description:
+      name: ota_update
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.0.1"
   path:
     dependency: transitive
     description:

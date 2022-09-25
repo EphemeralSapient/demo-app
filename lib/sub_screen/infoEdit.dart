@@ -137,7 +137,7 @@ class _staffs_infoState extends State<staffs_info> {
         child: Icon(Icons.done, color: Theme.of(context).backgroundColor),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      backgroundColor: Theme.of(context).buttonColor.withOpacity(0.5),
+      backgroundColor: Theme.of(context).backgroundColor,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(25),
         //reverse: true,
@@ -307,7 +307,7 @@ class _stuents_infoState extends State<students_info> {
         child: Icon(Icons.done, color: Theme.of(context).backgroundColor),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      backgroundColor: Theme.of(context).buttonColor.withOpacity(0.5),
+      backgroundColor: Theme.of(context).backgroundColor,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(25),
         //reverse: true,

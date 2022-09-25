@@ -60,6 +60,7 @@ dependencies:
   mime: ^1.0.2
   firebase_storage: ^10.3.8
   faker: ^2.0.0
+  ota_update: ^4.0.1
 
 dev_dependencies:
   flutter_test:
