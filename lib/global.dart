@@ -2,19 +2,19 @@
 
 library globals;
 
-
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' show User;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 // ignore: depend_on_referenced_packages
-import 'package:shared_preferences/shared_preferences.dart' show SharedPreferences;
+import 'package:shared_preferences/shared_preferences.dart'
+    show SharedPreferences;
 import 'package:ngp/database.dart';
 import 'dart:io';
 import 'package:ngp/ui/alert.dart';
-
 
 SharedPreferences? prefs;
 ThemeMode darkMode = ThemeMode.system;
@@ -24,10 +24,39 @@ List<String> possibleStaffIds = [
 ];
 
 db? Database;
-Map<String,CollectionReference> collectionMap = {}; 
+Map<String, CollectionReference> collectionMap = {};
 Map<String, dynamic> hashes = {};
+Map<String, dynamic> departmentWithClasses = {
+  "cse" : {
+    "full" : "Computer Science and Engineering",
+    "sections" : ["a", "b"],
+  },
+  "mech" : {
+    "full" : "Mechanical Engineering",
+    "sections" : ["a", "b"],
+  },
+  "ece" : {
+    "full" : "Electronics and Communication Engineering",
+    "sections" : ["a","b"]
+  }
+};
+Map<String, dynamic> year = {
+  "i" : {
+    "full" : "First Year"
+  },
+  "ii" : {
+    "full" : "Second Year"
+  },
+  "iii" : {
+    "full" : "Third Year"
+  },
+  "iv" : {
+    "full" : "Fourth Year"
+  }
+};
 Map<String, dynamic> course_data = {};
-Map<dynamic, dynamic> timetable_subject = {}; // Weekend days : int | Subject list : List<String> aka dynamic here
+Map<dynamic, dynamic> timetable_subject =
+    {}; // Weekend days : int | Subject list : List<String> aka dynamic here
 List<dynamic> timetable_timing = []; // List of timing in string : List<String>
 User? account;
 account_obj? accObj;
@@ -56,34 +85,52 @@ BuildContext? choiceRouteCTX;
 BuildContext? rootCTX;
 BuildContext? timetableCTX;
 PageController? pageControl;
+PageController? uiPageControl;
 dynamic temp;
+dynamic restartApp;
+Widget? uiSecondaryWidgetFn;
+Color uiBackgroundColor = Colors.lightBlueAccent;
+
+void switchToSecondaryUi(Widget w) {
+  uiSecondaryWidgetFn = w;
+  uiPageControl!.animateToPage(1,
+      duration: const Duration(seconds: 1), curve: Curves.easeInExpo);
+}
+
+void switchToPrimaryUi() {
+  uiPageControl!.animateToPage(0,
+      duration: const Duration(seconds: 1), curve: Curves.easeInExpo);
+}
 
 void updateSettingsFromStorage() async {
   SharedPreferences pref = await SharedPreferences.getInstance();
   prefs = pref;
-  darkMode = prefs!.getBool("dark mode") != null ?( prefs!.getBool("dark mode") == true ? ThemeMode.dark : ThemeMode.light): ThemeMode.light;
-  bgImage = prefs!.getBool("bg image") != null ? prefs!.getBool("bg image")! : false;
+  darkMode = prefs!.getBool("dark mode") != null
+      ? (prefs!.getBool("dark mode") == true ? ThemeMode.dark : ThemeMode.light)
+      : ThemeMode.light;
+  bgImage =
+      prefs!.getBool("bg image") != null ? prefs!.getBool("bg image")! : false;
   accountType = prefs!.getInt("accountType") ?? -1;
   passcode = prefs!.getString("passcode");
   dashboardReached = prefs!.getBool("dashboardReached") ?? false;
   hashes = jsonDecode(prefs!.getString("hashes") ?? "{}");
   //debugPrint(jsonDecode(jsonDecode(prefs!.getString("timetable_timing") ?? "lol" ))[0]);     This crap wasted my 1 hour time on debugging; damnit
-  timetable_timing = jsonDecode(jsonDecode(prefs!.getString("timetable_timing") ?? "\"[]\""));
-  timetable_subject = jsonDecode(jsonDecode(prefs!.getString("timetable_subject") ?? "\"{}\""));
-  course_data = jsonDecode(jsonDecode(prefs!.getString("course_data") ?? "\"{}\""));
+  timetable_timing =
+      jsonDecode(jsonDecode(prefs!.getString("timetable_timing") ?? "\"[]\""));
+  timetable_subject =
+      jsonDecode(jsonDecode(prefs!.getString("timetable_subject") ?? "\"{}\""));
+  course_data =
+      jsonDecode(jsonDecode(prefs!.getString("course_data") ?? "\"{}\""));
   rootRefresh!();
 }
 
-
-void updateMapToStorage(String id, dynamic x) async{
+void updateMapToStorage(String id, dynamic x) async {
   await prefs!.setString(id, jsonEncode(x));
 }
 
-void updateListToStorage(String id, dynamic x) async{
+void updateListToStorage(String id, dynamic x) async {
   await prefs!.setString(id, jsonEncode(x));
 }
-
-
 
 Future<bool> checkNetwork() async {
   try {
@@ -101,20 +148,109 @@ void initGlobalVar() async {
   accObj = account_obj();
 }
 
+Widget padHeight([double p = 5]) {
+  return SizedBox(height: p);
+}
+
+dynamic nullIfNullElseString(dynamic n) {
+  return n!=null ? n.toString() : null; 
+}
+
+Widget textField(String labelName,{int? maxLength,TextInputType? keyboardType,List<TextInputFormatter>? inputFormats,FlexFit fit = FlexFit.loose,TextEditingController? controller,bool? enable = true,bool readOnly = false, String? initialText, String? sufText, String? preText,}) {
+  BuildContext context = rootCTX!;
+  return Flexible(
+    fit: fit,
+    child: TextFormField(
+
+        enabled: enable,
+        readOnly: readOnly,
+        initialValue: controller == null ? initialText : null,
+        controller: controller,
+        keyboardType: keyboardType,
+        maxLength: maxLength,
+        inputFormatters: inputFormats,
+
+        style: TextStyle(
+            color: Theme.of(context).textSelectionTheme.selectionColor),
+        decoration: InputDecoration(
+          labelText: labelName,
+          prefixText: preText,
+          suffixText: sufText,
+
+          enabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(
+                  color: Theme.of(context)
+                      .textSelectionTheme
+                      .selectionHandleColor!)),
+          focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                  color: Theme.of(context).textSelectionTheme.selectionColor!)),
+          disabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                  color: Theme.of(context).textSelectionTheme.selectionColor!.withOpacity(0.5))),
+          
+
+          isDense: true,
+          fillColor: Theme.of(context).textSelectionTheme.cursorColor,
+          focusColor: Theme.of(context).textSelectionTheme.selectionHandleColor,
+          hoverColor: Theme.of(context).textSelectionTheme.selectionHandleColor,
+          
+          prefixStyle: TextStyle(
+              color: Theme.of(context).textSelectionTheme.selectionHandleColor),
+          labelStyle: TextStyle(
+              color: Theme.of(context).textSelectionTheme.selectionHandleColor),
+          counterStyle: TextStyle(
+              color: Theme.of(context).textSelectionTheme.cursorColor),
+          floatingLabelStyle: const TextStyle(color: Colors.lightBlue),
+        )),
+  );
+}
+
 Widget textWidget(String text) {
-  return Text(text, style: TextStyle(
-    color: Theme.of(rootCTX!).textSelectionTheme.selectionColor,
-  ),);
+  return Text(
+    text,
+    style: TextStyle(
+      color: Theme.of(rootCTX!).textSelectionTheme.selectionColor,
+    ),
+  );
+}
+
+Widget textWidgetWithHeavyFont(String text) {
+  return Text(
+    text,
+    style: TextStyle(
+        color: Theme.of(rootCTX!).textSelectionTheme.selectionColor,
+        fontSize: 20),
+  );
 }
 
 Widget textWidgetWithBool(String text, bool enable) {
-  return Text(text, style: TextStyle(
-    color: (enable==true) ? Theme.of(rootCTX!).textSelectionTheme.cursorColor : Theme.of(rootCTX!).textSelectionTheme.selectionColor
-  ),);
+  return Text(
+    text,
+    style: TextStyle(
+        color: (enable == true)
+            ? Theme.of(rootCTX!).textSelectionTheme.cursorColor
+            : Theme.of(rootCTX!).textSelectionTheme.selectionColor),
+  );
 }
 
 Widget textWidgetWithTransparency(String text, double trans) {
-  return Text(text, style: TextStyle(
-    color: Theme.of(rootCTX!).textSelectionTheme.selectionColor!.withOpacity(trans),
-  ),);
+  return Text(
+    text,
+    style: TextStyle(
+      color: Theme.of(rootCTX!)
+          .textSelectionTheme
+          .selectionColor!
+          .withOpacity(trans),
+    ),
+  );
+}
+
+class uiSecondaryWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        backgroundColor: Theme.of(context).buttonColor.withOpacity(0.8),
+        body: uiSecondaryWidgetFn ?? const SizedBox());
+  }
 }

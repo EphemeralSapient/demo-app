@@ -35,12 +35,15 @@ Future<String?> validate(int typo) async {
     if(get.status == db_fetch_status.error) return "Error : ${get.data}";
 
     
-    global.accObj!.timeStamp = DateTime.now().toUtc().toIso8601String();
+    //global.accObj!.timeStamp = DateTime.now().toUtc().toIso8601String();
 
     if(get.status == db_fetch_status.nodata) {
       // Create the data
       global.accObj!.isStudent = global.accountType == 2;
       global.accObj!.classBelong = "pending";
+      global.accObj!.createdAt = Timestamp.now();
+      global.accObj!.firstName = global.account?.displayName;
+      
       debugPrint("Creating the data");
 
       // Updating

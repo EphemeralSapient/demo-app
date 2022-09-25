@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_settings_screens/flutter_settings_screens.dart';
+import 'package:ngp/sub_screen/infoEdit.dart';
 import 'package:ngp/ui/toggleButton.dart';
 import 'package:ngp/global.dart' as global;
 
@@ -54,6 +55,20 @@ class _settingsState extends State<settings> {
                 global.bgImage
               ),
             ],
+          ),
+
+          ElevatedButton(
+            onPressed: () {
+              promptStudentsInfoEdit();
+            },
+            style:
+                ElevatedButton.styleFrom(primary: Theme.of(context).buttonColor, shadowColor: Colors.transparent),
+            child: Text("Change your Student information data",
+                style: TextStyle(
+                    fontSize: 18,
+                    color: Theme.of(context).textSelectionTheme.selectionColor
+              )
+            ),
           ),
 
           ElevatedButton(

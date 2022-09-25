@@ -25,22 +25,59 @@ class db_fetch_return {
 
 }
 class account_obj {
-  dynamic timeStamp;
+  Timestamp? createdAt, lastSeen, updatedAt;
+
   String? classBelong = "None";
+  String? firstName, lastName;
+
+  bool isStudent = false;
+  bool? isDayscholar;
+
+  bool? collegeBus;
+  int? collegeBusId;
+
+  int? registerNum;
+  String? rollNo;
+
+  int? phoneNo;
+  //int? parentPhoneNo;
+
+  int? roomNo;
+  int? hostelType;
+
+  
+  // Staff
+  List<dynamic>? handlingDepartment;
+  
+
   String? department = "-";
   String? year = "-";
   String? section = "-";
   Map<String, dynamic> hashes = global.hashes; // Despite using "dynamic", it is "String"
-  bool isStudent = false;
   int? notificationCount = 0;
+
   
 
 
   account_obj fromJSON(Map<String, Object?> Data) {
     account_obj newObj = account_obj();
 
-    newObj.timeStamp = Data["loginTimeStamp"];
+    //newObj.timeStamp = Data["loginTimeStamp"];
+
+    newObj.createdAt = Data["createdAt"] as Timestamp?;
+    newObj.updatedAt = Data["updatedAt"] as Timestamp?;
+    newObj.lastSeen = Data["lastSeen"] as Timestamp?;
     newObj.classBelong = Data["class"] as String?;
+    newObj.firstName = Data["firstName"] as String?;
+    newObj.lastName = Data["lastName"] as String?;
+    newObj.rollNo = Data["rollNo"] as String?;
+
+    newObj.isDayscholar = Data["isDayscholar"] as bool?;
+    newObj.collegeBus = Data["collegeBus"] as bool?;
+    newObj.collegeBusId = Data["collegeBusId"] as int?;
+    newObj.registerNum = Data["registerNum"] as int?;
+    newObj.phoneNo = Data["phoneNo"] as int?;
+
     newObj.isStudent = Data["isStudent"] as bool;
     newObj.notificationCount = Data["notifications"] as int?;
     newObj.department = Data["department"] as String?;
@@ -48,6 +85,8 @@ class account_obj {
     dynamic hashesCheck = Data["hashes"];
     newObj.hashes = (hashesCheck != null) ? hashesCheck as Map<String,dynamic> : {};
     newObj.section = Data["section"] as String?;
+    
+    newObj.handlingDepartment = Data["handlingDepartment"] as List<dynamic>?;
 
 
     return newObj;
@@ -55,12 +94,27 @@ class account_obj {
 
   @override
   String toString() {
-    return "$timeStamp $classBelong $department $year $section $hashes $isStudent $notificationCount";
+    return "$classBelong $department $year $section $hashes $isStudent $notificationCount";
   }
 
   Map<String, Object?> toJson() {
     return {
-      "loginTimeStamp" : timeStamp,
+      //"loginTimeStamp" : timeStamp,
+      "createdAt" : createdAt,
+      "updatedAt" : updatedAt,
+      "lastSeen" : lastSeen,
+      "firstName" : firstName,
+      "lastName" : lastName,
+
+      "rollNo" : rollNo,
+      "registerNum" : registerNum,
+      "phoneNo" : phoneNo,
+      "isDayscholar":isDayscholar,
+      "collegeBus" : collegeBus,
+      "collegeBusId" : collegeBusId,
+
+      "handlingDepartment" : handlingDepartment,
+      
       "new" : true,
       "notifications" : notificationCount,
       "class" : classBelong,
@@ -72,9 +126,10 @@ class account_obj {
     };
   }
 
+  // Gotta remove this needless function
   Map<String, Object?> toJsonUpdateLogin() {
     return {
-      "loginTimeStamp" : timeStamp
+      //"loginTimeStamp" : timeStamp
     };
   }
 }

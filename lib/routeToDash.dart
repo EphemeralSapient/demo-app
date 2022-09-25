@@ -7,14 +7,68 @@ import 'package:drop_shadow/drop_shadow.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:ngp/database.dart';
+import 'package:ngp/chat/main.dart';
 import 'package:ngp/screens/dashboard.dart';
-import 'package:ngp/screens/message.dart';
+import 'package:ngp/screens/profile.dart';
 import 'package:ngp/screens/settings.dart';
+import 'package:ngp/sub_screen/infoEdit.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:ngp/acc_update.dart';
 import 'global.dart' as global;
 
 final image = const NetworkImage("https://images.unsplash.com/photo-1540122995631-7c74c671ff8d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxleHBsb3JlLWZlZWR8MXx8fGVufDB8fHx8&w=1000&q=80");
+
+class ui extends StatefulWidget{
+  @override
+  State<ui> createState() => _uiState();
+}
+
+class _uiState extends State<ui> {
+  final PageController _page = PageController();
+  int index = 0;
+
+  void refresh(){
+    setState(() {
+      
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    global.bgRefresh = refresh;
+    global.uiPageControl = _page;
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: () async {
+        if(_page.position == _page.positions.last) {
+          _page.animateToPage(0, duration: Duration(seconds: 1), curve: Curves.easeInOutExpo);
+        }
+        return false;
+      },
+      child: Scaffold(
+        extendBody: true,
+        extendBodyBehindAppBar: true,
+        backgroundColor: Colors.transparent,
+    
+        body: Stack(
+          children: [bg(), PageView(
+            scrollDirection: Axis.vertical,
+            controller: _page,
+            children: [
+              dashboard(),
+              global.uiSecondaryWidget(),
+            ],
+          ),]
+        )
+      ),
+    );
+  }
+}
 
 class dashboard extends StatefulWidget {
 
@@ -24,9 +78,9 @@ class dashboard extends StatefulWidget {
   State<dashboard> createState() => _dashboardState();
 }
 
+int index = 0;
 class _dashboardState extends State<dashboard> {
-  int index = 0;
-  final PageController _page = PageController();
+  final PageController _page = PageController(initialPage: index);
 
   void refresh(){
     setState(() {
@@ -38,7 +92,7 @@ class _dashboardState extends State<dashboard> {
   void initState() {
     super.initState();
     global.pageControl = _page;
-    global.bgRefresh = refresh;
+    //global.bgRefresh = refresh;
     initUpdater(false);
   }
 
@@ -83,33 +137,24 @@ class _dashboardState extends State<dashboard> {
       extendBody: true,
       extendBodyBehindAppBar: true,
       body: 
-      Center( child : Stack(
-        children: [
-          
-          bg(),
-      
-          SizedBox.expand(
-            child: PageView(
-              controller: _page,
+      Center( child : PageView(
+        controller: _page,
 
-              physics: const NeverScrollableScrollPhysics(),
-              //onPageChanged: (index) {
-                //setState(() => _selectedIndex = index);
-              //},
-              children: <Widget>[
-                dash(),
-                messages(),
-                Container(color: Colors.blueGrey,),
-                settings(),
-                Container(color: Colors.green,),
-                Container(color: Colors.blue,),
-              ],
-            ),
-          )
+        physics: const NeverScrollableScrollPhysics(),
+        //onPageChanged: (index) {
+          //setState(() => _selectedIndex = index);
+        //},
+        children: <Widget>[
+          dash(),
+          runChatApp(),
+          Container(color: Colors.blueGrey,),
+          settings(),
+          profile(),
+          Container(color: Colors.blue,),
         ],
       ))
 ,          
-      backgroundColor: Colors.lightBlue,
+      backgroundColor: Colors.transparent,
       bottomNavigationBar: CurvedNavigationBar(
         height: 55,
         backgroundColor: Colors.transparent,
@@ -140,17 +185,7 @@ void toDashbaord() async {
 }
 
 
-List<List> classes = [
-  ["Computer Science Engineering", false, "cse", 1,2,3,4],
-    ["CSE - I [A]", true, "cse_ia", "cse", "i" ,"a",1],
-    ["CSE - I [B]", true, "cse_ib", "cse", "i" ,"b",2],
-    ["CSE - II [A]", true, "cse_iia", "cse", "ii" ,"a",3],
-    ["CSE - II [B]", true, "cse_iib", "cse", "ii" ,"b",4],
-    ["CSE - III [A]", true, "cse_iiia", "cse", "iii" ,"a",5],
-    ["CSE - III [B]", true, "cse_iiib", "cse", "iii" ,"b",6],
-    ["CSE - IV [A]", true, "cse_iva", "cse", "iv" ,"a",7],
-    ["CSE - IV [B]", true, "cse_ivb", "cse", "iv" ,"b",8],
-];
+
 
  InputDecoration dec(IconData? icon, String hint) {
     return InputDecoration(    
@@ -203,135 +238,23 @@ void prompt(BuildContext context) async {
 
   if(global.accountType == 1) {
     // staff
-        String? selected;
-        TextEditingController passwordController = TextEditingController();
-    global.alert.customAlertNoAction(context,
-      SizedBox(
-        height: 150,
-        child: Column(
-          children: [
-            TextFormField(
-              obscureText: true,
-              style: const TextStyle(
-                fontSize: 18.0,
-                color: Colors.deepPurpleAccent,
-              ),
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              validator: (value) {
-                if (value!.isEmpty) {
-                  return ("Passcode is required.");
-                }
-                return null;
-              },
-              decoration: dec(Icons.password_rounded, "Passcode"),
-              controller: passwordController,
-              keyboardType: TextInputType.visiblePassword,
-              onSaved: (value) {
-                if(value != null) {
-                  passwordController.text = value;
-                  selected = value;
-                }
-              },
-              textInputAction: TextInputAction.done,
-            ),
-
-            const SizedBox(height: 30,),
-            
-
-            RoundedLoadingButton(
-              controller: btnController,
-              resetAfterDuration: true,
-              resetDuration: const Duration(seconds: 2),
-              onPressed: () async {
-                selected = passwordController.text;
-                debugPrint("Selected $selected");
-                
-                if(selected == null) { str="Choose any one class!";btnController.error(); return;}
-                debugPrint("Updating the database");
-                db_fetch_return get = await global.Database!.create(global.Database!.addCollection("admin", "/admin"), global.loggedUID!, {"pass" : selected});
-
-                if(get.status == db_fetch_status.error) { str="Error : ${get.data.toString()}";btnController.error(); return;}
-
-                global.passcode = selected;
-                global.prefs!.setString("passcode", selected!);
-                btnController.success();
-                onPrompt = false;
-                global.temp = onPrompt;
-                Navigator.pop(context);
-                global.bgRefresh!();
-              },
-              child: Text(str, style: const TextStyle(color: Colors.white)),
-            )
-
-          ],
-        ),
-      )
-     , global.textWidget("Enter the passcode"));
-
+    global.temp = () {
+      // What to addd here hmm
+    };
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => staffs_info()),
+    );
   } else {
     // student
-    dynamic selected;
-
-    global.alert.customAlertNoAction(context,
-      SizedBox(
-        height: 150,
-        child: Column(
-          children: [
-            DropdownButtonFormField(
-              dropdownColor: Theme.of(context).buttonColor.withOpacity(0.8),
-              
-              value: selected,
-              onChanged:(value) {
-                debugPrint(value.toString());
-                selected = classes[value as int];
-              },
-
-              items: [
-                for(List x in classes) DropdownMenuItem(
-                  value: x[6],
-                  enabled: x[1],
-                  child: global.textWidgetWithBool(x[0],x[1])
-                )
-              ],
-            ),
-
-            const SizedBox(height: 30,),
-            
-
-            RoundedLoadingButton(
-              controller: btnController,
-              resetAfterDuration: true,
-              resetDuration: const Duration(seconds: 2),
-              onPressed: () async {
-                debugPrint("Selected ${selected.toString()}");
-                
-                if(selected == null) { str="Choose any one class!";btnController.error(); return;}
-                debugPrint("Updating the database");
-                db_fetch_return get = await global.Database!.update(global.collectionMap["acc"]!, global.loggedUID!, {"class" : selected![2], "department" : selected![3], "year" : selected![4], "section" : selected![5]});
-
-                if(get.status == db_fetch_status.error) { str="Error : ${get.data.toString()}";btnController.error(); return;}
-
-                global.accObj!.classBelong = selected[2];
-                global.accObj!.department = selected[3];
-                global.accObj!.year = selected[4];
-                global.accObj!.section = selected[5];
-                await global.prefs!.remove("classPending");
-                btnController.success();
-                onPrompt = false;
-                global.temp = onPrompt;
-                Navigator.pop(context);
-                global.bgRefresh!();
-              },
-              child: Text(str, style: const TextStyle(color: Colors.white)),
-            )
-
-          ],
-        ),
-      )
-     , global.textWidget("Choose your class [REQUIRED]"));
+    global.temp = () {
+      global.restartApp();
+    };
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => students_info()),
+    );
   }
-
-  return;
 }
 
 Widget bg() {
@@ -353,10 +276,10 @@ Widget bg() {
         ),
       ),
     );} else {
-      return const SizedBox(
-        //height: double.infinity,
-        //width: double.infinity,
-        //color: Color()
+      return Container(
+        height: double.infinity,
+        width: double.infinity,
+        color: global.uiBackgroundColor
       );
     }
 }

@@ -385,12 +385,12 @@ List<Widget> createTTE() {
 
   // ignore: prefer_function_declarations_over_variables
   Widget widget (String timeStr, String contentStr, {bool coloredGray = false, bool startC = true, bool endC = true}) => TimelineTile(
-                      oppositeContents: global.textWidget(timeStr),
+                      oppositeContents: global.textWidgetWithHeavyFont(timeStr),
                       contents: SizedBox(
                         height: 140,
                         child: Align(
                           alignment: Alignment.centerLeft,
-                          child: global.textWidget(contentStr)
+                          child: global.textWidgetWithHeavyFont(contentStr)
                         ),
                       ),
                       node: TimelineNode(

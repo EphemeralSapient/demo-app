@@ -1,4 +1,5 @@
 
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -9,8 +10,13 @@ import './global.dart' as global;
 
 
 bool isLock = false;
-bool firstCheck = false;
 bool isNew = false;
+int rev = 0;
+
+void releaseLockAccUpdate() {
+  isLock = false;
+  rev++;
+}
 
 // Function gets invoked when dashboard gets started
 void initUpdater(bool? override) async {
@@ -21,6 +27,7 @@ void initUpdater(bool? override) async {
     isLock=true;
   }
 
+  int lockRev = rev;
   // If the student haven't chose the class yet.
   if(global.accountType == 2 && global.accObj!.classBelong == "pending") {
     while(global.accObj!.classBelong == "pending") {
@@ -36,8 +43,14 @@ void initUpdater(bool? override) async {
   }
 
   // Upate occurred on user database
-  global.Database!.addCollection("acc", "/acc").doc(global.loggedUID!).snapshots().listen((event) async {
+  StreamSubscription<DocumentSnapshot<Object?>>? sub;
+  sub = global.Database!.addCollection("acc", "/acc").doc(global.loggedUID!).snapshots().listen((event) async {
       
+      if(rev!=lockRev) {
+        sub?.cancel();
+        return;
+      }
+
       dynamic data = event.data();
 
       if(data == null) return debugPrint("Data was not supplied in /acc collection stream event listener");

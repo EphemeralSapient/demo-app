@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'dart:async' show Future;
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:ngp/login/validate.dart';
+import 'package:ngp/restartWidget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:drop_shadow/drop_shadow.dart' show DropShadow;
 import 'package:firebase_core/firebase_core.dart' show Firebase;
@@ -22,7 +24,11 @@ Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
-  runApp(const MyApp());
+  runApp(
+    RestartWidget(
+      child: const MyApp(),
+    )
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -51,7 +57,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     debugPrint(globals.darkMode.toString());
-
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
     return MaterialApp(
       theme: ThemeData(
         primarySwatch: Colors.deepPurple,
@@ -107,7 +113,7 @@ class _MyAppState extends State<MyApp> {
         } else if (settings.name == "/dashboard") {
           return PageRouteBuilder(
             settings:  settings,
-            pageBuilder: (c, a1, a2) => dashboard(),
+            pageBuilder: (c, a1, a2) => ui(),
             transitionsBuilder: (context, animation, secondaryAnimation, child) => FadeTransition(opacity: animation, child:
               ScaleTransition(
                 scale: animation.drive(
