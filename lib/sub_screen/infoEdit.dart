@@ -336,7 +336,7 @@ class _stuents_infoState extends State<students_info> {
 
             const SizedBox(height: 25),
 
-            global.textField("Roll Number",controller: rollNo, initialText: rollNo.text ,keyboardType: TextInputType.number, maxLength: 8),
+            global.textField("Roll Number",controller: rollNo, initialText: rollNo.text, maxLength: 8),
 
             const SizedBox(height: 25),
 
