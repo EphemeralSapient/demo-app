@@ -60,7 +60,7 @@ class _OTAAppState extends State<OTAApp> {
     try {
       OtaUpdate()
           .execute(
-        'https://github.com/EphemeralSapient/demo-app/blob/main/app-release.apk',
+        'https://github.com/EphemeralSapient/demo-app/raw/main/app-release.apk',
         destinationFilename: 'app-release.apk',
       )
           .listen(
