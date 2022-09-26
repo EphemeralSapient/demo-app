@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:flutter/cupertino.dart';
 import 'package:ngp/global.dart' as global;
 import 'package:flutter/material.dart';
 import 'package:date_field/date_field.dart';
@@ -97,7 +98,7 @@ class _leaveFormApplyState extends State<leaveFormApply> {
 
   DateTime endDate = DateTime.now().add(const Duration(days: 1));
 
-  final myController = TextEditingController(text: "Purpose for leave");
+  final myController = TextEditingController();
 
   @override
   void dispose() {
@@ -106,182 +107,338 @@ class _leaveFormApplyState extends State<leaveFormApply> {
     myController.dispose();
     super.dispose();
   }
+  
+String leaveType = "sick";
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(18.0),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          global.padHeight(20),
-          Center(
-              child: Text(
-            'Student Leave Form',
-            style: TextStyle(
-                color: Theme.of(context).textSelectionTheme.cursorColor,
-                //decoration: TextDecoration.overline,
-                fontSize: 24),
-          )),
-          global.padHeight(50),
-          Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-            global.textWidget(
-                "Branch : ${global.accObj!.department!.toUpperCase()} - ${global.accObj!.section!.toUpperCase()}"),
-            global.textWidget("Year : ${global.accObj!.year!.toUpperCase()}"),
-            global.textWidget("Roll Number : adding this too!"),
-
-            //global.textWidget("Semester : ??")
-          ]),
-          global.padHeight(20),
-          Text.rich(
-            TextSpan(
-              text: 'Name of the student : ',
-              style: TextStyle(
-                  fontSize: 20,
-                  color: Theme.of(context).textSelectionTheme.selectionColor),
-              children: <TextSpan>[
-                TextSpan(
-                  text: 'DIOOOOO',
-                  style: TextStyle(
-                      fontSize: 20,
-                      color: Theme.of(context).textSelectionTheme.cursorColor),
-                ),
-                // can add more TextSpans here...
-              ],
-            ),
-          ),
-          global.padHeight(20),
-          Text.rich(
-            TextSpan(
-              text: 'Register number : ',
-              style: TextStyle(
-                  fontSize: 20,
-                  color: Theme.of(context).textSelectionTheme.selectionColor),
-              children: <TextSpan>[
-                TextSpan(
-                  text: '7107123456',
-                  style: TextStyle(
-                      fontSize: 20,
-                      color: Theme.of(context).textSelectionTheme.cursorColor),
-                ),
-                // can add more TextSpans here...
-              ],
-            ),
-          ),
-          global.padHeight(45),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    debugPrint("Rebuilding students leave form");
+    return Scaffold(
+      backgroundColor: Theme.of(context).backgroundColor.withOpacity(1),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding:
+              const EdgeInsets.only(top: 30, bottom: 30, left: 10, right: 10),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  global.textWidgetWithHeavyFont("From date :"),
-                  const SizedBox(width: 10),
-                  SizedBox(
-                    width: 100,
-                    height: 50,
-                    child: DateTimeField(
-                        initialEntryMode: DatePickerEntryMode.calendarOnly,
-                        mode: DateTimeFieldPickerMode.date,
-                        dateTextStyle: TextStyle(
-                            color: Theme.of(context)
-                                .textSelectionTheme
-                                .cursorColor),
-                        decoration: InputDecoration(
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Theme.of(context)
-                                    .textSelectionTheme
-                                    .cursorColor!),
-                          ),
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Theme.of(context)
-                                    .textSelectionTheme
-                                    .cursorColor!),
-                          ),
-                        ),
-                        selectedDate: startDate,
-                        onDateSelected: (DateTime value) {
-                          setState(() {
-                            startDate = value;
-                          });
-                        }),
+                  InkWell(
+                    onTap: () {
+                      global.switchToPrimaryUi();
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                              width: 2.0,
+                              color: Theme.of(context).secondaryHeaderColor),
+                          borderRadius: const BorderRadius.all(Radius.circular(10))),
+                      child: Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: Icon(Icons.close_outlined,
+                            color: Theme.of(context).secondaryHeaderColor),
+                      ),
+                    ),
+                  ),
+                  Text(
+                    "APPLY FOR NEW LEAVE",
+                    style: TextStyle(
+                        color: Theme.of(context).textSelectionTheme.cursorColor,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  InkWell(
+                    onTap: () {},
+                    child: Container(
+                      decoration: const BoxDecoration(
+                          color: Colors.blueAccent,
+                          borderRadius: BorderRadius.all(Radius.circular(13))),
+                      child: const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Icon(Icons.done, color: Colors.white),
+                      ),
+                    ),
                   ),
                 ],
               ),
-              Row(
-                children: [
-                  global.textWidgetWithHeavyFont("To date :"),
-                  const SizedBox(width: 10),
-                  SizedBox(
-                    width: 100,
-                    height: 50,
-                    child: DateTimeField(
-                        initialEntryMode: DatePickerEntryMode.calendarOnly,
-                        mode: DateTimeFieldPickerMode.date,
-                        dateTextStyle: TextStyle(
-                            color: Theme.of(context)
-                                .textSelectionTheme
-                                .cursorColor),
-                        decoration: InputDecoration(
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Theme.of(context)
-                                    .textSelectionTheme
-                                    .cursorColor!),
+              const SizedBox(height: 50),
+              Card(
+                color: Theme.of(context).backgroundColor.withOpacity(1),
+                shadowColor: Colors.black,
+                surfaceTintColor: Colors.white,
+                elevation: 20,
+                child: SizedBox(
+                  height: 150,
+                  width: double.infinity,
+                  child: Padding(
+                    padding: const EdgeInsets.all(30.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "TYPE",
+                          style: TextStyle(
+                              color: Theme.of(context).secondaryHeaderColor,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 10),
+
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(width: 0.5, color: Theme.of(context).secondaryHeaderColor),
+                            borderRadius: BorderRadius.circular(10)
                           ),
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Theme.of(context)
-                                    .textSelectionTheme
-                                    .cursorColor!),
+                          child: Row(
+                            children: [
+                              Flexible(
+                                child: DropdownButton(
+                                  isExpanded: true,
+                                  isDense: false,
+                                  underline: SizedBox(),
+                                  icon: Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: Icon(
+                                        CupertinoIcons.arrowtriangle_down,
+                                        size: 17,
+                                        color:
+                                            Theme.of(context).secondaryHeaderColor,
+                                      ),
+                                    ),
+                                  onChanged: (val) => setState(() {
+                                    leaveType = val.toString();
+                                  }),
+                                  value: leaveType,
+                                  items: [
+                                    for(var x in {"sick" : [Colors.blue, "Sick Leave"], "duty" : [Colors.yellowAccent, "On Duty"], "what" : [Colors.amber, "????????????????"]}.entries)
+                                      DropdownMenuItem(
+                                        value: x.key,
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.max,
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          children: [
+                                            Flexible(
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(18.0),
+                                                child: CircleAvatar(
+                                                  backgroundColor: x.value[0] as Color,
+                                                )
+                                              ),
+                                            ),
+                              
+                                            Flexible(
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(5),
+                                                child: global.textWidget(x.value[1] as String),
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      )
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              Card(
+                color: Theme.of(context).backgroundColor.withOpacity(1),
+                shadowColor: Colors.black,
+                surfaceTintColor: Colors.white,
+                elevation: 20,
+                child: SizedBox(
+                  height: 235,
+                  width: double.infinity,
+                  child: Padding(
+                    padding: const EdgeInsets.all(30.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "START DATE",
+                          style: TextStyle(
+                              color: Theme.of(context).secondaryHeaderColor,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 10),
+                        Flexible(
+                          child: InkWell(
+                            child: Container(
+                              clipBehavior: Clip.antiAlias,
+                              height: 35,
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                      width: 0.5,
+                                      color:
+                                          Theme.of(context).secondaryHeaderColor),
+                                  borderRadius:
+                                      const BorderRadius.all(Radius.circular(8))),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Flexible(
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 10, right: 10),
+                                      child: DateTimeField(
+                                          initialEntryMode:
+                                              DatePickerEntryMode.calendarOnly,
+                                          mode: DateTimeFieldPickerMode.date,
+                                          dateTextStyle: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Theme.of(context)
+                                                  .secondaryHeaderColor),
+                                          decoration: const InputDecoration(
+                                            isDense: true,
+                                            border: InputBorder.none,
+                                          ),
+                                          selectedDate: startDate,
+                                          onDateSelected: (DateTime value) {
+                                            setState(() {
+                                              startDate = value;
+                                            });
+                                          }),
+                                    ),
+                                  ),
+                                  Container(
+                                    color: Theme.of(context).hintColor,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(5.0),
+                                      child: Icon(
+                                        Icons.date_range,
+                                        color:
+                                            Theme.of(context).secondaryHeaderColor,
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
                           ),
                         ),
-                        selectedDate: endDate,
-                        onDateSelected: (DateTime value) {
-                          setState(() {
-                            endDate = value;
-                          });
-                        }),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Text(
+                          "END DATE",
+                          style: TextStyle(
+                              color: Theme.of(context).secondaryHeaderColor,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 10),
+                        Flexible(
+                          child: InkWell(
+                            child: Container(
+                              height: 35,
+                              clipBehavior: Clip.antiAlias,
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                      width: 0.5,
+                                      color:
+                                          Theme.of(context).secondaryHeaderColor),
+                                  borderRadius:
+                                      const BorderRadius.all(Radius.circular(8))),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Flexible(
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 10, right: 10),
+                                      child: DateTimeField(
+                                          initialEntryMode:
+                                              DatePickerEntryMode.calendarOnly,
+                                          mode: DateTimeFieldPickerMode.date,
+                                          dateTextStyle: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Theme.of(context)
+                                                  .secondaryHeaderColor),
+                                          decoration: const InputDecoration(
+                                            isDense: true,
+                                            border: InputBorder.none,
+                                          ),
+                                          selectedDate: endDate,
+                                          onDateSelected: (DateTime value) {
+                                            setState(() {
+                                              endDate = value;
+                                            });
+                                          }),
+                                    ),
+                                  ),
+                                  Container(
+                                    color: Theme.of(context).hintColor,
+      
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(5.0),
+                                      child: Icon(
+                                        Icons.date_range,
+                                        color:
+                                            Theme.of(context).secondaryHeaderColor,
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ],
+                ),
               ),
+              
+              const SizedBox(height: 10,),
+      
+              Card(
+                color: Theme.of(context).backgroundColor.withOpacity(1),
+                shadowColor: Colors.black,
+                surfaceTintColor: Colors.white,
+                elevation: 20,
+                child: SizedBox(
+                  height: 150,
+                  width: double.infinity,
+                  child: Padding(
+                    padding: const EdgeInsets.all(30.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "REASON",
+                          style: TextStyle(
+                              color: Theme.of(context).secondaryHeaderColor,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 10),
+      
+                        global.textField("", controller: myController)
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+      
             ],
           ),
-          global.padHeight(20),
-          TextField(
-            controller: myController,
-            style: TextStyle(
-                color: Theme.of(context).textSelectionTheme.cursorColor),
-            minLines: 1,
-            maxLines: 7,
-            decoration: InputDecoration(
-              enabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide(
-                    color: Theme.of(context).textSelectionTheme.cursorColor!),
-              ),
-              focusedBorder: UnderlineInputBorder(
-                borderSide: BorderSide(
-                    color: Theme.of(context).textSelectionTheme.cursorColor!),
-              ),
-            ),
-            onChanged: (text) {
-              // Wut to do here
-            },
-          ),
-          global.padHeight(20),
-          ElevatedButton.icon(
-            onPressed: () {
-              global.uiPageControl!.animateToPage(0, duration: const Duration(seconds: 1), curve: Curves.easeInOutExpo);
-            },
-            icon: Icon(Icons.done), 
-            label: global.textWidget("Submit"),
-            style: ElevatedButton.styleFrom(
-              shadowColor: Colors.transparent,
-              primary: Theme.of(context).buttonColor
-            )
-          )
-        ],
+        ),
       ),
     );
   }

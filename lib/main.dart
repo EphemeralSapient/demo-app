@@ -73,6 +73,7 @@ class _MyAppState extends State<MyApp> {
           selectionHandleColor: Color.fromARGB(120, 0, 0, 0),
           cursorColor: Color.fromARGB(255, 0, 0, 0)
         ),
+        secondaryHeaderColor: Colors.grey,
         textTheme: GoogleFonts.latoTextTheme(
           Theme.of(context).textTheme,
         ),
@@ -86,12 +87,14 @@ class _MyAppState extends State<MyApp> {
         shadowColor: Colors.grey.shade300,
         hintColor: Colors.grey.shade800,
         canvasColor: Colors.grey.shade300,
+        
         buttonColor: Color.fromARGB(158, 0, 0, 0),
         textSelectionTheme: const TextSelectionThemeData(
           selectionColor: Color.fromARGB(192, 255, 255, 255),
           selectionHandleColor: Color.fromARGB(120, 255, 255, 255),
           cursorColor: Color.fromARGB(255, 255, 255, 255)
         ),
+        secondaryHeaderColor: Colors.white38,
         textTheme: GoogleFonts.latoTextTheme(
           Theme.of(context).textTheme,
         ),
