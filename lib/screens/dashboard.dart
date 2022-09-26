@@ -3,7 +3,6 @@ import 'package:ngp/sub_screen/assignments.dart';
 import 'package:ngp/sub_screen/modifyTimeTable.dart';
 import 'package:ngp/sub_screen/moreActions.dart';
 import 'package:ngp/sub_screen/timetable.dart';
-import 'package:transparent_image/transparent_image.dart';
 import '../sub_screen/notification_centre.dart';
 import '../sub_screen/events.dart';
 import 'package:marquee/marquee.dart' show Marquee;

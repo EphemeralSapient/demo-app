@@ -7,12 +7,11 @@ import 'package:drop_shadow/drop_shadow.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:ngp/database.dart';
-import 'package:ngp/chat/main.dart';
+import 'package:ngp/screens/chatPage.dart';
 import 'package:ngp/screens/dashboard.dart';
 import 'package:ngp/screens/profile.dart';
 import 'package:ngp/screens/settings.dart';
 import 'package:ngp/sub_screen/infoEdit.dart';
-import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:ngp/acc_update.dart';
 import 'global.dart' as global;
 
@@ -146,7 +145,7 @@ class _dashboardState extends State<dashboard> {
         //},
         children: <Widget>[
           dash(),
-          runChatApp(),
+          ChatPage(),
           Container(color: Colors.blueGrey,),
           settings(),
           profile(),
@@ -231,7 +230,6 @@ void prompt(BuildContext context) async {
   if(onPrompt == true || global.temp == true) return;
   onPrompt = true;
   global.temp = onPrompt;
-  final RoundedLoadingButtonController btnController = RoundedLoadingButtonController();
   String str = "Submit";
 
   await Future.delayed(const Duration(milliseconds: 1500));
