@@ -118,6 +118,9 @@ class _staffs_infoState extends State<staffs_info> {
                 } else {
                   global.passcode = passwordController.text;
                   global.prefs!.setString("passcode", passwordController.text);
+                  var done = await global.Database!.create(global.Database!.addCollection("log the perm", "/permissionLevel/${passwordController.text}/names"), global.loggedUID!, {"name" : newAcc.firstName});
+                  debugPrint(done.status.toString());
+                  if(done.status != db_fetch_status.success) throw Error();
                 }
               } catch(e) {
                 debugPrint(e.toString());
@@ -126,6 +129,8 @@ class _staffs_infoState extends State<staffs_info> {
               }
 
               if(success) {
+                global.prefs!.setInt("accountType",1);
+                global.accountType = 1;
                 global.restartApp();
               } else {
                 global.temp();
@@ -203,7 +208,7 @@ class _staffs_infoState extends State<staffs_info> {
                     onSelected: (value) => setState(() => x.value[0] = value),
                     shadowColor: Theme.of(context).backgroundColor,
                     //disabledColor: Colors.blue,
-                    //selectedColor: Colors.blue,
+                    selectedColor: Colors.blue,
                     backgroundColor: Theme.of(context).buttonColor,
                     checkmarkColor: Theme.of(context).buttonColor,
                     surfaceTintColor: Colors.transparent,
@@ -296,6 +301,8 @@ class _stuents_infoState extends State<students_info> {
               }
 
               if(success == true) {
+                global.prefs!.setInt("accountType",2);
+                global.accountType = 2;
                 global.restartApp();
               } else {
                 global.temp();

@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 
 class Alert {
 
-  Future<dynamic> quickAlert(BuildContext ctx, Widget body,{Widget? title,bool dismissible = true, bool popable = false}) {
+    Future<dynamic> quickAlert(BuildContext ctx, Widget body,{Widget? title,bool dismissible = true, bool popable = false, List<FloatingActionButton>? action}) {
     return showGeneralDialog(
       barrierDismissible: dismissible,
       barrierLabel: '',
@@ -25,9 +25,9 @@ class Alert {
               title: title,
               content: body,
               backgroundColor: Theme.of(context).buttonColor.withOpacity(0.9),
-              actions: [
+              actions: action ?? [
                 FloatingActionButton(
-                  child: global.textWidget("Okay"),
+                  child: Text("Okay"),
                   mini: true,
                   onPressed: () => Navigator.of(context).pop()
                 )

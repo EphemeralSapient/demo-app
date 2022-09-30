@@ -4,6 +4,7 @@ library globals;
 
 import 'dart:convert';
 
+import 'package:another_transformer_page_view/another_transformer_page_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' show User;
 import 'package:flutter/foundation.dart';
@@ -85,7 +86,7 @@ BuildContext? choiceRouteCTX;
 BuildContext? rootCTX;
 BuildContext? timetableCTX;
 PageController? pageControl;
-PageController? uiPageControl;
+IndexController? uiPageControl;
 dynamic temp;
 dynamic restartApp;
 Widget? uiSecondaryWidgetFn;
@@ -93,13 +94,14 @@ Color uiBackgroundColor = Colors.lightBlueAccent;
 
 void switchToSecondaryUi(Widget w) {
   uiSecondaryWidgetFn = w;
-  uiPageControl!.animateToPage(1,
-      duration: const Duration(seconds: 1), curve: Curves.easeInExpo);
+  uiPageControl!.move(1);
+      //duration: const Duration(seconds: 1), curve: Curves.easeOutExpo);
 }
 
 void switchToPrimaryUi() {
-  uiPageControl!.animateToPage(0,
-      duration: const Duration(seconds: 1), curve: Curves.easeInExpo);
+  uiPageControl!.move(0);
+      //duration: const Duration(seconds: 1), curve: Curves.easeInExpo);
+  //SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
 }
 
 void updateSettingsFromStorage() async {

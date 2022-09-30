@@ -1,9 +1,12 @@
 
+import 'dart:ui';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_settings_screens/flutter_settings_screens.dart' show SettingsGroup;
 import 'package:ngp/sub_screen/infoEdit.dart';
+import 'package:ngp/sub_screen/update_ui.dart';
 import 'package:ngp/ui/toggleButton.dart';
 import 'package:ngp/global.dart' as global;
 
@@ -20,10 +23,43 @@ class _settingsState extends State<settings> {
   @override
   Widget build(context) {
     return Scaffold(
+      floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
+      floatingActionButton: FloatingActionButton.extended(
+        heroTag: 'uniqueTag',
+        onPressed: () {
+          // Update the app
+          Navigator.push(
+            context,
+            PageRouteBuilder(
+              pageBuilder: (c, a1, a2) => update_ui(),
+              opaque: false,
+              transitionsBuilder: (context, animation, secondaryAnimation, child) => FadeTransition(opacity: animation, child:
+                ScaleTransition(
+                  scale: animation.drive(
+                    Tween(begin: 1.5, end: 1.0).chain(
+                      CurveTween(curve: Curves.easeOutCubic)
+                    ),
+                  ),
+                  child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: animation.value * 20, sigmaY: animation.value * 20),
+                      child:  child,
+                  )
+                )
+              ),  
+              transitionDuration: const Duration(seconds: 1)
+            )
+          );
+        },
+
+        elevation: 10,
+        icon: Icon(Icons.new_releases),
+        label: Text("Update the app"),
+      ),
       backgroundColor: Theme.of(context).buttonColor,
       body: ListView(
         padding: const EdgeInsets.all(24),
         children: [
+          SizedBox(height: 15,),
           SettingsGroup(
             title: "GENERAL",
             children: [
@@ -59,11 +95,11 @@ class _settingsState extends State<settings> {
 
           ElevatedButton(
             onPressed: () {
-              promptStudentsInfoEdit();
+              global.accountType == 2 ? promptStudentsInfoEdit() : promptStaffInfoEdit();
             },
             style:
                 ElevatedButton.styleFrom(primary: Theme.of(context).buttonColor, shadowColor: Colors.transparent),
-            child: Text("Change your Student information data",
+            child: Text("Change your ${global.accountType == 2 ? "Student" : "Faculty"} information data",
                 style: TextStyle(
                     fontSize: 18,
                     color: Theme.of(context).textSelectionTheme.selectionColor

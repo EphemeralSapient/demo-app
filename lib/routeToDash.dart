@@ -2,6 +2,9 @@
 
 import 'dart:ui';
 
+import 'package:another_transformer_page_view/another_transformer_page_view.dart';
+import 'package:ngp/buildin_transformers.dart';
+
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:drop_shadow/drop_shadow.dart';
 import 'package:flutter/material.dart';
@@ -23,12 +26,12 @@ class ui extends StatefulWidget{
 }
 
 class _uiState extends State<ui> {
-  final PageController _page = PageController();
+  final IndexController _page = IndexController();
   int index = 0;
+
 
   void refresh(){
     setState(() {
-      
     });
   }
 
@@ -39,13 +42,20 @@ class _uiState extends State<ui> {
     global.uiPageControl = _page;
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+    _page.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    var page_1 = ClipRect(child: dashboard());
+    var page_2 = ClipRect(child: global.uiSecondaryWidget());
     return WillPopScope(
       onWillPop: () async {
-        if(_page.position == _page.positions.last) {
-          _page.animateToPage(0, duration: Duration(seconds: 1), curve: Curves.easeInOutExpo);
+        if(_page.index == 1) {
+          _page.move(0);// (0, duration: Duration(seconds: 1), curve: Curves.easeInOutExpo);
         }
         return false;
       },
@@ -55,13 +65,17 @@ class _uiState extends State<ui> {
         backgroundColor: Colors.transparent,
     
         body: Stack(
-          children: [bg(), PageView(
+          children: [bg(), TransformerPageView(
             scrollDirection: Axis.vertical,
             controller: _page,
-            children: [
-              dashboard(),
-              global.uiSecondaryWidget(),
-            ],
+            itemCount: 2,
+            transformer: ZoomOutWithoutOpacPageTransformer(),
+            itemBuilder: (context, index) {
+              return index==0 ? page_1 : page_2 ;
+            } //[
+              //dashboard(),
+              //global.uiSecondaryWidget(),
+            //],
           ),]
         )
       ),

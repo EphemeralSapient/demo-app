@@ -20,40 +20,6 @@ class moreActionsShort extends StatelessWidget {
 
     } else if (global.accountType == 2) {
 
-    // Leave Application
-    childrens.add(
-      ElevatedButton.icon(
-        icon: Icon(Icons.text_snippet, color: Theme.of(context).textSelectionTheme.cursorColor,),
-        label: global.textWidget("Leave Application"),
-
-        onPressed: () {
-          debugPrint("Go to leave form page");
-          leaveFormPrompt(context);
-        },
-        style: ElevatedButton.styleFrom(
-              shadowColor: Colors.transparent,
-              primary: Colors.transparent,
-              surfaceTintColor: Colors.transparent,
-              onPrimary: Theme.of(context).buttonColor
-            )
-      )
-    );
-
-    childrens.add(
-      ElevatedButton.icon(
-        icon: Icon(Icons.workspace_premium, color: Theme.of(context).textSelectionTheme.cursorColor,),
-        label: global.textWidget("On Duty Form"),
-
-        onPressed: () {},
-        style: ElevatedButton.styleFrom(
-              shadowColor: Colors.transparent,
-              primary: Colors.transparent,
-              surfaceTintColor: Colors.transparent,
-              onPrimary: Theme.of(context).buttonColor
-            )
-      )
-    );
-
     childrens.add(
       ElevatedButton.icon(
         icon: Icon(Icons.request_quote, color: Theme.of(context).textSelectionTheme.cursorColor,),
@@ -77,6 +43,24 @@ class moreActionsShort extends StatelessWidget {
     // Common for all tools
 
     // --
+
+    childrens.add(
+      ElevatedButton.icon(
+        icon: Icon(Icons.text_snippet, color: Theme.of(context).textSelectionTheme.cursorColor,),
+        label: global.textWidget("Leave Application"),
+
+        onPressed: () {
+          debugPrint("Go to leave form page");
+          leaveFormPrompt(context);
+        },
+        style: ElevatedButton.styleFrom(
+              shadowColor: Colors.transparent,
+              primary: Colors.transparent,
+              surfaceTintColor: Colors.transparent,
+              onPrimary: Theme.of(context).buttonColor
+            )
+      )
+    );
 
     // Tool appending ended
 

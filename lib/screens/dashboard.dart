@@ -17,7 +17,7 @@ class dash extends StatefulWidget {
 class _dashState extends State<dash> {
   @override
   Widget build(context) {
-    debugPrint("building dash screen");
+    debugPrint("building dash screen | Account type : ${global.accountType}");
     return Scaffold(
       backgroundColor: Theme.of(context).buttonColor,
       body: //ShaderMask(

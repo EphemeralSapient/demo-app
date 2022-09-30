@@ -231,7 +231,7 @@ class HomeImpl extends State<home> {
         globals.account = user;
         if(user.isAnonymous != true){
           if(globals.dashboardReached == false) debugPrint(await validate(2) ?? "Validation completed" );
-          globals.accountType = 2;
+          //globals.accountType = 2;
         } else globals.accountType = 3;
         Future.delayed(const Duration(seconds: 2),() => toDashbaord());
       } else if (globals.choiceRoute != true) {

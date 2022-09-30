@@ -151,7 +151,41 @@ String leaveType = "sick";
                         fontWeight: FontWeight.bold),
                   ),
                   InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      if(myController.text == ""){
+                        global.alert.quickAlert(context, global.textWidget("Please fill the reason field"));
+                      } else {
+                        global.alert.quickAlert(
+                          context,
+                          Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              global.textWidget("Your application will be submitted under these information :"),
+                              SizedBox(height: 20),
+                              global.textWidgetWithHeavyFont("${"${global.accObj!.firstName!} ${global.accObj!.lastName!}"} of ${global.accObj!.department!.toUpperCase()} department,"),
+                              global.textWidgetWithHeavyFont("Register number : ${global.accObj!.registerNum}"),
+                              global.textWidgetWithHeavyFont("Roll number : ${global.accObj!.rollNo!.toUpperCase()}"),
+                              SizedBox(height: 20,),
+                              global.textWidget("If you find any of these information incorrect, please change it by editing your information on Settings->Change Student data"),
+                              SizedBox(height: 30,)
+                              ,global.textWidget("Are you sure to proceed?")
+                            ],
+                          ),
+                          action: [
+                            FloatingActionButton(
+                              mini: true,
+                              onPressed: () {Navigator.of(context).pop(); global.switchToPrimaryUi(); },
+                              child: Text("Yes")
+                            ),
+                            FloatingActionButton(
+                              child: Text("No"),
+                              mini: true,
+                              onPressed: () => Navigator.of(context).pop()
+                            )
+                          ]
+                        );
+                      }
+                    },
                     child: Container(
                       decoration: const BoxDecoration(
                           color: Colors.blueAccent,

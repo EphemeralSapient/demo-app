@@ -29,76 +29,77 @@ class profile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return OTAApp();
+    return SizedBox();
   }
 }
 
 
 
-class OTAApp extends StatefulWidget {
-  const OTAApp({super.key});
+// class OTAApp extends StatefulWidget {
+//   const OTAApp({super.key});
 
-  @override
-  _OTAAppState createState() => _OTAAppState();
-}
+//   @override
+//   // ignore: library_private_types_in_public_api
+//   _OTAAppState createState() => _OTAAppState();
+// }
 
-class _OTAAppState extends State<OTAApp> {
-  OtaEvent? currentEvent;
-  String? error;
+// class _OTAAppState extends State<OTAApp> {
+//   OtaEvent? currentEvent;
+//   String? error;
 
-  @override
-  void initState() {
-    super.initState();
-    getPackageInfo();
-  }
+//   @override
+//   void initState() {
+//     super.initState();
+//     getPackageInfo();
+//   }
 
-  Future<void> getPackageInfo() async {
-    setState(() {});
-  }
+//   Future<void> getPackageInfo() async {
+//     setState(() {});
+//   }
 
-  Future<void> tryOtaUpdate() async {
-    try {
-      OtaUpdate()
-          .execute(
-        'https://github.com/EphemeralSapient/demo-app/raw/main/app-release.apk',
-        destinationFilename: 'app-release.apk',
-      )
-          .listen(
-        (OtaEvent event) {
-          setState(() => currentEvent = event);
-        },
-      );
-    } catch (e) {
-      error = e.toString();
-      debugPrint('Failed to make OTA update. Details: $e');
-    }
-  }
+//   Future<void> tryOtaUpdate() async {
+//     try {
+//       OtaUpdate()
+//           .execute(
+//         'https://github.com/EphemeralSapient/demo-app/raw/main/app-release.apk',
+//         destinationFilename: 'app-release.apk',
+//       )
+//           .listen(
+//         (OtaEvent event) {
+//           setState(() => currentEvent = event);
+//         },
+//       );
+//     } catch (e) {
+//       error = e.toString();
+//       debugPrint('Failed to make OTA update. Details: $e');
+//     }
+//   }
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Plugin example app'),
-        ),
-        body: ListView(
-          children: [
-            ListTile(
-              title: const Text('OTA State'),
-              trailing: Text(currentEvent?.status.toString() ?? '-'),
-            ),
-            ListTile(
-              title: const Text('OTA Percent'),
-              trailing: Text(currentEvent?.value ?? '-'),
-            ),
-            ElevatedButton(
-              onPressed: tryOtaUpdate,
-              child: const Text('Update App'),
-            ),
-            Text(error ?? '')
-          ],
-        ),
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       home: Scaffold(
+//         appBar: AppBar(
+//           title: const Text('Plugin example app'),
+//         ),
+//         body: ListView(
+//           children: [
+//             ListTile(
+//               title: const Text('OTA State'),
+//               trailing: Text(currentEvent?.status.toString() ?? '-'),
+//             ),
+//             ListTile(
+//               title: const Text('OTA Percent'),
+//               trailing: Text(currentEvent?.value ?? '-'),
+//             ),
+//             ElevatedButton(
+//               onPressed: tryOtaUpdate,
+//               child: const Text('Update App'),
+//             ),
+//             Text(error ?? '')
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
