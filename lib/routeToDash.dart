@@ -291,7 +291,7 @@ Widget bg() {
       return Container(
         height: double.infinity,
         width: double.infinity,
-        color: global.uiBackgroundColor
+        color: global.customColorEnable ? Color(global.customColor) : global.uiBackgroundColor
       );
     }
 }

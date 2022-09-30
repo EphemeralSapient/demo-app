@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_settings_screens/flutter_settings_screens.dart' show SettingsGroup;
 import 'package:ngp/sub_screen/infoEdit.dart';
 import 'package:ngp/sub_screen/update_ui.dart';
@@ -90,6 +91,97 @@ class _settingsState extends State<settings> {
                 Theme.of(context).backgroundColor,
                 global.bgImage
               ),
+
+              toggleButton(
+                (val) {
+                  
+                  global.customColorEnable = val;
+                  global.bgRefresh!();
+                  global.prefs!.setBool("customColorEnable", val);
+    
+                  return val;},
+                "Use Custom Background Color",
+                Icons.colorize,
+                Theme.of(context).backgroundColor,
+                global.customColorEnable
+              ),
+
+              InkWell(
+                onTap: () {
+                  Color changeColor = Color(global.customColor);
+                  Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                      pageBuilder: (c, a1, a2) => Scaffold(
+                        backgroundColor: Colors.transparent,
+                        floatingActionButton: FloatingActionButton(
+                          onPressed: () {
+                            global.customColor = changeColor.value;
+                            global.prefs!.setInt("customColor", changeColor.value);
+                            global.bgRefresh!();
+                            Navigator.pop(c);
+                          },
+                          child: Icon(Icons.done),
+                        ),
+                        body: WillPopScope(
+                          onWillPop: () async {
+                      
+                            return true;
+                          },
+                      
+                          child: HueRingPicker(
+                            pickerColor: Color(global.customColor),
+                            onColorChanged: (co) => changeColor = co,
+                            enableAlpha: true,
+                            portraitOnly: true,
+                            //pickerAreaBorderRadius: BorderRadius.circular(20),
+                          )
+                        ),
+                      ),
+                      opaque: false,
+                      transitionsBuilder: (context, animation, secondaryAnimation, child) => FadeTransition(opacity: animation, child:
+                        ScaleTransition(
+                          scale: animation.drive(
+                            Tween(begin: 1.5, end: 1.0).chain(
+                              CurveTween(curve: Curves.easeOutCubic)
+                            ),
+                          ),
+                          child: BackdropFilter(
+                              filter: ImageFilter.blur(sigmaX: animation.value * 20, sigmaY: animation.value * 20),
+                              child:  child,
+                          )
+                        )
+                      ),  
+                      transitionDuration: const Duration(seconds: 1)
+                    )
+                  );
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    //mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      
+                      Text(
+                        "Custom Background Color",
+                        style: TextStyle(
+                          color: Theme.of(context).textSelectionTheme.selectionHandleColor,
+                          fontFamily: "Montserrat",
+                          fontSize: 16
+                        ),
+                      ),
+
+                      CircleAvatar(
+                        backgroundColor: Color(global.customColor),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+
+              SizedBox(height: 20)
+
             ],
           ),
 

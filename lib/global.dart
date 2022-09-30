@@ -76,6 +76,8 @@ bool choiceRoute = false;
 bool loginRoute = false;
 bool bgImage = false;
 bool dashboardReached = false;
+bool customColorEnable = false;
+int customColor = Colors.lightBlue.value;
 void Function()? loginRouteCloseFn;
 void Function()? rootRefresh;
 void Function()? bgRefresh;
@@ -115,6 +117,8 @@ void updateSettingsFromStorage() async {
   accountType = prefs!.getInt("accountType") ?? -1;
   passcode = prefs!.getString("passcode");
   dashboardReached = prefs!.getBool("dashboardReached") ?? false;
+  customColorEnable = prefs!.getBool("customColorEnable") ?? false;
+  customColor = prefs!.getInt("customColor") ?? Colors.lightBlue.value;
   hashes = jsonDecode(prefs!.getString("hashes") ?? "{}");
   //debugPrint(jsonDecode(jsonDecode(prefs!.getString("timetable_timing") ?? "lol" ))[0]);     This crap wasted my 1 hour time on debugging; damnit
   timetable_timing =
