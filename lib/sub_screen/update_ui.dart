@@ -40,8 +40,7 @@ class _update_uiState extends State<update_ui> {
     } catch (e) {
       error = e.toString();
       debugPrint('Failed to make OTA update. Details: $e');
-      Navigator.pop(context);
-      global.alert.quickAlert(global.rootCTX!, global.textWidget("Failed to update | info : ${e.toString()}"));
+      //Navigator.pop(context);
     }
   }
 
