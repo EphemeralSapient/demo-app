@@ -1,3 +1,7 @@
+import 'dart:ui';
+
+import 'package:intl/intl.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:date_field/date_field.dart';
 import 'package:flutter/cupertino.dart';
@@ -367,7 +371,7 @@ class classInfoUI extends StatelessWidget {
   Widget build(BuildContext context) {
     var x = data ?? {};
     return Scaffold(
-      backgroundColor: Theme.of(context).buttonColor.withOpacity(0.3),
+      backgroundColor: Theme.of(context).buttonColor.withOpacity(0.0),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           global.switchToPrimaryUi();
@@ -378,12 +382,164 @@ class classInfoUI extends StatelessWidget {
 
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(15.0),
+          padding: const EdgeInsets.only(right: 30, left: 30, top: 20, bottom: 30),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              global.textWidgetWithHeavyFont("${x["year"]}  ${x["department"]}-${x["section"]}")
+              global.textWidgetWithHeavyFont("${x["year"]}  ${x["department"]}-${x["section"]}"),
+
+              SizedBox(height:40),
+
+              Card(
+                shadowColor: Colors.transparent,
+                surfaceTintColor: Colors.transparent,
+                color: Theme.of(context).buttonColor.withOpacity(0.5),
+                clipBehavior: Clip.antiAliasWithSaveLayer,
+                child: InkWell(
+                  onTap: () {
+                    debugPrint("Prompting attendance checklist UI");
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (c, a1, a2) => attendanceChecklist(),
+                        opaque: false,
+                        transitionsBuilder: (context, animation, secondaryAnimation, child) => FadeTransition(opacity: animation, child:
+                          ScaleTransition(
+                            scale: animation.drive(
+                              Tween(begin: 1.5, end: 1.0).chain(
+                                CurveTween(curve: Curves.easeOutCubic)
+                              ),
+                            ),
+                            child: BackdropFilter(
+                                filter: ImageFilter.blur(sigmaX: animation.value * 20, sigmaY: animation.value * 20),
+                                child:  child,
+                            )
+                          )
+                        ),  
+                        transitionDuration: const Duration(seconds: 1)
+                      )
+                    );
+
+                  },
+                  child: SizedBox(
+                    height: 100,
+                    width: double.infinity,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Flexible(
+                          child: Padding(
+                            padding: const EdgeInsets.all(28.0),
+                            child: Text(
+                              "Attendance Checklist",
+                              style : TextStyle(
+                                color: Theme.of(context).textSelectionTheme.selectionColor,
+                                fontSize: 24,
+                                letterSpacing: 1.3,
+                                fontFamily: "Metropolis"
+                              )
+                            )
+                          )
+                        ),
+
+                        Container(
+                          height: double.infinity,
+                          width: 7,
+                          color: Colors.lightBlue,
+                        )
+                      ],
+                    )
+                  )
+                )
+              ),
+
+              SizedBox(height:15),
+              Card(
+                shadowColor: Colors.transparent,
+                surfaceTintColor: Colors.transparent,
+                color: Theme.of(context).buttonColor.withOpacity(0.5),
+                clipBehavior: Clip.antiAliasWithSaveLayer,
+                child: InkWell(
+                  onTap: () {
+                    debugPrint("Prompting Time Table [Edit] UI");
+                  },
+                  child: SizedBox(
+                    height: 100,
+                    width: double.infinity,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Flexible(
+                          child: Padding(
+                            padding: const EdgeInsets.all(28.0),
+                            child: Text(
+                              "Update Time Table",
+                              style : TextStyle(
+                                color: Theme.of(context).textSelectionTheme.selectionColor,
+                                fontSize: 24,
+                                letterSpacing: 1.3,
+                                fontFamily: "Metropolis"
+                              )
+                            )
+                          )
+                        ),
+
+                        Container(
+                          height: double.infinity,
+                          width: 7,
+                          color: Colors.deepPurpleAccent,
+                        )
+                      ],
+                    )
+                  )
+                )
+              ),
+
+              SizedBox(height:15),
+              Card(
+                shadowColor: Colors.transparent,
+                surfaceTintColor: Colors.transparent,
+                color: Theme.of(context).buttonColor.withOpacity(0.5),
+                clipBehavior: Clip.antiAliasWithSaveLayer,
+                child: InkWell(
+                  onTap: () {
+                    debugPrint("Prompting Class Info [Edit] UI");
+                  },
+                  child: SizedBox(
+                    height: 100,
+                    width: double.infinity,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Flexible(
+                          child: Padding(
+                            padding: const EdgeInsets.all(28.0),
+                            child: Text(
+                              "Update Class Information",
+                              style : TextStyle(
+                                color: Theme.of(context).textSelectionTheme.selectionColor,
+                                fontSize: 24,
+                                letterSpacing: 1.3,
+                                fontFamily: "Metropolis"
+                              )
+                            )
+                          )
+                        ),
+
+                        Container(
+                          height: double.infinity,
+                          width: 7,
+                          color: Colors.brown,
+                        )
+                      ],
+                    )
+                  )
+                )
+              ),
+
+              SizedBox(height: 40),
+              global.textWidget("Adding more data in here, such as Absentees name [current day], and then class info in an overview [class strength, roll start to end no.]")
             ],
           ),
         ),
@@ -391,4 +547,104 @@ class classInfoUI extends StatelessWidget {
     );  
   }
 
+}
+
+class attendanceChecklist extends StatefulWidget {
+  @override
+  State<attendanceChecklist> createState() => _attendanceChecklistState();
+}
+
+class _attendanceChecklistState extends State<attendanceChecklist> {
+  DateTime chosenDay = DateTime.now();
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Theme.of(context).buttonColor.withOpacity(0.3),
+      appBar: AppBar(
+        title: global.textWidget("Attendance update sheet"),
+        centerTitle: true,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Icon(Icons.arrow_back, color: Theme.of(context).textSelectionTheme.selectionHandleColor,),
+        ),
+        backgroundColor: Theme.of(context).buttonColor.withOpacity(0.8),
+        shadowColor: Colors.transparent,
+        foregroundColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+              bottomRight: Radius.circular(35),
+              bottomLeft: Radius.circular(35)),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () async {
+          Navigator.pop(context);
+
+          final get = await global.Database!.update(global.Database!.addCollection("class", "/class"), data["classCode"], data);
+
+          ScaffoldMessenger.of(global.rootCTX!).showSnackBar(SnackBar(
+            content: Text(get.status == db_fetch_status.success ? "Successfully updated the attendance!" : "Failed to update, ${get.data.toString()}"),
+          ));
+        },
+        label: const Text("UPDATE", style: TextStyle(color: Colors.white),),
+        icon: const Icon(CupertinoIcons.refresh_thick),
+      ),
+
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+
+          children: [
+            SizedBox(height:30),
+
+            Center(
+              child: Container(
+                height: 50,
+                width: 200,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Theme.of(context).textSelectionTheme.selectionColor!),
+                  borderRadius: BorderRadius.circular(10)
+                ),
+                clipBehavior: Clip.antiAlias,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: InkWell(
+                    onTap: () {
+                      
+                    },
+                    child: DateTimeField(
+                      initialEntryMode:
+                          DatePickerEntryMode.calendarOnly,
+                      mode: DateTimeFieldPickerMode.date,
+                      dateTextStyle: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context)
+                              .textSelectionTheme.selectionColor),
+                      decoration: const InputDecoration(
+                        isDense: true,
+                        border: InputBorder.none,
+                      ),
+                      selectedDate: chosenDay,
+                      onDateSelected: (DateTime value) {
+                        setState(() {
+                          chosenDay = value;
+                        });
+                      }),
+                  ),
+                ),
+              ),
+            ),
+
+
+            
+          ],
+        ),
+      ) 
+
+    );
+  }
 }
