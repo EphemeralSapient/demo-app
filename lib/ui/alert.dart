@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 
 class Alert {
 
-    Future<dynamic> quickAlert(BuildContext ctx, Widget body,{Widget? title,bool dismissible = true, bool popable = false, List<FloatingActionButton>? action}) {
+    Future<dynamic> quickAlert(BuildContext ctx, Widget body,{Function()? bodyFn,Widget? title,bool dismissible = true, bool popable = false, double opacity = 0.9, List<FloatingActionButton>? action, Function? popFn}) {
     return showGeneralDialog(
       barrierDismissible: dismissible,
       barrierLabel: '',
@@ -19,29 +19,36 @@ class Alert {
       barrierColor: Colors.black38,
       transitionDuration: const Duration(milliseconds: 500),
       pageBuilder: (ctx, anim1, anim2) => StatefulBuilder( builder: (context, StateSetter setState) {
+          global.quickAlertGlobalVar = setState;
           return WillPopScope(
-            onWillPop: () async => dismissible | popable,
+            onWillPop: () async {try{popFn!();} catch(e) {} return dismissible | popable;},
             child: AlertDialog(
               title: title,
-              content: body,
-              backgroundColor: Theme.of(context).buttonColor.withOpacity(0.9),
+              content: bodyFn == null ? body : bodyFn(),
+              backgroundColor: Theme.of(context).buttonColor.withOpacity(opacity),
               actions: action ?? [
                 FloatingActionButton(
                   child: Text("Okay"),
                   mini: true,
-                  onPressed: () => Navigator.of(context).pop()
+                  onPressed: () {if(popFn!=null) popFn(); Navigator.of(context).pop();}
                 )
               ]
             )
           );
       }),
-    transitionBuilder: (ctx, anim1, anim2, child) => BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 3 * anim1.value, sigmaY: 3 * anim1.value),
-            child: FadeTransition(
-                opacity: anim1,
-                child: child,
-            ),
-        ),
+    transitionBuilder: (ctx, animation, anim2, child) => FadeTransition(opacity: animation, child:
+                        ScaleTransition(
+                          scale: animation.drive(
+                            Tween(begin: 1.5, end: 1.0).chain(
+                              CurveTween(curve: Curves.easeOutCubic)
+                            ),
+                          ),
+                          child: BackdropFilter(
+                              filter: ImageFilter.blur(sigmaX: animation.value * 8, sigmaY: animation.value * 8),
+                              child:  child,
+                          )
+                        )
+                      ),  
     context: ctx,
     );
   }
@@ -100,13 +107,19 @@ class Alert {
             ),
           );
       }),
-    transitionBuilder: (ctx, anim1, anim2, child) => BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 3 * anim1.value, sigmaY: 3 * anim1.value),
-            child: FadeTransition(
-                opacity: anim1,
-                child: child,
-            ),
-        ),
+    transitionBuilder: (ctx, animation, anim2, child) => FadeTransition(opacity: animation, child:
+                        ScaleTransition(
+                          scale: animation.drive(
+                            Tween(begin: 1.5, end: 1.0).chain(
+                              CurveTween(curve: Curves.easeOutCubic)
+                            ),
+                          ),
+                          child: BackdropFilter(
+                              filter: ImageFilter.blur(sigmaX: animation.value * 8, sigmaY: animation.value * 8),
+                              child:  child,
+                          )
+                        )
+                      ),  
     context: context,
   );
   }

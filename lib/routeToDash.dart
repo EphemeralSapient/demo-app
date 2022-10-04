@@ -10,7 +10,7 @@ import 'package:drop_shadow/drop_shadow.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:ngp/database.dart';
-import 'package:ngp/screens/chatPage.dart';
+import 'package:ngp/screens/classroom.dart';
 import 'package:ngp/screens/dashboard.dart';
 import 'package:ngp/screens/profile.dart';
 import 'package:ngp/screens/settings.dart';
@@ -119,7 +119,7 @@ class _dashboardState extends State<dashboard> {
   Widget build(context) {
     List<Icon> items = [
       Icon(Icons.dashboard, size: 30, color: Theme.of(context).shadowColor),
-      Icon(FontAwesomeIcons.facebookMessenger, size: 30,color: Theme.of(context).shadowColor),
+      Icon(Icons.class_rounded, size: 30,color: Theme.of(context).shadowColor),
       Icon(Icons.search, size: 30,color: Theme.of(context).shadowColor),
       Icon(Icons.settings, size: 30, color: Theme.of(context).shadowColor),
       Icon(Icons.person,size: 30, color: Theme.of(context).shadowColor),
@@ -159,9 +159,9 @@ class _dashboardState extends State<dashboard> {
         //},
         children: <Widget>[
           dash(),
-          ChatPage(),
+          classroom(),
           Container(color: Colors.blueGrey,),
-          settings(),
+          const settings(),
           profile(),
           Container(color: Colors.blue,),
         ],
@@ -243,6 +243,7 @@ bool onPrompt = false;
 void prompt(BuildContext context) async {
   if(onPrompt == true || global.temp == true) return;
   onPrompt = true;
+  context = global.rootCTX!;
   global.temp = onPrompt;
   String str = "Submit";
 
@@ -255,7 +256,7 @@ void prompt(BuildContext context) async {
     };
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => staffs_info()),
+      MaterialPageRoute(builder: (ctx) => staffs_info()),
     );
   } else {
     // student
@@ -264,7 +265,7 @@ void prompt(BuildContext context) async {
     };
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => students_info()),
+      MaterialPageRoute(builder: (ctx) => students_info()),
     );
   }
 }

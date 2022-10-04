@@ -90,6 +90,7 @@ BuildContext? timetableCTX;
 PageController? pageControl;
 IndexController? uiPageControl;
 dynamic temp;
+dynamic quickAlertGlobalVar;
 dynamic restartApp;
 Widget? uiSecondaryWidgetFn;
 Color uiBackgroundColor = Colors.lightBlueAccent;
@@ -218,6 +219,28 @@ Widget textWidget(String text) {
     style: TextStyle(
       color: Theme.of(rootCTX!).textSelectionTheme.selectionColor,
     ),
+  );
+}
+
+Widget textDoubleSpanWiget(String a, String b) {
+  return Text.rich(
+    TextSpan(
+      children: [
+        TextSpan(
+          text: a, 
+          style: TextStyle(
+            color: Theme.of(rootCTX!).textSelectionTheme.cursorColor,
+            fontWeight: FontWeight.bold
+          )
+        ),
+        TextSpan(
+          text: b,
+          style: TextStyle(
+            color: Theme.of(rootCTX!).textSelectionTheme.selectionColor,
+          ),
+        )
+      ]
+    )
   );
 }
 

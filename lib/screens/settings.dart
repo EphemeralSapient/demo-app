@@ -129,12 +129,16 @@ class _settingsState extends State<settings> {
                             return true;
                           },
                       
-                          child: HueRingPicker(
-                            pickerColor: Color(global.customColor),
-                            onColorChanged: (co) => changeColor = co,
-                            enableAlpha: true,
-                            portraitOnly: true,
-                            //pickerAreaBorderRadius: BorderRadius.circular(20),
+                          child: Container(
+                            alignment: Alignment.center,
+                            color: Theme.of(context).buttonColor,
+                            child: MaterialPicker(
+                              pickerColor: Color(global.customColor),
+                              onColorChanged: (value) => changeColor = value,
+                              enableLabel: true,
+                              portraitOnly: true,
+                              
+                            ),
                           )
                         ),
                       ),
