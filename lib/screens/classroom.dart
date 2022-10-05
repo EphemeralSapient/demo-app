@@ -45,6 +45,7 @@ class _classroomState extends State<classroom> {
         } else {
           info = get.data as Map;
         }
+        data=info;
       } else {
         CollectionReference _collectionRef = global.Database!.addCollection("classroom", "/class");
         QuerySnapshot querySnapshot = await _collectionRef.get();
@@ -238,7 +239,41 @@ class _classroomState extends State<classroom> {
                   ),
                 ),
 
-                global.padHeight(30)
+                global.padHeight(30),
+
+                Wrap(
+                  children: [
+                    ChoiceChip(
+                      label: Text("Check Class Attendance Sheet"),
+                      avatar: Icon(Icons.add_task),
+                      onSelected: (bool val) {
+                        Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (c, a1, a2) => attendanceChecklist(),
+                        opaque: false,
+                        transitionsBuilder: (context, animation, secondaryAnimation, child) => FadeTransition(opacity: animation, child:
+                          ScaleTransition(
+                            scale: animation.drive(
+                              Tween(begin: 1.5, end: 1.0).chain(
+                                CurveTween(curve: Curves.easeOutCubic)
+                              ),
+                            ),
+                            child: BackdropFilter(
+                                filter: ImageFilter.blur(sigmaX: animation.value * 20, sigmaY: animation.value * 20),
+                                child:  child,
+                            )
+                          )
+                        ),  
+                        transitionDuration: const Duration(seconds: 1)
+                      )
+                    );
+                      },
+                      selected: false,
+                      
+                    )
+                  ],
+                )
               ],
             )
           ),
