@@ -715,7 +715,7 @@ class _attendanceChecklistState extends State<attendanceChecklist> {
               bottomLeft: Radius.circular(35)),
         ),
       ),
-      floatingActionButton: (global.accountType == 3) ? FloatingActionButton.extended(
+      floatingActionButton: (global.accountType == 1) ? FloatingActionButton.extended(
         onPressed: () async {
           Navigator.pop(context);
 
