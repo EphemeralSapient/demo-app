@@ -14,6 +14,7 @@ import 'package:ngp/global.dart' as global;
 import 'package:semicircle_indicator/semicircle_indicator.dart';
 
 dynamic data;
+List<String> depart = ["All"];
 
 class classroom extends StatefulWidget {
   const classroom({super.key});
@@ -57,8 +58,6 @@ class _classroomState extends State<classroom> {
     });
   }
 
-  List<String> depart = ["All"];
-
   @override
   Widget build(BuildContext context) {
 
@@ -70,6 +69,14 @@ class _classroomState extends State<classroom> {
     }
 
     var todayDate = DateFormat("dd-MM-yyyy").format(DateTime.now()).toString();
+
+    String per(int? strength, int? count) {
+      if(strength == null || count == null) {
+        return "-";
+      } else {
+        return ( (count/strength) * 100 ).toInt().toString();
+      }
+    }
 
     return Scaffold(
       backgroundColor: Theme.of(context).buttonColor,
@@ -373,18 +380,19 @@ class _classroomState extends State<classroom> {
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      global.textWidgetWithHeavyFont("${x["year"]}  ${x["department"]}-${x["section"]}"),
+                                      global.textWidgetWithHeavyFont("${x["year"].toString().toUpperCase()}  ${x["department"].toString().toUpperCase()}-${x["section"].toString().toUpperCase()}"),
                                     
                                       SizedBox(height: 20,),
                                       
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                                         children: [
-                                          global.textDoubleSpanWiget("Absentees Count : ", "${x["leaveData"][todayDate] != null ? x["leaveData"][todayDate].where((e) => e == true).length : "Not checked"} "),
-                                          global.textDoubleSpanWiget("On Duty Count : ", "${x["leaveData"][todayDate] != null ? x["leaveData"][todayDate].where((e) => e == false).length : "Not checked"}}}"),
+                                          global.textDoubleSpanWiget("Absentees Count : ", "${x["leaveData"] != null && x["leaveData"][todayDate] != null ? x["leaveData"][todayDate].last?.values?.where((e) => e == true).length.toString() : "-"} | ${per((x["endRoll"] ?? 61) - (x["startRoll"] ?? 1), x["leaveData"] != null && x["leaveData"][todayDate] != null ? x["leaveData"][todayDate].last?.values?.where((e) => e == true).length: null)}%"),
+                                          global.textDoubleSpanWiget("On Duty Count : ", "${x["leaveData"] != null && x["leaveData"][todayDate] != null ? x["leaveData"][todayDate].last?.values?.where((e) => e == false).length.toString() : "-"} | ${per((x["endRoll"] ?? 61) - (x["startRoll"] ?? 1), x["leaveData"] != null && x["leaveData"][todayDate] != null ? x["leaveData"][todayDate].last?.values?.where((e) => e == false).length: null)}%"),
                                         ],
                                       ),
-                                     // global.padHeight(15),
+                                      global.padHeight(15),
+                                      global.textDoubleSpanWiget("Total Strength : ", x["endRoll"]!=null && x["startRoll"]!=null ? (x["endRoll"]-x["startRoll"]).toString() : "Not configured"),
                                       //global.textDoubleSpanWiget("Current on going class : ", "Not Implemented"),
                                       //global.padHeight(),
                                       //global.textDoubleSpanWiget("Class faculty : ", "null")
@@ -429,7 +437,7 @@ class classInfoUI extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              global.textWidgetWithHeavyFont("${x["year"]}  ${x["department"]}-${x["section"]}"),
+              global.textWidgetWithHeavyFont("${x["year"].toString().toUpperCase()}  ${x["department"].toString().toUpperCase()}-${x["section"].toString().toUpperCase()}"),
 
               SizedBox(height:40),
 
@@ -979,437 +987,445 @@ class _timeTableEditUiState extends State<timeTableEditUi> {
 
       body: Padding(
         padding: const EdgeInsets.all(18.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Wrap(
-              spacing: 5,
-              children: [
-                ChoiceChip(
-                  label: const Text("Create a new course data"),
-                  avatar: Icon(Icons.create),
-                  selected: false,
-                  onSelected: (bool val) {
-                    
-                    TextEditingController codeName = TextEditingController();
-                    TextEditingController fullName = TextEditingController();
-                    TextEditingController facultyName = TextEditingController();
-
-                    List facultyList = [];
-                    String chosenF = "no one";
-
-                    Future.delayed(Duration(), () async {
-                      var get = await global.collectionMap["acc"]!.where("isStudent", isEqualTo: false).where("phoneNo", isNotEqualTo: null).get();
-
-                      var l = [
-                        for(var x in get.docs)
-                          x.data()
-                      ];
-                      
-                      global.quickAlertGlobalVar(() {
-                        for(dynamic x in l) {
-                          if(x["phoneNo"] != null) {
-                            facultyList.add("${x["firstName"]} ${x["lastName"]}");
-                          }
-                        }
-                      });
-                    });
-
-                    global.alert.quickAlert(context, SizedBox(),bodyFn: () => Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-
-                        global.textWidget("Fill the following details"),
-                        SizedBox(height:20),
-
-                        global.textField("Subject Code Name", controller: codeName),
-
-                        SizedBox(height:10),
-
-                        global.textField("Subject Full Name", controller: fullName),
-
-                        SizedBox(height: 20),
-
-                        DropdownButton(
-                          items: [
-                            for(var x in [["No one", "no one"],["Custom name instead of choice", "cn"]])
-                              DropdownMenuItem(
-                                value : x[1],
-                                child: global.textWidget(x[0]),
-                              )
-                          ,
-                            for(var x in facultyList)
-                              DropdownMenuItem(
-                                value : x,
-                                child: global.textWidget(x)
-                              )
-                          ],
-                          onChanged: (val) {
-                            global.quickAlertGlobalVar(() => chosenF = val.toString());
-                          },
-                          value: chosenF,
-                          dropdownColor: Theme.of(context).buttonColor,
-                        ),
-
-                        SizedBox(height: 20),
-
-                        if(chosenF == "cn")
-                          global.textField("Faculty name", controller: facultyName)
-                      ],
-                    ),
-
-                      action: [
-                        FloatingActionButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-
-                            Future.delayed(Duration(), () async {
-                              String message = "Successfully added the course in the list";
-
-                              if(codeName.text == "" || fullName.text == "") {
-                                message = "Failed, field values was not properly filled!";
-                              } else {
-                                courseList.add({
-                                  "name" : "${codeName.text} - ${fullName.text}",
-                                  "code" : codeName.text,
-                                  "full" : fullName.text,
-                                  "faculty" : chosenF == "cn" ? facultyName.text : chosenF
-                                });
-                                data["course"] = courseList;
-
-                                var get = await global.Database!.update(global.collectionMap["classroom"]!, data["classCode"], data);
-
-                                if(get.status != db_fetch_status.success) {
-                                  message = "Error, ${get.data}";
-                                }
-                              }
-
-                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                content: Text(message),
-                              ));
-                              setState(() {});
-                            });
-                          },
-                          child: Text("Submit")
-                        )
-                      ]
-                    );
-                  },
-                ),
-
-                ChoiceChip(
-                  label: const Text("Change the timing"),
-                  avatar: Icon(Icons.timeline),
-                  selected: false,
-                  onSelected: (bool val) {
-
-                  },
-                ),
-              ],
-            ),
-
-
-            SizedBox(height: 20),
-            global.textWidget("Drag and drop the courses into specific day"),
-
-            SizedBox(height: 30),
-
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Wrap(
-                spacing: 15,
-                runSpacing: 15,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Wrap(
+                spacing: 5,
                 children: [
-                  global.textWidgetWithHeavyFont("COURSES   :"),
-
-                for(var x in courseList)
-                  Draggable(
-                    data: x,
-                    feedback: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.redAccent),
-                            borderRadius: BorderRadius.circular(10)
+                  ChoiceChip(
+                    label: const Text("Create a new course data"),
+                    avatar: Icon(Icons.create),
+                    selected: false,
+                    onSelected: (bool val) {
+                      
+                      TextEditingController codeName = TextEditingController();
+                      TextEditingController fullName = TextEditingController();
+                      TextEditingController facultyName = TextEditingController();
+        
+                      List facultyList = [];
+                      String chosenF = "no one";
+        
+                      Future.delayed(Duration(), () async {
+                        var get = await global.collectionMap["acc"]!.where("isStudent", isEqualTo: false).where("phoneNo", isNotEqualTo: null).get();
+        
+                        var l = [
+                          for(var x in get.docs)
+                            x.data()
+                        ];
+                        
+                        global.quickAlertGlobalVar(() {
+                          for(dynamic x in l) {
+                            if(x["phoneNo"] != null) {
+                              facultyList.add("${x["firstName"]} ${x["lastName"]}");
+                            }
+                          }
+                        });
+                      });
+        
+                      global.alert.quickAlert(context, SizedBox(),bodyFn: () => Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+        
+                          global.textWidget("Fill the following details"),
+                          SizedBox(height:20),
+        
+                          global.textField("Subject Code Name", controller: codeName),
+        
+                          SizedBox(height:10),
+        
+                          global.textField("Subject Full Name", controller: fullName),
+        
+                          SizedBox(height: 20),
+        
+                          DropdownButton(
+                            items: [
+                              for(var x in [["No one", "no one"],["Custom name instead of choice", "cn"]])
+                                DropdownMenuItem(
+                                  value : x[1],
+                                  child: global.textWidget(x[0]),
+                                )
+                            ,
+                              for(var x in facultyList)
+                                DropdownMenuItem(
+                                  value : x,
+                                  child: global.textWidget(x)
+                                )
+                            ],
+                            onChanged: (val) {
+                              global.quickAlertGlobalVar(() => chosenF = val.toString());
+                            },
+                            value: chosenF,
+                            dropdownColor: Theme.of(context).buttonColor,
                           ),
-                          //height: 35,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(x["name"], style: TextStyle(fontSize: 15,))
-                          )
-                        ),
-                      ],
-                    ),
-
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.lightBlue),
-                        borderRadius: BorderRadius.circular(10)
+        
+                          SizedBox(height: 20),
+        
+                          if(chosenF == "cn")
+                            global.textField("Faculty name", controller: facultyName)
+                        ],
                       ),
-                      height: 35,
-                      //width: 250,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: global.textWidget(x["name"]),
-                      )
-                    ),
-
+        
+                        action: [
+                          FloatingActionButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+        
+                              Future.delayed(Duration(), () async {
+                                String message = "Successfully added the course in the list";
+        
+                                if(codeName.text == "" || fullName.text == "") {
+                                  message = "Failed, field values was not properly filled!";
+                                } else {
+                                  courseList.add({
+                                    "name" : "${codeName.text} - ${fullName.text}",
+                                    "code" : codeName.text,
+                                    "full" : fullName.text,
+                                    "faculty" : chosenF == "cn" ? facultyName.text : chosenF
+                                  });
+                                  data["course"] = courseList;
+        
+                                  var get = await global.Database!.update(global.collectionMap["classroom"]!, data["classCode"], data);
+        
+                                  if(get.status != db_fetch_status.success) {
+                                    message = "Error, ${get.data}";
+                                  }
+                                }
+        
+                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                  content: Text(message),
+                                ));
+                                setState(() {});
+                              });
+                            },
+                            child: Text("Submit")
+                          )
+                        ]
+                      );
+                    },
                   ),
-
+        
+                  ChoiceChip(
+                    label: const Text("Change the timing"),
+                    avatar: Icon(Icons.timeline),
+                    selected: false,
+                    onSelected: (bool val) {
+        
+                    },
+                  ),
                 ],
               ),
-            ),
-
-
-            SizedBox(height: 30),
-
-            Flexible(
-              child : SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    for(var x in {"0": "Monday", "1": "Tuesday","2": "Wednessday", "3": "Thursday","4": "Friday", "5":"Saturday"}.entries)
-                      DragTarget(
-                        onAccept:(dynamic dataa) {
-                          List info = [
-                            dataa["name"],
-                            dataa["faculty"]
-                          ];
-
-                          if(timetable[x.key] != null && timetable[x.key].isNotEmpty) {
-                            timetable[x.key].add(info);
-                          } else {
-                            timetable[x.key] = [info];
-                          }
-
-                          setState(() {
-                            data["timeTable"] = jsonEncode(timetable);
+        
+        
+              SizedBox(height: 20),
+              global.textWidget("Drag and drop the courses into specific day"),
+        
+              SizedBox(height: 30),
+        
+              ConstrainedBox(
+                constraints: BoxConstraints.loose(Size(double.infinity, 200)),
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Wrap(
+                      spacing: 10,
+                      runSpacing: 10,
+                      children: [
+                        global.textWidgetWithHeavyFont("COURSES   :"),
+                        
+                      for(var x in courseList)
+                        Draggable(
+                          data: x,
+                          feedback: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.redAccent),
+                                  borderRadius: BorderRadius.circular(10)
+                                ),
+                                //height: 35,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(x["name"], style: TextStyle(fontSize: 15,))
+                                )
+                              ),
+                            ],
+                          ),
+                        
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.lightBlue),
+                              borderRadius: BorderRadius.circular(10)
+                            ),
+                            height: 35,
+                            //width: 250,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: global.textWidget(x["name"]),
+                            )
+                          ),
+                        
+                        ),
+                        
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+        
+        
+              SizedBox(height: 30),
+        
+              Flexible(
+                child : SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      for(var x in {"0": "Monday", "1": "Tuesday","2": "Wednessday", "3": "Thursday","4": "Friday", "5":"Saturday"}.entries)
+                        DragTarget(
+                          onAccept:(dynamic dataa) {
+                            List info = [
+                              dataa["name"],
+                              dataa["faculty"]
+                            ];
+        
+                            if(timetable[x.key] != null && timetable[x.key].isNotEmpty) {
+                              timetable[x.key].add(info);
+                            } else {
+                              timetable[x.key] = [info];
+                            }
+        
+                            setState(() {
+                              data["timeTable"] = jsonEncode(timetable);
+                            });
+                          },
+                          onWillAccept: (data) => true,
+                          builder: (BuildContext buildContext, List a, List b) => Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: ShaderMask(
+                              shaderCallback: (Rect rect) {
+                                return const LinearGradient(
+                                  begin: Alignment.centerLeft,
+                                  end: Alignment.centerRight,
+                                  colors: [
+                                    Colors.black,
+                                    Colors.transparent,
+                                    Colors.transparent,
+                                    Colors.black,
+                                  ],
+                                  stops: [0.0, 0.1, 0.9, 1.0],
+                                ).createShader(rect);
+                              },
+                              blendMode: BlendMode.dstOut,
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    global.textWidgetWithHeavyFont("${x.value} :"),
+                              
+                                    for(List y in timetable[x.key]??{} )
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            border: Border.all(color: Colors.cyanAccent),
+                                            borderRadius: BorderRadius.circular(10)
+                                          ),
+                              
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: global.textWidget(y[0]),
+                                              ),
+                              
+                                              IconButton(
+                                                onPressed: () {
+                                                  setState(() => timetable[x.key].remove(y));
+                                                  data["timeTable"] = jsonEncode(timetable);
+                                                },
+                                                icon: Icon(Icons.close, color: Theme.of(context).textSelectionTheme.selectionColor,),
+                                              )
+                              
+                                            ],
+                                          ),
+                                        ),
+                                      )
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
+        
+                      ,
+        
+                    SizedBox(height:40),
+        
+                    DragTarget(
+                        onAccept:(dataa) {
+                          debugPrint("Ok deleting the ${dataa.toString()}");
+                          courseList.remove(dataa);
+        
+                          Future.delayed(Duration(), () async {
+                            String message = "Successfully removed the course in the list";
+                              data["course"] = courseList;
+                              var get = await global.Database!.update(global.collectionMap["classroom"]!, data["classCode"], data);
+        
+                              if(get.status != db_fetch_status.success) {
+                                message = "Error, ${get.data}";
+                              }
+        
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(message),
+                            ));
+                            setState(() {});
                           });
+        
                         },
                         onWillAccept: (data) => true,
                         builder: (BuildContext buildContext, List a, List b) => Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: ShaderMask(
-                            shaderCallback: (Rect rect) {
-                              return const LinearGradient(
-                                begin: Alignment.centerLeft,
-                                end: Alignment.centerRight,
-                                colors: [
-                                  Colors.black,
-                                  Colors.transparent,
-                                  Colors.transparent,
-                                  Colors.black,
-                                ],
-                                stops: [0.0, 0.1, 0.9, 1.0],
-                              ).createShader(rect);
-                            },
-                            blendMode: BlendMode.dstOut,
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  global.textWidgetWithHeavyFont("${x.value} :"),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              global.textWidget("Remove The Course [Drag it here]"),
+                            ],
+                          ),
+                        ),
+                      ),
+        
+                      DragTarget(
+                        onAccept:(dynamic dataa) {
+                          TextEditingController codeName = TextEditingController(text: dataa["code"]);
+                          TextEditingController fullName = TextEditingController(text: dataa["full"]);
+                          TextEditingController facultyName = TextEditingController(text: dataa["faculty"]);
+        
+                          List facultyList = [];
+                          String chosenF = "no one";
+        
+                          Future.delayed(Duration(), () async {
+                            var get = await global.collectionMap["acc"]!.where("isStudent", isEqualTo: false).where("phoneNo", isNotEqualTo: null).get();
+        
+                            var l = [
+                              for(var x in get.docs)
+                                x.data()
+                            ];
                             
-                                  for(List y in timetable[x.key]??{} )
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          border: Border.all(color: Colors.cyanAccent),
-                                          borderRadius: BorderRadius.circular(10)
-                                        ),
-                            
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: global.textWidget(y[0]),
-                                            ),
-                            
-                                            IconButton(
-                                              onPressed: () {
-                                                setState(() => timetable[x.key].remove(y));
-                                                data["timeTable"] = jsonEncode(timetable);
-                                              },
-                                              icon: Icon(Icons.close, color: Theme.of(context).textSelectionTheme.selectionColor,),
-                                            )
-                            
-                                          ],
-                                        ),
-                                      ),
+                            global.quickAlertGlobalVar(() {
+                              for(dynamic x in l) {
+                                if(x["phoneNo"] != null) {
+                                  facultyList.add("${x["firstName"]} ${x["lastName"]}");
+                                }
+                              }
+        
+                            });
+                          });
+        
+                          global.alert.quickAlert(context, SizedBox(),bodyFn: () => Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+        
+                              global.textWidget("Fill the following details"),
+                              SizedBox(height:20),
+        
+                              global.textField("Subject Code Name", controller: codeName),
+        
+                              SizedBox(height:10),
+        
+                              global.textField("Subject Full Name", controller: fullName),
+        
+                              SizedBox(height: 20),
+        
+                              DropdownButton(
+                                items: [
+                                  for(var x in [["No one", "no one"],["Custom name instead of choice", "cn"]])
+                                    DropdownMenuItem(
+                                      value : x[1],
+                                      child: global.textWidget(x[0]),
+                                    )
+                                ,
+                                  for(var x in facultyList)
+                                    DropdownMenuItem(
+                                      value : x,
+                                      child: global.textWidget(x)
                                     )
                                 ],
+                                onChanged: (val) {
+                                  global.quickAlertGlobalVar(() => chosenF = val.toString());
+                                },
+                                value: chosenF,
+                                dropdownColor: Theme.of(context).buttonColor,
                               ),
-                            ),
+        
+                              SizedBox(height: 20),
+        
+                              if(chosenF == "cn")
+                                global.textField("Faculty name", controller: facultyName)
+                            ],
+                          ),
+        
+                            action: [
+                              FloatingActionButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+        
+                                  Future.delayed(Duration(), () async {
+                                    String message = "Successfully updated the course in the list";
+        
+                                    if(codeName.text == "" || fullName.text == "") {
+                                      message = "Failed, field values was not properly filled!";
+                                    } else {
+                                      courseList[courseList.indexOf(dataa)] =
+                                      {
+                                        "name" : "${codeName.text} - ${fullName.text}",
+                                        "code" : codeName.text,
+                                        "full" : fullName.text,
+                                        "faculty" : chosenF == "cn" ? facultyName.text : chosenF
+                                      };
+                                      data["course"] = courseList;
+        
+                                      var get = await global.Database!.update(global.collectionMap["classroom"]!, data["classCode"], data);
+        
+                                      if(get.status != db_fetch_status.success) {
+                                        message = "Error, ${get.data}";
+                                      }
+                                    }
+        
+                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                      content: Text(message),
+                                    ));
+                                    setState(() {});
+                                  });
+                                },
+                                child: Text("Update")
+                              )
+                            ]
+                          );
+                        },
+                        onWillAccept: (data) => true,
+                        builder: (BuildContext buildContext, List a, List b) => Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              global.textWidget("Update The Course data [Drag it here]"),
+                            ],
                           ),
                         ),
                       )
-
-                    ,
-
-                  SizedBox(height:40),
-
-                  DragTarget(
-                      onAccept:(dataa) {
-                        debugPrint("Ok deleting the ${dataa.toString()}");
-                        courseList.remove(dataa);
-
-                        Future.delayed(Duration(), () async {
-                          String message = "Successfully removed the course in the list";
-                            data["course"] = courseList;
-                            var get = await global.Database!.update(global.collectionMap["classroom"]!, data["classCode"], data);
-
-                            if(get.status != db_fetch_status.success) {
-                              message = "Error, ${get.data}";
-                            }
-
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text(message),
-                          ));
-                          setState(() {});
-                        });
-
-                      },
-                      onWillAccept: (data) => true,
-                      builder: (BuildContext buildContext, List a, List b) => Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            global.textWidget("Remove The Course [Drag it here]"),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                    DragTarget(
-                      onAccept:(dynamic dataa) {
-                        TextEditingController codeName = TextEditingController(text: dataa["code"]);
-                        TextEditingController fullName = TextEditingController(text: dataa["full"]);
-                        TextEditingController facultyName = TextEditingController(text: dataa["faculty"]);
-
-                        List facultyList = [];
-                        String chosenF = "no one";
-
-                        Future.delayed(Duration(), () async {
-                          var get = await global.collectionMap["acc"]!.where("isStudent", isEqualTo: false).where("phoneNo", isNotEqualTo: null).get();
-
-                          var l = [
-                            for(var x in get.docs)
-                              x.data()
-                          ];
-                          
-                          global.quickAlertGlobalVar(() {
-                            for(dynamic x in l) {
-                              if(x["phoneNo"] != null) {
-                                facultyList.add("${x["firstName"]} ${x["lastName"]}");
-                              }
-                            }
-
-                          });
-                        });
-
-                        global.alert.quickAlert(context, SizedBox(),bodyFn: () => Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-
-                            global.textWidget("Fill the following details"),
-                            SizedBox(height:20),
-
-                            global.textField("Subject Code Name", controller: codeName),
-
-                            SizedBox(height:10),
-
-                            global.textField("Subject Full Name", controller: fullName),
-
-                            SizedBox(height: 20),
-
-                            DropdownButton(
-                              items: [
-                                for(var x in [["No one", "no one"],["Custom name instead of choice", "cn"]])
-                                  DropdownMenuItem(
-                                    value : x[1],
-                                    child: global.textWidget(x[0]),
-                                  )
-                              ,
-                                for(var x in facultyList)
-                                  DropdownMenuItem(
-                                    value : x,
-                                    child: global.textWidget(x)
-                                  )
-                              ],
-                              onChanged: (val) {
-                                global.quickAlertGlobalVar(() => chosenF = val.toString());
-                              },
-                              value: chosenF,
-                              dropdownColor: Theme.of(context).buttonColor,
-                            ),
-
-                            SizedBox(height: 20),
-
-                            if(chosenF == "cn")
-                              global.textField("Faculty name", controller: facultyName)
-                          ],
-                        ),
-
-                          action: [
-                            FloatingActionButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-
-                                Future.delayed(Duration(), () async {
-                                  String message = "Successfully updated the course in the list";
-
-                                  if(codeName.text == "" || fullName.text == "") {
-                                    message = "Failed, field values was not properly filled!";
-                                  } else {
-                                    courseList[courseList.indexOf(dataa)] =
-                                    {
-                                      "name" : "${codeName.text} - ${fullName.text}",
-                                      "code" : codeName.text,
-                                      "full" : fullName.text,
-                                      "faculty" : chosenF == "cn" ? facultyName.text : chosenF
-                                    };
-                                    data["course"] = courseList;
-
-                                    var get = await global.Database!.update(global.collectionMap["classroom"]!, data["classCode"], data);
-
-                                    if(get.status != db_fetch_status.success) {
-                                      message = "Error, ${get.data}";
-                                    }
-                                  }
-
-                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                    content: Text(message),
-                                  ));
-                                  setState(() {});
-                                });
-                              },
-                              child: Text("Update")
-                            )
-                          ]
-                        );
-                      },
-                      onWillAccept: (data) => true,
-                      builder: (BuildContext buildContext, List a, List b) => Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            global.textWidget("Update The Course data [Drag it here]"),
-                          ],
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              )
-            )
-          ],
+                    ],
+                  ),
+                )
+              ),
+              SizedBox(height: 30)
+            ],
+          ),
         ),
       )
     );
