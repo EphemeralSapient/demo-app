@@ -69,6 +69,8 @@ class _classroomState extends State<classroom> {
       }
     }
 
+    var todayDate = DateFormat("dd-MM-yyyy").format(DateTime.now()).toString();
+
     return Scaffold(
       backgroundColor: Theme.of(context).buttonColor,
       body: global.accountType == 2 ?
@@ -378,14 +380,14 @@ class _classroomState extends State<classroom> {
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                         children: [
-                                          global.textDoubleSpanWiget("Absentees Count : ", "${x["absents"]} | null%"),
-                                          global.textDoubleSpanWiget("On Duty Count : ", "${x["onduty"]}"),
+                                          global.textDoubleSpanWiget("Absentees Count : ", "${x["leaveData"][todayDate] != null ? x["leaveData"][todayDate].where((e) => e == true).length : "Not checked"} "),
+                                          global.textDoubleSpanWiget("On Duty Count : ", "${x["leaveData"][todayDate] != null ? x["leaveData"][todayDate].where((e) => e == false).length : "Not checked"}}}"),
                                         ],
                                       ),
-                                      global.padHeight(15),
-                                      global.textDoubleSpanWiget("Current on going class : ", "null"),
-                                      global.padHeight(),
-                                      global.textDoubleSpanWiget("Class faculty : ", "null")
+                                     // global.padHeight(15),
+                                      //global.textDoubleSpanWiget("Current on going class : ", "Not Implemented"),
+                                      //global.padHeight(),
+                                      //global.textDoubleSpanWiget("Class faculty : ", "null")
                                     ],
                                   ),
                                 ),
