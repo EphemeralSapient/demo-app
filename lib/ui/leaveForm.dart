@@ -248,6 +248,7 @@ String leaveType = "sick";
                                     leaveType = val.toString();
                                   }),
                                   value: leaveType,
+                                  dropdownColor: Theme.of(context).buttonColor,
                                   items: [
                                     for(var x in {"sick" : [Colors.blue, "Sick Leave"], "duty" : [Colors.yellowAccent, "On Duty"], "what" : [Colors.amber, "????????????????"]}.entries)
                                       DropdownMenuItem(

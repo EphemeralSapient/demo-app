@@ -713,7 +713,7 @@ class _attendanceChecklistState extends State<attendanceChecklist> {
               bottomLeft: Radius.circular(35)),
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButton: (global.accountType == 3) ? FloatingActionButton.extended(
         onPressed: () async {
           Navigator.pop(context);
 
@@ -749,7 +749,7 @@ class _attendanceChecklistState extends State<attendanceChecklist> {
         },
         label: const Text("UPDATE", style: TextStyle(color: Colors.white),),
         icon: const Icon(CupertinoIcons.refresh_thick),
-      ),
+      ) : null,
 
       body: Padding(
         padding: const EdgeInsets.all(8.0),
