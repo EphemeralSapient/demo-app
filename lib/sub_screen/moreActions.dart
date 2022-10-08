@@ -15,10 +15,48 @@ class moreActionsShort extends StatelessWidget {
     // Admin tools 
     if(global.accountType == 3) {
 
+    childrens.add(
+      ElevatedButton.icon(
+        icon: Icon(Icons.text_snippet, color: Theme.of(context).textSelectionTheme.cursorColor,),
+        label: global.textWidget("Leave Application"),
+
+        onPressed: () {
+          debugPrint("Go to leave form page");
+          leaveFormPrompt(context);
+        },
+        style: ElevatedButton.styleFrom(
+              shadowColor: Colors.transparent,
+              primary: Colors.transparent,
+              surfaceTintColor: Colors.transparent,
+              onPrimary: Theme.of(context).buttonColor
+            )
+      )
+    );
+
 
     // Student tools
 
     } else if (global.accountType == 2) {
+
+
+    childrens.add(
+      ElevatedButton.icon(
+        icon: Icon(Icons.text_snippet, color: Theme.of(context).textSelectionTheme.cursorColor,),
+        label: global.textWidget("Leave Application"),
+
+        onPressed: () {
+          debugPrint("Go to leave form page");
+          leaveFormPrompt(context);
+        },
+        style: ElevatedButton.styleFrom(
+              shadowColor: Colors.transparent,
+              primary: Colors.transparent,
+              surfaceTintColor: Colors.transparent,
+              onPrimary: Theme.of(context).buttonColor
+            )
+      )
+    );
+
 
     childrens.add(
       ElevatedButton.icon(
@@ -43,24 +81,6 @@ class moreActionsShort extends StatelessWidget {
     // Common for all tools
 
     // --
-
-    childrens.add(
-      ElevatedButton.icon(
-        icon: Icon(Icons.text_snippet, color: Theme.of(context).textSelectionTheme.cursorColor,),
-        label: global.textWidget("Leave Application"),
-
-        onPressed: () {
-          debugPrint("Go to leave form page");
-          leaveFormPrompt(context);
-        },
-        style: ElevatedButton.styleFrom(
-              shadowColor: Colors.transparent,
-              primary: Colors.transparent,
-              surfaceTintColor: Colors.transparent,
-              onPrimary: Theme.of(context).buttonColor
-            )
-      )
-    );
 
     // Tool appending ended
 
@@ -119,7 +139,9 @@ class moreActionsShort extends StatelessWidget {
                 //padding: EdgeInsets.all(10),
                 child: Padding(
                   padding: EdgeInsets.all(10),
-                  child: Row(
+                  child: Wrap(
+                    runSpacing: 1,
+                    spacing: 5,
                     children: childrens,
                   ),
                 ),

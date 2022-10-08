@@ -183,6 +183,11 @@ class _viewLeaveStudentState extends State<viewLeaveStudent> {
                                             children: [
                                               global.textDoubleSpanWiget("Class Tutor : ", "${x["tutor"]["firstName"]} ${x["tutor"]["lastName"]}"),
                                               x["tutorApproval"] == "Not yet" ?
+                                                Icon(Icons.pending)
+                                              :
+                                                Icon(Icons.done_rounded,color: Colors.green,)
+                                              ,
+                                              x["tutorApproval"] == "Not yet" ?
                                                 global.textWidget("Not approved yet")
                                               :
                                                 global.textWidget(DateFormat("dd-MM-yyyy hh:mm").format(x["tutorApproval"].toDate()))
@@ -200,6 +205,11 @@ class _viewLeaveStudentState extends State<viewLeaveStudent> {
                                             children: [
                                               global.textDoubleSpanWiget("Class Advisor : ", "${x["classAdvisor"]["firstName"]} ${x["classAdvisor"]["lastName"]}"),
                                               x["classAdvisorApproval"] == "Not yet" ?
+                                                Icon(Icons.pending)
+                                              :
+                                                Icon(Icons.done_rounded,color: Colors.green,)
+                                              ,
+                                              x["classAdvisorApproval"] == "Not yet" ?
                                                 global.textWidget("Not approved yet")
                                               :
                                                 global.textWidget(DateFormat("dd-MM-yyyy hh:mm").format(x["classAdvisorApproval"].toDate()))
@@ -214,6 +224,11 @@ class _viewLeaveStudentState extends State<viewLeaveStudent> {
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
                                             global.textDoubleSpanWiget("Head of Department : ", "${x["hod"]["firstName"]} ${x["hod"]["lastName"]}"),
+                                            x["hodApproval"] == "Not yet" ?
+                                                Icon(Icons.pending)
+                                              :
+                                                Icon(Icons.done_rounded,color: Colors.green,)
+                                              ,
                                             x["hodApproval"] == "Not yet" ?
                                               global.textWidget("Not approved yet")
                                             :
@@ -371,6 +386,11 @@ class _viewLeaveStudentState extends State<viewLeaveStudent> {
                                             children: [
                                               global.textDoubleSpanWiget("Class Tutor : ", "${x["tutor"]["firstName"]} ${x["tutor"]["lastName"]}"),
                                               x["tutorApproval"] == "Not yet" ?
+                                                Icon(Icons.pending)
+                                              :
+                                                Icon(Icons.done_rounded,color: Colors.green,)
+                                              ,
+                                              x["tutorApproval"] == "Not yet" ?
                                                 global.textWidget("Not approved yet")
                                               :
                                                 global.textWidget(DateFormat("dd-MM-yyyy hh:mm").format(x["tutorApproval"].toDate()))
@@ -387,6 +407,11 @@ class _viewLeaveStudentState extends State<viewLeaveStudent> {
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
                                               global.textDoubleSpanWiget("Class Advisor : ", "${x["classAdvisor"]["firstName"]} ${x["classAdvisor"]["lastName"]}"),
+                                              x["classAdvisorApproval"] == "Not yet" ?
+                                                Icon(Icons.pending)
+                                              :
+                                                Icon(Icons.done_rounded,color: Colors.green,)
+                                              ,
                                               x["classAdvisorApproval"] == "Not yet" ?
                                                 global.textWidget("Not approved yet")
                                               :
@@ -405,9 +430,14 @@ class _viewLeaveStudentState extends State<viewLeaveStudent> {
                                             children: [
                                               global.textDoubleSpanWiget("Head of Department : ", "${x["hod"]["firstName"]} ${x["hod"]["lastName"]}"),
                                               x["hodApproval"] == "Not yet" ?
+                                                Icon(Icons.pending)
+                                              :
+                                                Icon(Icons.done_rounded,color: Colors.green,)
+                                              ,
+                                              x["hodApproval"] == "Not yet" ?
                                                 global.textWidget("Not approved yet")
                                               :
-                                                global.textWidget(DateFormat("dd-MM-yyyy hh:mm").format(x["hodApproval"].toDate()))
+                                                global.textWidget("${DateFormat("dd-MM-yyyy hh:mm").format(x["hodApproval"].toDate())}")
                                             ],
                                           ),
                                         ),
@@ -687,6 +717,11 @@ class _viewLeaveFacultyState extends State<viewLeaveFaculty> {
                                             children: [
                                               global.textDoubleSpanWiget("Class Tutor : ", "${x["tutor"]["firstName"]} ${x["tutor"]["lastName"]}"),
                                               x["tutorApproval"] == "Not yet" ?
+                                                Icon(Icons.pending)
+                                              :
+                                                Icon(Icons.done_rounded,color: Colors.green,)
+                                              ,
+                                              x["tutorApproval"] == "Not yet" ?
                                                 global.textWidget("Not approved yet")
                                               :
                                                 global.textWidget(DateFormat("dd-MM-yyyy hh:mm").format(x["tutorApproval"].toDate()))
@@ -704,6 +739,11 @@ class _viewLeaveFacultyState extends State<viewLeaveFaculty> {
                                             children: [
                                               global.textDoubleSpanWiget("Class Advisor : ", "${x["classAdvisor"]["firstName"]} ${x["classAdvisor"]["lastName"]}"),
                                               x["classAdvisorApproval"] == "Not yet" ?
+                                                Icon(Icons.pending)
+                                              :
+                                                Icon(Icons.done_rounded,color: Colors.green,)
+                                              ,
+                                              x["classAdvisorApproval"] == "Not yet" ?
                                                 global.textWidget("Not approved yet")
                                               :
                                                 global.textWidget(DateFormat("dd-MM-yyyy hh:mm").format(x["classAdvisorApproval"].toDate()))
@@ -720,6 +760,11 @@ class _viewLeaveFacultyState extends State<viewLeaveFaculty> {
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
                                               global.textDoubleSpanWiget("Head of Department : ", "${x["hod"]["firstName"]} ${x["hod"]["lastName"]}"),
+                                              x["hodApproval"] == "Not yet" ?
+                                                Icon(Icons.pending)
+                                              :
+                                                Icon(Icons.done_rounded,color: Colors.green,)
+                                              ,
                                               x["hodApproval"] == "Not yet" ?
                                                 global.textWidget("Not approved yet")
                                               :

@@ -227,7 +227,7 @@ Widget textWidget(String text) {
     text,
     style: TextStyle(
       color: Theme.of(rootCTX!).textSelectionTheme.selectionColor,
-      fontSize: 10
+      fontSize: 12
     ),
   );
 }

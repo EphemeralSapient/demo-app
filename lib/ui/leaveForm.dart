@@ -173,7 +173,7 @@ String hod = "No one";
                     "APPLY FOR NEW LEAVE",
                     style: TextStyle(
                         color: Theme.of(context).textSelectionTheme.cursorColor,
-                        fontSize: 16,
+                        fontSize: 12,
                         fontWeight: FontWeight.bold),
                   ),
                   InkWell(
@@ -278,7 +278,7 @@ String hod = "No one";
                           "TYPE",
                           style: TextStyle(
                               color: Theme.of(context).secondaryHeaderColor,
-                              fontSize: 16,
+                              fontSize: 12,
                               fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 10),
@@ -308,7 +308,8 @@ String hod = "No one";
                                     leaveType = val.toString();
                                   }),
                                   value: leaveType,
-                                  dropdownColor: Theme.of(context).buttonColor,
+                                  dropdownColor: Theme.of(context).buttonColor.withOpacity(0.9),
+                                  elevation: 0,
                                   items: [
                                     for(var x in {"sick" : [Colors.blue, "Sick Leave"], "duty" : [Colors.yellowAccent, "On Duty"], "what" : [Colors.amber, "Others"]}.entries)
                                       DropdownMenuItem(
@@ -329,7 +330,12 @@ String hod = "No one";
                                             Flexible(
                                               child: Padding(
                                                 padding: const EdgeInsets.all(5),
-                                                child: global.textWidget(x.value[1] as String),
+                                                child: Text(x.value[1] as String,
+                                                  style: TextStyle(
+                                                    color: Theme.of(context).textSelectionTheme.selectionColor,
+                                                    fontSize: 13
+                                                  ),
+                                                ),
                                               ),
                                             )
                                           ],
@@ -366,7 +372,7 @@ String hod = "No one";
                           "START DATE",
                           style: TextStyle(
                               color: Theme.of(context).secondaryHeaderColor,
-                              fontSize: 16,
+                              fontSize: 12,
                               fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 10),
@@ -394,6 +400,7 @@ String hod = "No one";
                                               DatePickerEntryMode.calendarOnly,
                                           mode: DateTimeFieldPickerMode.date,
                                           dateTextStyle: TextStyle(
+                                            fontSize: 12,
                                               fontWeight: FontWeight.bold,
                                               color: Theme.of(context)
                                                   .secondaryHeaderColor),
@@ -432,7 +439,7 @@ String hod = "No one";
                           "END DATE",
                           style: TextStyle(
                               color: Theme.of(context).secondaryHeaderColor,
-                              fontSize: 16,
+                              fontSize: 12,
                               fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 10),
@@ -460,6 +467,7 @@ String hod = "No one";
                                               DatePickerEntryMode.calendarOnly,
                                           mode: DateTimeFieldPickerMode.date,
                                           dateTextStyle: TextStyle(
+                                            fontSize: 12,
                                               fontWeight: FontWeight.bold,
                                               color: Theme.of(context)
                                                   .secondaryHeaderColor),
@@ -519,7 +527,7 @@ String hod = "No one";
                           "CLASS TUTOR",
                           style: TextStyle(
                               color: Theme.of(context).secondaryHeaderColor,
-                              fontSize: 16,
+                              fontSize: 12,
                               fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 10),
@@ -549,14 +557,20 @@ String hod = "No one";
                                     classTutor = val.toString();
                                   }),
                                   value: classTutor,
-                                  dropdownColor: Theme.of(context).buttonColor,
+                                  dropdownColor: Theme.of(context).buttonColor.withOpacity(0.9),
+                                  elevation: 0,
                                   items: [
                                     for(var x in facultyList.entries)
                                       DropdownMenuItem(
                                         value: x.key,
                                         child: Padding(
                                           padding: const EdgeInsets.all(15),
-                                          child: global.textWidget("${x.value["title"]?? ""} ${x.value["firstName"]} ${x.value["lastName"]}"),
+                                          child: Text("${x.value["title"]?? ""} ${x.value["firstName"]} ${x.value["lastName"]}",
+                                          style: TextStyle(
+                                                    color: Theme.of(context).textSelectionTheme.selectionColor,
+                                                    fontSize: 13
+                                                  ),
+                                          ),
                                         ),
                                       )
                                   ],
@@ -572,7 +586,7 @@ String hod = "No one";
                           "CLASS ADVISOR",
                           style: TextStyle(
                               color: Theme.of(context).secondaryHeaderColor,
-                              fontSize: 16,
+                              fontSize: 12,
                               fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 10),
@@ -602,14 +616,20 @@ String hod = "No one";
                                     classAdvisor = val.toString();
                                   }),
                                   value: classAdvisor,
-                                  dropdownColor: Theme.of(context).buttonColor,
+                                  dropdownColor: Theme.of(context).buttonColor.withOpacity(0.9),
+                                  elevation: 0,
                                   items: [
                                     for(var x in facultyList.entries)
                                       DropdownMenuItem(
                                         value: x.key,
                                         child: Padding(
                                           padding: const EdgeInsets.all(15),
-                                          child: global.textWidget("${x.value["title"]??""} ${x.value["firstName"]} ${x.value["lastName"]}"),
+                                          child: Text("${x.value["title"]??""} ${x.value["firstName"]} ${x.value["lastName"]}",
+                                            style: TextStyle(
+                                                    color: Theme.of(context).textSelectionTheme.selectionColor,
+                                                    fontSize: 13
+                                                  ),
+                                          ),
                                         ),
                                       )
                                   ],
@@ -625,7 +645,7 @@ String hod = "No one";
                           "HEAD OF DEPARTMENT",
                           style: TextStyle(
                               color: Theme.of(context).secondaryHeaderColor,
-                              fontSize: 16,
+                              fontSize: 12,
                               fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 10),
@@ -640,6 +660,7 @@ String hod = "No one";
                               Flexible(
                                 child: DropdownButton(
                                   isExpanded: true,
+                                  elevation: 0,
                                   isDense: false,
                                   underline: SizedBox(),
                                   icon: Padding(
@@ -655,14 +676,20 @@ String hod = "No one";
                                     hod = val.toString();
                                   }),
                                   value: hod,
-                                  dropdownColor: Theme.of(context).buttonColor,
+                                  focusColor: Colors.transparent,
+                                  dropdownColor: Theme.of(context).buttonColor.withOpacity(0.9),
                                   items: [
                                     for(var x in facultyList.entries)
                                       DropdownMenuItem(
                                         value: x.key,
                                         child: Padding(
                                           padding: const EdgeInsets.all(15),
-                                          child: global.textWidget("${x.value["title"]??""} ${x.value["firstName"]} ${x.value["lastName"]}"),
+                                          child: Text("${x.value["title"]??""} ${x.value["firstName"]} ${x.value["lastName"]}",
+                                            style: TextStyle(
+                                                    color: Theme.of(context).textSelectionTheme.selectionColor,
+                                                    fontSize: 13
+                                                  ),
+                                          ),
                                         ),
                                       )
                                   ],
@@ -699,7 +726,7 @@ String hod = "No one";
                           "REASON",
                           style: TextStyle(
                               color: Theme.of(context).secondaryHeaderColor,
-                              fontSize: 16,
+                              fontSize: 12,
                               fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 10),
