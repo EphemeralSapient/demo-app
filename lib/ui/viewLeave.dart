@@ -459,8 +459,9 @@ class _viewLeaveFacultyState extends State<viewLeaveFaculty> {
         }
       }
 
-      get = await global.Database!.addCollection("leaveForms", "/leaveForms").where("initPerson", isEqualTo: global.loggedUID!).get();
+      get = await global.Database!.addCollection("leaveForms", "/leaveForms").get();
       for(var x in get.docs) {
+        debugPrint(x.data().toString());
         var getData = x.data() as Map;
         bool canAdd = false;
         var selfId = global.loggedUID;
