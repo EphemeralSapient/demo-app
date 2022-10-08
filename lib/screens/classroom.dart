@@ -823,7 +823,7 @@ class _attendanceChecklistState extends State<attendanceChecklist> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        for(var x in [[Icons.warning, "Class information is not defined properly [such as starting/end roll no]; Advised to update classroom info.", data["lastUpdate"] == null],[Icons.info, "Attendance has been checked by ${data["leaveData"][chosenDateStr].isNotEmpty ? data["leaveData"][chosenDateStr].last["checkBy"] : "null"}", data["leaveData"][chosenDateStr].last["checkBy"] != null]]..iterator)
+                        for(var x in [[Icons.warning, "Class information is not defined properly [such as starting/end roll no]; Advised to update classroom info.", data["startRoll"] == null || data["endRoll"] == null],[Icons.info, "Attendance has been checked by ${data["leaveData"][chosenDateStr].isNotEmpty ? data["leaveData"][chosenDateStr].last["checkBy"] : "null"}", data["leaveData"][chosenDateStr].last["checkBy"] != null]]..iterator)
                           if(x[2] == true)
                             Padding(
                               padding: const EdgeInsets.all(8.0),

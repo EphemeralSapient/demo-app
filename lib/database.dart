@@ -198,4 +198,17 @@ class db {
     }
   }
   
+  Future<db_fetch_return> remove(CollectionReference<Object?> collection, String id) async {
+     try {
+       
+       await collection.doc(id).delete();
+       return db_fetch_return(db_fetch_status.success, null);
+
+    } catch(e) {
+
+      // Error occurred [network issue]
+      debugPrint("Error on processing $id document ${e.toString()}");
+      return db_fetch_return(db_fetch_status.error,e.toString());
+    }
+  }
 }

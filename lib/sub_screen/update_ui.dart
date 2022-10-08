@@ -47,12 +47,12 @@ class _update_uiState extends State<update_ui> {
   bool trigger = false;
   @override
   Widget build(BuildContext context) {
-    if(currentEvent!=null && (currentEvent?.status != OtaStatus.DOWNLOADING || currentEvent?.status != OtaStatus.INSTALLING)){
+    if(currentEvent!=null && (currentEvent?.status != OtaStatus.DOWNLOADING && currentEvent?.status != OtaStatus.INSTALLING)){
       trigger = true;
       Future.delayed( const Duration(seconds: 5) ,() { Navigator.pop(context); });
     }
     return WillPopScope(
-      onWillPop: () async => false,
+      onWillPop: () async => currentEvent?.status == OtaStatus.INSTALLING ? true : false,
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: Center(

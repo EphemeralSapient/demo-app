@@ -67,6 +67,7 @@ class _uiState extends State<ui> {
         body: Stack(
           children: [bg(), TransformerPageView(
             scrollDirection: Axis.vertical,
+            physics: global.uiSecondaryScrollPhysics,
             controller: _page,
             itemCount: 2,
             transformer: ZoomOutWithoutOpacPageTransformer(),

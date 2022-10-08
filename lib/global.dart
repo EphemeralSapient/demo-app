@@ -91,17 +91,22 @@ PageController? pageControl;
 IndexController? uiPageControl;
 dynamic temp;
 dynamic quickAlertGlobalVar;
+dynamic uiSecondaryScrollPhysics = const NeverScrollableScrollPhysics();
 dynamic restartApp;
 Widget? uiSecondaryWidgetFn;
 Color uiBackgroundColor = Colors.lightBlueAccent;
 
 void switchToSecondaryUi(Widget w) {
   uiSecondaryWidgetFn = w;
+  uiSecondaryScrollPhysics = null;
+  if(bgRefresh != null) bgRefresh!();
   uiPageControl!.move(1);
       //duration: const Duration(seconds: 1), curve: Curves.easeOutExpo);
 }
 
 void switchToPrimaryUi() {
+  uiSecondaryScrollPhysics = const NeverScrollableScrollPhysics();
+  if(bgRefresh != null) bgRefresh!();
   uiPageControl!.move(0);
       //duration: const Duration(seconds: 1), curve: Curves.easeInExpo);
   //SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);

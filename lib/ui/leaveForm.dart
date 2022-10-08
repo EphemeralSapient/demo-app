@@ -1,9 +1,13 @@
 import 'dart:ui';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:ngp/database.dart';
 import 'package:ngp/global.dart' as global;
 import 'package:flutter/material.dart';
 import 'package:date_field/date_field.dart';
 import 'package:flutter/widgets.dart';
+import 'package:ngp/ui/viewLeave.dart';
+import 'package:intl/intl.dart';
 
 void leaveFormPrompt(BuildContext buildContext) {
   showModalBottomSheet(
@@ -55,7 +59,9 @@ void leaveFormPrompt(BuildContext buildContext) {
                           ),
                         ),
                         onTap: () {
-                          debugPrint("paging to View Leave Applicaitons");
+                          promptViewLeaveForms();
+                          Navigator.of(buildContext).pop();
+                          debugPrint("Prompt view leave form pages");
                         },
                       ),
                       global.accountType == 2
@@ -100,15 +106,33 @@ class _leaveFormApplyState extends State<leaveFormApply> {
 
   final myController = TextEditingController();
 
+  Map facultyList = {};
+
+  @override
+  void initState() {
+    super.initState();
+    facultyList["No one"] = {"firstName" : "No", "lastName" : "one"};
+    Future.delayed(Duration(), () async {
+      var get = await global.collectionMap["acc"]!.where("isStudent", isEqualTo: false).where("phoneNo", isNotEqualTo: null).get();
+      for(var x in get.docs) {
+        if((x.data() as Map)["phoneNo"] != null) {
+          facultyList[x.reference.id] = x.data();
+        }
+      }
+      setState(() {});
+    });
+  }
+
   @override
   void dispose() {
-    // Clean up the controller when the widget is removed from the
-    // widget tree.
     myController.dispose();
     super.dispose();
   }
   
 String leaveType = "sick";
+String classTutor = "No one";
+String classAdvisor = "No one";
+String hod = "No one";
 
   @override
   Widget build(BuildContext context) {
@@ -152,8 +176,8 @@ String leaveType = "sick";
                   ),
                   InkWell(
                     onTap: () {
-                      if(myController.text == ""){
-                        global.alert.quickAlert(context, global.textWidget("Please fill the reason field"));
+                      if(myController.text == "" || classAdvisor == "No one" || classTutor == "No one" || hod == "No one"){
+                        global.alert.quickAlert(context, global.textWidget("Please fill the reason and faculty field properly"));
                       } else {
                         global.alert.quickAlert(
                           context,
@@ -174,7 +198,41 @@ String leaveType = "sick";
                           action: [
                             FloatingActionButton(
                               mini: true,
-                              onPressed: () {Navigator.of(context).pop(); global.switchToPrimaryUi(); },
+                              onPressed: () {
+
+                                Future.delayed(Duration(), () async {
+                                  var create = await global.Database!.create(global.Database!.addCollection("leaveForms", "/leaveForms"), DateFormat("dd-MM-yyyy hh:mm:ss:ms").format(DateTime.now()).toString(), {
+                                    "regNo" : global.accObj!.registerNum.toString(),
+                                    "rollNo" : global.accObj!.rollNo.toString(),
+                                    "department" : global.accObj!.department.toString(),
+                                    "section" : global.accObj!.section.toString(),
+                                    "year" : global.accObj!.year.toString(),
+                                    "name" : "${global.accObj!.firstName} ${global.accObj!.lastName}",
+                                    "initPerson" : global.loggedUID,
+                                    "startDate" : Timestamp.fromDate(startDate),
+                                    "endDate" : Timestamp.fromDate(endDate),
+                                    "reason" : myController.text,
+                                    "type" : leaveType,
+                                    "tutor" : classTutor,
+                                    "classAdvisor" : classAdvisor,
+                                    "hod" : hod,
+                                    "tutorApproval" : "Not yet",
+                                    "classAdvisorApproval" : "Not yet",
+                                    "hodApproval" : "Not yet",
+                                  });
+                                  var result = "Successfully created a new leave form";
+                                  if(create.status == db_fetch_status.success) {
+                                    debugPrint("oki");
+                                  } else {
+                                    result = "Failed to create, ${create.data.toString()}";
+                                  }
+
+                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(result)));
+                                });
+
+                                Navigator.of(context).pop();
+                                global.switchToPrimaryUi();
+                              },
                               child: Text("Yes")
                             ),
                             FloatingActionButton(
@@ -250,7 +308,7 @@ String leaveType = "sick";
                                   value: leaveType,
                                   dropdownColor: Theme.of(context).buttonColor,
                                   items: [
-                                    for(var x in {"sick" : [Colors.blue, "Sick Leave"], "duty" : [Colors.yellowAccent, "On Duty"], "what" : [Colors.amber, "????????????????"]}.entries)
+                                    for(var x in {"sick" : [Colors.blue, "Sick Leave"], "duty" : [Colors.yellowAccent, "On Duty"], "what" : [Colors.amber, "Others"]}.entries)
                                       DropdownMenuItem(
                                         value: x.key,
                                         child: Row(
@@ -437,6 +495,186 @@ String leaveType = "sick";
                   ),
                 ),
               ),
+
+              SizedBox(height:10),
+
+               Card(
+                color: Theme.of(context).backgroundColor.withOpacity(1),
+                shadowColor: Colors.black,
+                surfaceTintColor: Colors.white,
+                elevation: 20,
+                child: SizedBox(
+                  height: 370,
+                  width: double.infinity,
+                  child: Padding(
+                    padding: const EdgeInsets.all(30.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "CLASS TUTOR",
+                          style: TextStyle(
+                              color: Theme.of(context).secondaryHeaderColor,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 10),
+
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(width: 0.5, color: Theme.of(context).secondaryHeaderColor),
+                            borderRadius: BorderRadius.circular(10)
+                          ),
+                          child: Row(
+                            children: [
+                              Flexible(
+                                child: DropdownButton(
+                                  isExpanded: true,
+                                  isDense: false,
+                                  underline: SizedBox(),
+                                  icon: Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: Icon(
+                                        CupertinoIcons.arrowtriangle_down,
+                                        size: 17,
+                                        color:
+                                            Theme.of(context).secondaryHeaderColor,
+                                      ),
+                                    ),
+                                  onChanged: (val) => setState(() {
+                                    classTutor = val.toString();
+                                  }),
+                                  value: classTutor,
+                                  dropdownColor: Theme.of(context).buttonColor,
+                                  items: [
+                                    for(var x in facultyList.entries)
+                                      DropdownMenuItem(
+                                        value: x.key,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(15),
+                                          child: global.textWidget("${x.value["firstName"]} ${x.value["lastName"]}"),
+                                        ),
+                                      )
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        SizedBox(height: 30),
+
+                        Text(
+                          "CLASS ADVISOR",
+                          style: TextStyle(
+                              color: Theme.of(context).secondaryHeaderColor,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 10),
+
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(width: 0.5, color: Theme.of(context).secondaryHeaderColor),
+                            borderRadius: BorderRadius.circular(10)
+                          ),
+                          child: Row(
+                            children: [
+                              Flexible(
+                                child: DropdownButton(
+                                  isExpanded: true,
+                                  isDense: false,
+                                  underline: SizedBox(),
+                                  icon: Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: Icon(
+                                        CupertinoIcons.arrowtriangle_down,
+                                        size: 17,
+                                        color:
+                                            Theme.of(context).secondaryHeaderColor,
+                                      ),
+                                    ),
+                                  onChanged: (val) => setState(() {
+                                    classAdvisor = val.toString();
+                                  }),
+                                  value: classAdvisor,
+                                  dropdownColor: Theme.of(context).buttonColor,
+                                  items: [
+                                    for(var x in facultyList.entries)
+                                      DropdownMenuItem(
+                                        value: x.key,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(15),
+                                          child: global.textWidget("${x.value["firstName"]} ${x.value["lastName"]}"),
+                                        ),
+                                      )
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        SizedBox(height: 30),
+
+                        Text(
+                          "HEAD OF DEPARTMENT",
+                          style: TextStyle(
+                              color: Theme.of(context).secondaryHeaderColor,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 10),
+
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(width: 0.5, color: Theme.of(context).secondaryHeaderColor),
+                            borderRadius: BorderRadius.circular(10)
+                          ),
+                          child: Row(
+                            children: [
+                              Flexible(
+                                child: DropdownButton(
+                                  isExpanded: true,
+                                  isDense: false,
+                                  underline: SizedBox(),
+                                  icon: Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: Icon(
+                                        CupertinoIcons.arrowtriangle_down,
+                                        size: 17,
+                                        color:
+                                            Theme.of(context).secondaryHeaderColor,
+                                      ),
+                                    ),
+                                  onChanged: (val) => setState(() {
+                                    hod = val.toString();
+                                  }),
+                                  value: hod,
+                                  dropdownColor: Theme.of(context).buttonColor,
+                                  items: [
+                                    for(var x in facultyList.entries)
+                                      DropdownMenuItem(
+                                        value: x.key,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(15),
+                                          child: global.textWidget("${x.value["firstName"]} ${x.value["lastName"]}"),
+                                        ),
+                                      )
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+
               
               const SizedBox(height: 10,),
       
