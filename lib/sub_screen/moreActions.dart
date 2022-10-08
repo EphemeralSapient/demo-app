@@ -13,8 +13,8 @@ class moreActionsShort extends StatelessWidget {
     List<Widget> childrens = [];
 
     // Admin tools 
-    if(global.accountType == 3) {
-
+    if(global.accountType == 1) {
+    
     childrens.add(
       ElevatedButton.icon(
         icon: Icon(Icons.text_snippet, color: Theme.of(context).textSelectionTheme.cursorColor,),
@@ -32,7 +32,6 @@ class moreActionsShort extends StatelessWidget {
             )
       )
     );
-
 
     // Student tools
 
@@ -72,7 +71,6 @@ class moreActionsShort extends StatelessWidget {
             )
       )
     );
-    // Guest tools
 
     } else {
 
