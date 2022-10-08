@@ -18,7 +18,7 @@ class assignmentUi extends StatelessWidget {
         child: Center(
           child: Text(
             "No pending assignments!",
-            style: TextStyle(color: Theme.of(context).textSelectionTheme.selectionColor),  
+            style: TextStyle(color: Theme.of(context).textSelectionTheme.selectionColor, fontSize: 10),  
           ),
         ),
       ));
@@ -44,7 +44,7 @@ class assignmentUi extends StatelessWidget {
               children: [
                 Text(
                   "ASSIGNMENTS ",
-                  style: TextStyle(color: Theme.of(context).textSelectionTheme.selectionColor, fontWeight: FontWeight.w500, letterSpacing: 2, fontFamily: "Montserrat", fontSize: 17),
+                  style: TextStyle(color: Theme.of(context).textSelectionTheme.selectionColor, fontWeight: FontWeight.w500, letterSpacing: 2, fontFamily: "Montserrat", fontSize: 12),
                 ),
 
                 Icon(Icons.arrow_forward_ios_outlined,color: Theme.of(context).textSelectionTheme.cursorColor,size: 12)

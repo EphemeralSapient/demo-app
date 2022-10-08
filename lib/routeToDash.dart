@@ -119,11 +119,11 @@ class _dashboardState extends State<dashboard> {
   @override
   Widget build(context) {
     List<Icon> items = [
-      Icon(Icons.dashboard, size: 30, color: Theme.of(context).shadowColor),
-      Icon(Icons.class_rounded, size: 30,color: Theme.of(context).shadowColor),
-      Icon(Icons.search, size: 30,color: Theme.of(context).shadowColor),
-      Icon(Icons.settings, size: 30, color: Theme.of(context).shadowColor),
-      Icon(Icons.person,size: 30, color: Theme.of(context).shadowColor),
+      Icon(Icons.dashboard, size: 23, color: Theme.of(context).shadowColor),
+      Icon(Icons.class_rounded, size: 23,color: Theme.of(context).shadowColor),
+      Icon(Icons.search, size: 23,color: Theme.of(context).shadowColor),
+      Icon(Icons.settings, size: 23, color: Theme.of(context).shadowColor),
+      Icon(Icons.person,size: 23, color: Theme.of(context).shadowColor),
     ];
     debugPrint("Building route for nagivation [routeToDash]");
 

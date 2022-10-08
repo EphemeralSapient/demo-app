@@ -14,7 +14,7 @@ class notifyUi extends StatelessWidget {
 
     if(global.notificationCount == 0) {
       childrens.add(ListTile(
-        title: Text("No new notifications!", style: TextStyle(color: Theme.of(context).textSelectionTheme.selectionColor))
+        title: Text("No new notifications!", style: TextStyle(color: Theme.of(context).textSelectionTheme.selectionColor, fontSize: 12))
       ));
     } else {
       debugPrint("HOW?");
@@ -24,12 +24,12 @@ class notifyUi extends StatelessWidget {
       borderRadius: BorderRadius.circular(20),
       clipBehavior: Clip.hardEdge,
       child: ExpansionTile(
-        leading: const Icon(FontAwesomeIcons.message),
+        leading: const Icon(FontAwesomeIcons.message,),
         backgroundColor: Theme.of(context).buttonColor,
         collapsedBackgroundColor: Theme.of(context).buttonColor.withOpacity(0.3),
         collapsedTextColor: Theme.of(context).textSelectionTheme.selectionColor,
         collapsedIconColor: Theme.of(context).textSelectionTheme.cursorColor,
-        title: const Text("Notifications"),
+        title: const Text("Notifications", style: TextStyle(fontSize: 12),),
 
         children: childrens,
       ),

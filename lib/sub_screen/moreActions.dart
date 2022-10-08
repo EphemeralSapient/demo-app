@@ -82,7 +82,7 @@ class moreActionsShort extends StatelessWidget {
               children: [
                 Text(
                   "ACTIONS ",
-                  style: TextStyle(color: Theme.of(context).textSelectionTheme.selectionColor, fontWeight: FontWeight.w500, letterSpacing: 2, fontFamily: "Montserrat", fontSize: 17),
+                  style: TextStyle(color: Theme.of(context).textSelectionTheme.selectionColor, fontWeight: FontWeight.w500, letterSpacing: 2, fontFamily: "Montserrat", fontSize: 12),
                 ),
 
                 Icon(Icons.arrow_forward_ios_outlined,color: Theme.of(context).textSelectionTheme.cursorColor,size: 12)

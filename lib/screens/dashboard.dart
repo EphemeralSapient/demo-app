@@ -57,8 +57,8 @@ class _dashState extends State<dash> {
                             color: Colors.red,
                           ),
                         ),
-                        width: 50,
-                        height: 50,
+                        width: 45,
+                        height: 45,
                         child: ClipOval(
                           child: global.account?.isAnonymous != true
                               ? FadeInImage.assetNetwork(placeholder: "asset/images/loading.gif", image: global.account!.photoURL!)
@@ -73,6 +73,7 @@ class _dashState extends State<dash> {
                             TextSpan(
                                 text: "Welcome, ",
                                 style: TextStyle(
+                                  fontSize: 11,
                                     color: Theme.of(context)
                                         .textSelectionTheme
                                         .selectionHandleColor,
@@ -84,6 +85,7 @@ class _dashState extends State<dash> {
                                       ? "${global.accObj!.title ?? ""} ${global.accObj!.firstName} ${global.accObj!.lastName}"
                                       : "${global.account!.displayName}!",
                                 style: TextStyle(
+                                  fontSize: 12,
                                     color: Theme.of(context)
                                         .textSelectionTheme
                                         .cursorColor,

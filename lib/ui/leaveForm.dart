@@ -53,6 +53,7 @@ void leaveFormPrompt(BuildContext buildContext) {
                         title: Text(
                           "View the leave applications",
                           style: TextStyle(
+                            fontSize: 12,
                             color: Theme.of(buildContext)
                                 .textSelectionTheme
                                 .cursorColor,
@@ -73,6 +74,7 @@ void leaveFormPrompt(BuildContext buildContext) {
                               title: Text(
                                 "Apply for new leave application",
                                 style: TextStyle(
+                                  fontSize: 12,
                                   color: Theme.of(buildContext)
                                       .textSelectionTheme
                                       .cursorColor,

@@ -18,7 +18,8 @@ class eventsUi extends StatelessWidget {
         child: Center(
           child: Text(
             "Currently there are no events available at the moment.",
-            style: TextStyle(color: Theme.of(context).textSelectionTheme.selectionColor),  
+            style: TextStyle(color: Theme.of(context).textSelectionTheme.selectionColor, fontSize: 11),
+              
           ),
         ),
       ));
@@ -44,7 +45,7 @@ class eventsUi extends StatelessWidget {
               children: [
                 Text(
                   "EVENTS ",
-                  style: TextStyle(color: Theme.of(context).textSelectionTheme.selectionColor, fontWeight: FontWeight.w500, letterSpacing: 2, fontFamily: "Montserrat", fontSize: 17),
+                  style: TextStyle(color: Theme.of(context).textSelectionTheme.selectionColor, fontWeight: FontWeight.w500, letterSpacing: 2, fontFamily: "Montserrat", fontSize: 12),
                 ),
 
                 Icon(Icons.arrow_forward_ios_outlined,color: Theme.of(context).textSelectionTheme.cursorColor,size: 12)

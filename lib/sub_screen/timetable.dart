@@ -140,11 +140,12 @@ Widget createTTSWidget(int index) {
       child: Padding(
         padding: const EdgeInsets.only(bottom: 10, top: 5),
         child: SizedBox.fromSize(
-          size: Size(double.infinity, 150),
+          size: Size(double.infinity, 70),
           child: Stack(
             children: [
               Text("Current on-going class : ",
                   style: TextStyle(
+                      fontSize: 11,
                       color: Theme.of(context)
                           .textSelectionTheme
                           .selectionHandleColor)),
@@ -158,7 +159,7 @@ Widget createTTSWidget(int index) {
                           color: Theme.of(context)
                               .textSelectionTheme
                               .selectionColor,
-                          fontSize: 25,
+                          fontSize: 15,
                           fontWeight: FontWeight.bold,
                           fontFamily: "Raleway"),
                       pauseAfterRound: Duration(seconds: 8),
@@ -167,6 +168,7 @@ Widget createTTSWidget(int index) {
                   alignment: Alignment.bottomLeft,
                   child: Text(startTime[index],
                       style: TextStyle(
+                        fontSize: 11,
                           color: Theme.of(context)
                               .textSelectionTheme
                               .selectionHandleColor))),
@@ -174,6 +176,7 @@ Widget createTTSWidget(int index) {
                   alignment: Alignment.bottomRight,
                   child: Text(endTime[index],
                       style: TextStyle(
+                        fontSize: 11,
                           color: Theme.of(context)
                               .textSelectionTheme
                               .selectionHandleColor)))

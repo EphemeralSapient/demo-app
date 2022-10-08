@@ -183,6 +183,7 @@ Widget textField(String labelName,{int? maxLength,TextInputType? keyboardType,Li
         inputFormatters: inputFormats,
 
         style: TextStyle(
+          fontSize: 13,
             color: Theme.of(context).textSelectionTheme.selectionColor),
         decoration: InputDecoration(
           labelText: labelName,
@@ -208,10 +209,13 @@ Widget textField(String labelName,{int? maxLength,TextInputType? keyboardType,Li
           hoverColor: Theme.of(context).textSelectionTheme.selectionHandleColor,
           
           prefixStyle: TextStyle(
+            fontSize: 12,
               color: Theme.of(context).textSelectionTheme.selectionHandleColor),
           labelStyle: TextStyle(
+            fontSize: 12,
               color: Theme.of(context).textSelectionTheme.selectionHandleColor),
           counterStyle: TextStyle(
+            fontSize: 12,
               color: Theme.of(context).textSelectionTheme.cursorColor),
           floatingLabelStyle: const TextStyle(color: Colors.lightBlue),
         )),
@@ -223,6 +227,7 @@ Widget textWidget(String text) {
     text,
     style: TextStyle(
       color: Theme.of(rootCTX!).textSelectionTheme.selectionColor,
+      fontSize: 10
     ),
   );
 }
@@ -234,6 +239,7 @@ Widget textDoubleSpanWiget(String a, String b) {
         TextSpan(
           text: a, 
           style: TextStyle(
+            fontSize: 12,
             color: Theme.of(rootCTX!).textSelectionTheme.cursorColor,
             fontWeight: FontWeight.bold
           )
@@ -241,6 +247,7 @@ Widget textDoubleSpanWiget(String a, String b) {
         TextSpan(
           text: b,
           style: TextStyle(
+            fontSize: 12,
             color: Theme.of(rootCTX!).textSelectionTheme.selectionColor,
           ),
         )
@@ -254,7 +261,7 @@ Widget textWidgetWithHeavyFont(String text) {
     text,
     style: TextStyle(
         color: Theme.of(rootCTX!).textSelectionTheme.selectionColor,
-        fontSize: 20),
+        fontSize: 17),
   );
 }
 
@@ -262,6 +269,7 @@ Widget textWidgetWithBool(String text, bool enable) {
   return Text(
     text,
     style: TextStyle(
+      fontSize: 13,
         color: (enable == true)
             ? Theme.of(rootCTX!).textSelectionTheme.cursorColor
             : Theme.of(rootCTX!).textSelectionTheme.selectionColor),

@@ -53,8 +53,8 @@ class _settingsState extends State<settings> {
         },
 
         elevation: 10,
-        icon: Icon(Icons.new_releases),
-        label: Text("Update the app"),
+        icon: Icon(Icons.new_releases, size: 20,),
+        label: Text("Update the app", style: TextStyle(fontSize: 11),),
       ),
       backgroundColor: Theme.of(context).buttonColor,
       body: ListView(
@@ -172,7 +172,7 @@ class _settingsState extends State<settings> {
                         style: TextStyle(
                           color: Theme.of(context).textSelectionTheme.selectionHandleColor,
                           fontFamily: "Montserrat",
-                          fontSize: 16
+                          fontSize: 12
                         ),
                       ),
 
@@ -197,7 +197,7 @@ class _settingsState extends State<settings> {
                 ElevatedButton.styleFrom(primary: Theme.of(context).buttonColor, shadowColor: Colors.transparent),
             child: Text("Change your ${global.accountType == 2 ? "Student" : "Faculty"} information data",
                 style: TextStyle(
-                    fontSize: 18,
+                    fontSize: 12,
                     color: Theme.of(context).textSelectionTheme.selectionColor
               )
             ),
@@ -213,7 +213,7 @@ class _settingsState extends State<settings> {
                 ElevatedButton.styleFrom(primary: Theme.of(context).buttonColor, shadowColor: Colors.transparent),
             child: Text("Sign out",
                 style: TextStyle(
-                    fontSize: 30,
+                    fontSize: 20,
                     color: Theme.of(context).textSelectionTheme.selectionColor
               )
             ),

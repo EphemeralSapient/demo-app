@@ -71,13 +71,17 @@ class _toggleState extends State<toggle> {
               style: TextStyle(
                 color: Theme.of(context).textSelectionTheme.selectionHandleColor,
                 fontFamily: "Montserrat",
-                fontSize: 16
+                fontSize: 12
               ),
             )),
             FlutterSwitch(
               value: enable ?? false,
               activeText: activeString??"On",
               inactiveText: inactiveString??"Off",
+              width: 60,
+              height: 35,
+              valueFontSize: 10,
+              toggleSize: 18,
               showOnOff: true,
               padding: 10,
               onToggle: (val) {
@@ -142,12 +146,16 @@ class _toggleButtonState extends State<toggleButton> {
               style: TextStyle(
                 color: Theme.of(context).textSelectionTheme.selectionHandleColor,
                 fontFamily: "Montserrat",
-                fontSize: 16
+                fontSize: 12
               ),
             )),
             FlutterSwitch(
               value: status,
               activeText: activeString??"On",
+              width: 60,
+              height: 35,
+              valueFontSize: 10,
+              toggleSize: 18,
               inactiveText: inactiveString??"Off",
               showOnOff: true,
               padding: 10,

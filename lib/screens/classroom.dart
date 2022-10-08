@@ -100,7 +100,7 @@ class _classroomState extends State<classroom> {
                     child: Text("         ${global.accObj!.year!.toUpperCase()}   ${global.accObj!.department!.toUpperCase()}-${global.accObj!.section!.toUpperCase()}         ", 
                       style: TextStyle(
                         color: Theme.of(context).textSelectionTheme.selectionHandleColor,
-                        fontSize: 29
+                        fontSize: 23
                       ),
                     ),
                   ),
@@ -157,7 +157,7 @@ class _classroomState extends State<classroom> {
                                               child: Text(
                                                 '75%',
                                                 style: TextStyle(
-                                                    fontSize: 17,
+                                                    fontSize: 15,
                                                     fontWeight: FontWeight.w600,
                                                     color: Theme.of(context).textSelectionTheme.cursorColor),
                                               ),
@@ -204,7 +204,7 @@ class _classroomState extends State<classroom> {
                                               child: Text(
                                                 '35%',
                                                 style: TextStyle(
-                                                    fontSize: 17,
+                                                    fontSize: 15,
                                                     fontWeight: FontWeight.w600,
                                                     color: Theme.of(context).textSelectionTheme.cursorColor),
                                               ),
@@ -282,7 +282,9 @@ class _classroomState extends State<classroom> {
                       
                     )
                   ],
-                )
+                ),
+
+                SizedBox(height: 40)
               ],
             )
           ),
@@ -321,7 +323,7 @@ class _classroomState extends State<classroom> {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                                   children: [
-                                    global.textWidget(x),
+                                    global.textWidgetWithHeavyFont(x),
                                     
                                     Checkbox(
                                       value: depart.contains(x),
@@ -485,7 +487,7 @@ class classInfoUI extends StatelessWidget {
                               "Attendance Checklist",
                               style : TextStyle(
                                 color: Theme.of(context).textSelectionTheme.selectionColor,
-                                fontSize: 24,
+                                fontSize: 16,
                                 letterSpacing: 1.3,
                                 fontFamily: "Metropolis"
                               )
@@ -548,7 +550,7 @@ class classInfoUI extends StatelessWidget {
                               "Update Time Table",
                               style : TextStyle(
                                 color: Theme.of(context).textSelectionTheme.selectionColor,
-                                fontSize: 24,
+                                fontSize: 17,
                                 letterSpacing: 1.3,
                                 fontFamily: "Metropolis"
                               )
@@ -611,7 +613,7 @@ class classInfoUI extends StatelessWidget {
                               "Update Class Information",
                               style : TextStyle(
                                 color: Theme.of(context).textSelectionTheme.selectionColor,
-                                fontSize: 24,
+                                fontSize: 17,
                                 letterSpacing: 1.3,
                                 fontFamily: "Metropolis"
                               )
@@ -705,7 +707,7 @@ class _attendanceChecklistState extends State<attendanceChecklist> {
     return Scaffold(
       backgroundColor: Theme.of(context).buttonColor.withOpacity(0.3),
       appBar: AppBar(
-        title: global.textWidget("Attendance update sheet"),
+        title: global.textWidgetWithHeavyFont("Attendance update sheet"),
         centerTitle: true,
         leading: IconButton(
           onPressed: () {
@@ -864,17 +866,14 @@ class _attendanceChecklistState extends State<attendanceChecklist> {
                         clipBehavior: Clip.antiAlias,
                         children: [
                           for(int i = startRoll; i<= endRoll; i++)
-                            Padding(
-                              padding: const EdgeInsets.all(2.0),
-                              child: ChoiceChip(
-                                onSelected: (bool val) {
-                                  setState(() {
-                                    leaveData[i.toString()] = val;
-                                  });
-                                },
-                                selected : leaveData[i.toString()] ?? false,
-                                label: Text("${i.toString()}${studentInfo[i] != null ? "- ${studentInfo[i]}" : ""}"),
-                              ),
+                            ChoiceChip(
+                              onSelected: (bool val) {
+                                setState(() {
+                                  leaveData[i.toString()] = val;
+                                });
+                              },
+                              selected : leaveData[i.toString()] ?? false,
+                              label: Text("${i.toString()}${studentInfo[i] != null ? "- ${studentInfo[i]}" : ""}", style: TextStyle(fontSize: 10),),
                             )
                         ],
                       ),
@@ -900,18 +899,15 @@ class _attendanceChecklistState extends State<attendanceChecklist> {
                         clipBehavior: Clip.antiAlias,
                         children: [
                           for(int i = startRoll; i<= endRoll; i++)
-                            Padding(
-                              padding: const EdgeInsets.all(2.0),
-                              child: ChoiceChip(
-                                selectedColor: Colors.orangeAccent,
-                                onSelected: (bool val) {
-                                  setState(() {
-                                    od[i.toString()] = val;
-                                  });
-                                },
-                                selected : od[i.toString()] ?? false,
-                                label: Text("${i.toString()}${studentInfo[i] != null ? "- ${studentInfo[i]}" : ""}"),
-                              ),
+                            ChoiceChip(
+                              selectedColor: Colors.orangeAccent,
+                              onSelected: (bool val) {
+                                setState(() {
+                                  od[i.toString()] = val;
+                                });
+                              },
+                              selected : od[i.toString()] ?? false,
+                              label: Text("${i.toString()}${studentInfo[i] != null ? "- ${studentInfo[i]}" : ""}",style: TextStyle(fontSize: 10),),
                             )
                         ],
                       ),
@@ -952,7 +948,7 @@ class _timeTableEditUiState extends State<timeTableEditUi> {
     return Scaffold(
       backgroundColor: Theme.of(context).buttonColor.withOpacity(0.3),
       appBar: AppBar(
-        title: global.textWidget("Time Table update sheet"),
+        title: global.textWidgetWithHeavyFont("Time Table update sheet"),
         centerTitle: true,
         leading: IconButton(
           onPressed: () {
@@ -1441,7 +1437,7 @@ class classInfoEditUi extends StatelessWidget {
     return Scaffold(
       backgroundColor: Theme.of(context).buttonColor.withOpacity(0.3),
       appBar: AppBar(
-        title: global.textWidget("Class Info update sheet"),
+        title: global.textWidgetWithHeavyFont("Class Info update sheet"),
         centerTitle: true,
         leading: IconButton(
           onPressed: () {

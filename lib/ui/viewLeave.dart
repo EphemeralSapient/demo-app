@@ -58,7 +58,7 @@ class _viewLeaveStudentState extends State<viewLeaveStudent> {
     
     return Scaffold(
       appBar: AppBar(
-        title: global.textWidget("Student Leave Applications"),
+        title: global.textWidgetWithHeavyFont("Student Leave Applications"),
         centerTitle: true,
         leading: IconButton(
           onPressed: () {
@@ -85,6 +85,7 @@ class _viewLeaveStudentState extends State<viewLeaveStudent> {
             Text(
               "     PENDING",
               style: TextStyle(
+                fontSize: 12,
                 color: Theme.of(context).textSelectionTheme.selectionHandleColor,
                 fontWeight: FontWeight.bold,
                 letterSpacing: 2
@@ -99,6 +100,7 @@ class _viewLeaveStudentState extends State<viewLeaveStudent> {
                   child: Text(
                     "THERE IS NO PENDING APPLICATIONS.",
                     style: TextStyle(
+                      fontSize: 10,
                       color: Theme.of(context).textSelectionTheme.selectionHandleColor,
                       //fontWeight: FontWeight.bold,
                       letterSpacing: 2
@@ -172,31 +174,37 @@ class _viewLeaveStudentState extends State<viewLeaveStudent> {
                                         ),
                                       ),
 
-                                      Padding(
-                                        padding: const EdgeInsets.only(bottom:15.0, right: 15),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            global.textDoubleSpanWiget("Class Tutor : ", "${x["tutor"]["firstName"]} ${x["tutor"]["lastName"]}"),
-                                            x["tutorApproval"] == "Not yet" ?
-                                              global.textWidget("Not approved yet")
-                                            :
-                                              global.textWidget(DateFormat("dd-MM-yyyy hh:mm").format(x["tutorApproval"].toDate()))
-                                          ],
+                                      SingleChildScrollView(
+                                        scrollDirection: Axis.horizontal,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(bottom:15.0, right: 15),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              global.textDoubleSpanWiget("Class Tutor : ", "${x["tutor"]["firstName"]} ${x["tutor"]["lastName"]}"),
+                                              x["tutorApproval"] == "Not yet" ?
+                                                global.textWidget("Not approved yet")
+                                              :
+                                                global.textWidget(DateFormat("dd-MM-yyyy hh:mm").format(x["tutorApproval"].toDate()))
+                                            ],
+                                          ),
                                         ),
                                       ),
 
-                                      Padding(
-                                        padding: const EdgeInsets.only(bottom:15.0, right: 15),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            global.textDoubleSpanWiget("Class Advisor : ", "${x["classAdvisor"]["firstName"]} ${x["classAdvisor"]["lastName"]}"),
-                                            x["classAdvisorApproval"] == "Not yet" ?
-                                              global.textWidget("Not approved yet")
-                                            :
-                                              global.textWidget(DateFormat("dd-MM-yyyy hh:mm").format(x["classAdvisorApproval"].toDate()))
-                                          ],
+                                      SingleChildScrollView(
+                                        scrollDirection: Axis.horizontal,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(bottom:15.0, right: 15),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              global.textDoubleSpanWiget("Class Advisor : ", "${x["classAdvisor"]["firstName"]} ${x["classAdvisor"]["lastName"]}"),
+                                              x["classAdvisorApproval"] == "Not yet" ?
+                                                global.textWidget("Not approved yet")
+                                              :
+                                                global.textWidget(DateFormat("dd-MM-yyyy hh:mm").format(x["classAdvisorApproval"].toDate()))
+                                            ],
+                                          ),
                                         ),
                                       ),
 
@@ -234,6 +242,7 @@ class _viewLeaveStudentState extends State<viewLeaveStudent> {
                                                     Text(
                                                       "DELETE",
                                                       style: TextStyle(
+                                                        fontSize: 14,
                                                         color: Colors.red,
                                                         letterSpacing: 2,
                                                         fontWeight: FontWeight.bold
@@ -265,6 +274,7 @@ class _viewLeaveStudentState extends State<viewLeaveStudent> {
             Text(
               "     COMPLETED",
               style: TextStyle(
+                fontSize: 12,
                 color: Theme.of(context).textSelectionTheme.selectionHandleColor,
                 fontWeight: FontWeight.bold,
                 letterSpacing: 2
@@ -278,6 +288,7 @@ class _viewLeaveStudentState extends State<viewLeaveStudent> {
                   child: Text(
                     "THERE IS NO COMPLETED APPLICATIONS.",
                     style: TextStyle(
+                      fontSize: 10,
                       color: Theme.of(context).textSelectionTheme.selectionHandleColor,
                       //fontWeight: FontWeight.bold,
                       letterSpacing: 2
@@ -351,45 +362,54 @@ class _viewLeaveStudentState extends State<viewLeaveStudent> {
                                         ),
                                       ),
 
-                                      Padding(
-                                        padding: const EdgeInsets.only(bottom:15.0, right: 15),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            global.textDoubleSpanWiget("Class Tutor : ", "${x["tutor"]["firstName"]} ${x["tutor"]["lastName"]}"),
-                                            x["tutorApproval"] == "Not yet" ?
-                                              global.textWidget("Not approved yet")
-                                            :
-                                              global.textWidget(DateFormat("dd-MM-yyyy hh:mm").format(x["tutorApproval"].toDate()))
-                                          ],
+                                      SingleChildScrollView(
+                                        scrollDirection: Axis.horizontal,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(bottom:15.0, right: 15),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              global.textDoubleSpanWiget("Class Tutor : ", "${x["tutor"]["firstName"]} ${x["tutor"]["lastName"]}"),
+                                              x["tutorApproval"] == "Not yet" ?
+                                                global.textWidget("Not approved yet")
+                                              :
+                                                global.textWidget(DateFormat("dd-MM-yyyy hh:mm").format(x["tutorApproval"].toDate()))
+                                            ],
+                                          ),
                                         ),
                                       ),
 
-                                      Padding(
-                                        padding: const EdgeInsets.only(bottom:15.0, right: 15),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            global.textDoubleSpanWiget("Class Advisor : ", "${x["classAdvisor"]["firstName"]} ${x["classAdvisor"]["lastName"]}"),
-                                            x["classAdvisorApproval"] == "Not yet" ?
-                                              global.textWidget("Not approved yet")
-                                            :
-                                              global.textWidget(DateFormat("dd-MM-yyyy hh:mm").format(x["classAdvisorApproval"].toDate()))
-                                          ],
+                                      SingleChildScrollView(
+                                        scrollDirection: Axis.horizontal,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(bottom:15.0, right: 15),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              global.textDoubleSpanWiget("Class Advisor : ", "${x["classAdvisor"]["firstName"]} ${x["classAdvisor"]["lastName"]}"),
+                                              x["classAdvisorApproval"] == "Not yet" ?
+                                                global.textWidget("Not approved yet")
+                                              :
+                                                global.textWidget(DateFormat("dd-MM-yyyy hh:mm").format(x["classAdvisorApproval"].toDate()))
+                                            ],
+                                          ),
                                         ),
                                       ),
 
-                                      Padding(
-                                        padding: const EdgeInsets.only(bottom:15.0, right: 15),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            global.textDoubleSpanWiget("Head of Department : ", "${x["hod"]["firstName"]} ${x["hod"]["lastName"]}"),
-                                            x["hodApproval"] == "Not yet" ?
-                                              global.textWidget("Not approved yet")
-                                            :
-                                              global.textWidget(DateFormat("dd-MM-yyyy hh:mm").format(x["hodApproval"].toDate()))
-                                          ],
+                                      SingleChildScrollView(
+                                        scrollDirection: Axis.horizontal,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(bottom:15.0, right: 15),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              global.textDoubleSpanWiget("Head of Department : ", "${x["hod"]["firstName"]} ${x["hod"]["lastName"]}"),
+                                              x["hodApproval"] == "Not yet" ?
+                                                global.textWidget("Not approved yet")
+                                              :
+                                                global.textWidget(DateFormat("dd-MM-yyyy hh:mm").format(x["hodApproval"].toDate()))
+                                            ],
+                                          ),
                                         ),
                                       ),
 
@@ -506,7 +526,7 @@ class _viewLeaveFacultyState extends State<viewLeaveFaculty> {
   Widget build(BuildContext buildContext) {
     return Scaffold(
       appBar: AppBar(
-        title: global.textWidget("Student Leave Applications"),
+        title: global.textWidgetWithHeavyFont("Student Leave Applications"),
         centerTitle: true,
         leading: IconButton(
           onPressed: () {
@@ -533,6 +553,7 @@ class _viewLeaveFacultyState extends State<viewLeaveFaculty> {
             Text(
               "     PENDING",
               style: TextStyle(
+                fontSize: 12,
                 color: Theme.of(context).textSelectionTheme.selectionHandleColor,
                 fontWeight: FontWeight.bold,
                 letterSpacing: 2
@@ -547,6 +568,7 @@ class _viewLeaveFacultyState extends State<viewLeaveFaculty> {
                   child: Text(
                     "THERE IS NO PENDING APPLICATIONS.",
                     style: TextStyle(
+                      fontSize: 10,
                       color: Theme.of(context).textSelectionTheme.selectionHandleColor,
                       //fontWeight: FontWeight.bold,
                       letterSpacing: 2
@@ -656,45 +678,54 @@ class _viewLeaveFacultyState extends State<viewLeaveFaculty> {
 
                                       SizedBox(height: 25),
 
-                                      Padding(
-                                        padding: const EdgeInsets.only(bottom:15.0, right: 15),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            global.textDoubleSpanWiget("Class Tutor : ", "${x["tutor"]["firstName"]} ${x["tutor"]["lastName"]}"),
-                                            x["tutorApproval"] == "Not yet" ?
-                                              global.textWidget("Not approved yet")
-                                            :
-                                              global.textWidget(DateFormat("dd-MM-yyyy hh:mm").format(x["tutorApproval"].toDate()))
-                                          ],
+                                      SingleChildScrollView(
+                                        scrollDirection: Axis.horizontal,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(bottom:15.0, right: 15),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              global.textDoubleSpanWiget("Class Tutor : ", "${x["tutor"]["firstName"]} ${x["tutor"]["lastName"]}"),
+                                              x["tutorApproval"] == "Not yet" ?
+                                                global.textWidget("Not approved yet")
+                                              :
+                                                global.textWidget(DateFormat("dd-MM-yyyy hh:mm").format(x["tutorApproval"].toDate()))
+                                            ],
+                                          ),
                                         ),
                                       ),
 
-                                      Padding(
-                                        padding: const EdgeInsets.only(bottom:15.0, right: 15),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            global.textDoubleSpanWiget("Class Advisor : ", "${x["classAdvisor"]["firstName"]} ${x["classAdvisor"]["lastName"]}"),
-                                            x["classAdvisorApproval"] == "Not yet" ?
-                                              global.textWidget("Not approved yet")
-                                            :
-                                              global.textWidget(DateFormat("dd-MM-yyyy hh:mm").format(x["classAdvisorApproval"].toDate()))
-                                          ],
+                                      SingleChildScrollView(
+                                        scrollDirection: Axis.horizontal,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(bottom:15.0, right: 15),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              global.textDoubleSpanWiget("Class Advisor : ", "${x["classAdvisor"]["firstName"]} ${x["classAdvisor"]["lastName"]}"),
+                                              x["classAdvisorApproval"] == "Not yet" ?
+                                                global.textWidget("Not approved yet")
+                                              :
+                                                global.textWidget(DateFormat("dd-MM-yyyy hh:mm").format(x["classAdvisorApproval"].toDate()))
+                                            ],
+                                          ),
                                         ),
                                       ),
 
-                                      Padding(
-                                        padding: const EdgeInsets.only(bottom:15.0, right: 15),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            global.textDoubleSpanWiget("Head of Department : ", "${x["hod"]["firstName"]} ${x["hod"]["lastName"]}"),
-                                            x["hodApproval"] == "Not yet" ?
-                                              global.textWidget("Not approved yet")
-                                            :
-                                              global.textWidget(DateFormat("dd-MM-yyyy hh:mm").format(x["hodApproval"].toDate()))
-                                          ],
+                                      SingleChildScrollView(
+                                        scrollDirection: Axis.horizontal,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(bottom:15.0, right: 15),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              global.textDoubleSpanWiget("Head of Department : ", "${x["hod"]["firstName"]} ${x["hod"]["lastName"]}"),
+                                              x["hodApproval"] == "Not yet" ?
+                                                global.textWidget("Not approved yet")
+                                              :
+                                                global.textWidget(DateFormat("dd-MM-yyyy hh:mm").format(x["hodApproval"].toDate()))
+                                            ],
+                                          ),
                                         ),
                                       ),
 
@@ -737,6 +768,7 @@ class _viewLeaveFacultyState extends State<viewLeaveFaculty> {
                                                     Text(
                                                       "APPROVE",
                                                       style: TextStyle(
+                                                        fontSize: 14,
                                                         color: Colors.green,
                                                         letterSpacing: 2,
                                                         fontWeight: FontWeight.bold
@@ -771,6 +803,7 @@ class _viewLeaveFacultyState extends State<viewLeaveFaculty> {
                                                     Text(
                                                       "DELETE",
                                                       style: TextStyle(
+                                                        fontSize: 14,
                                                         color: Colors.red,
                                                         letterSpacing: 2,
                                                         fontWeight: FontWeight.bold
