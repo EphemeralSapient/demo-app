@@ -71,7 +71,7 @@ class _dashState extends State<dash> {
                           child: RichText(
                               text: TextSpan(children: [
                             TextSpan(
-                                text: "Hello there, ",
+                                text: "Welcome, ",
                                 style: TextStyle(
                                     color: Theme.of(context)
                                         .textSelectionTheme
@@ -80,7 +80,9 @@ class _dashState extends State<dash> {
                             TextSpan(
                                 text: global.account!.isAnonymous == true
                                     ? "Guest"
-                                    : "${global.account!.displayName}!",
+                                    : (global.accObj != null)
+                                      ? "${global.accObj!.title ?? ""} ${global.accObj!.firstName} ${global.accObj!.lastName}"
+                                      : "${global.account!.displayName}!",
                                 style: TextStyle(
                                     color: Theme.of(context)
                                         .textSelectionTheme

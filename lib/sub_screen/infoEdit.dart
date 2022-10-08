@@ -23,9 +23,11 @@ class _staffs_infoState extends State<staffs_info> {
   TextEditingController firstName = TextEditingController(text: global.accObj?.firstName);
   TextEditingController lastName = TextEditingController(text: global.accObj?.lastName);
   TextEditingController phoneNo = TextEditingController(text: global.nullIfNullElseString(global.accObj?.phoneNo));
-  TextEditingController passwordController = TextEditingController();
+  TextEditingController passwordController = TextEditingController(text: global.passcode);
 
   Map<String, dynamic> choices = {};
+
+  String title = global.accObj!.title ?? "Mr./Mrs.";
 
   bool ob = true;
 
@@ -44,7 +46,14 @@ class _staffs_infoState extends State<staffs_info> {
       prefixIcon: Icon(icon,color: Colors.deepPurpleAccent),
       prefixIconColor: Colors.red,
       prefixStyle: const TextStyle(color: Colors.deepPurpleAccent),    
-      suffix: SizedBox(height: 20,width: 20,child: IconButton(onPressed: () => setState(() => ob=!ob), icon: Icon(ob == true ? Icons.visibility_off : Icons.visibility_rounded, color: Theme.of(context).textSelectionTheme.selectionColor,))),                
+      suffix: SizedBox(height: 20,width: 20,child: 
+        InkWell(
+          onTap: () {
+            setState(() => ob=!ob);
+          },
+          child: Icon(ob == true ? Icons.visibility_off : Icons.visibility_rounded,color: Colors.grey,),
+        )
+      ),                
       hintText: hint,
       isDense: true,
       
@@ -85,7 +94,7 @@ class _staffs_infoState extends State<staffs_info> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Future.delayed(const Duration(), () async {
-            if(firstName.text == "" || lastName.text == "" || phoneNo.text == "" || passwordController.text == "") {
+            if(firstName.text == "" || title == "Mr./Mrs." || lastName.text == "" || phoneNo.text == "" || passwordController.text == "") {
               global.alert.quickAlert(
                 context,
                 global.textWidget("Please fill the following form")
@@ -103,6 +112,7 @@ class _staffs_infoState extends State<staffs_info> {
                 newAcc.updatedAt = Timestamp.now();
                 newAcc.phoneNo = int.parse(phoneNo.text);
                 newAcc.isStudent = false;
+                newAcc.title = title;
                 newAcc.handlingDepartment = [];
                 for(var x in choices.entries) {
                   if(x.value[0] == true) {
@@ -158,6 +168,25 @@ class _staffs_infoState extends State<staffs_info> {
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
+                DropdownButton(
+                  items: [
+                    for(var x in [["mr/mrs", "Mr. / Mrs."], ["dr", "Dr."], ["mr", "Mr."],["mrs", "Mrs."], ["miss", "Miss."]])
+                      DropdownMenuItem(
+                        value: x[1],
+                        child: global.textWidget(x[1]),
+                      ),
+                  ],
+                  value: title,
+                  dropdownColor: Theme.of(context).buttonColor.withOpacity(0.75),
+                  onChanged: (value) {
+                    setState(() {
+                      title = value.toString();
+                    });
+                  },
+                ),
+
+                const SizedBox(width: 15,),
+
                 global.textField("First Name", controller: firstName, initialText: firstName.text),
                 const SizedBox(
                   width: 15,

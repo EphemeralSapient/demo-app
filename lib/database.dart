@@ -30,6 +30,8 @@ class account_obj {
   String? classBelong = "None";
   String? firstName, lastName;
 
+  String? title;
+
   bool isStudent = false;
   bool? isDayscholar;
 
@@ -88,6 +90,8 @@ class account_obj {
     
     newObj.handlingDepartment = Data["handlingDepartment"] as List<dynamic>?;
 
+    newObj.title = Data["title"] as String?;
+
 
     return newObj;
   }
@@ -123,6 +127,8 @@ class account_obj {
       "year" : year,
       "hashes" : hashes,
       "section" : section,
+      
+      "title" : title
     };
   }
 

@@ -468,11 +468,11 @@ class _viewLeaveFacultyState extends State<viewLeaveFaculty> {
           canAdd = true;
           getData["requestingAs"] = "tutor";
         }
-        else if(getData["classAdvisor"] == selfId && getData["classAdvisorApproval"] == "Not yet"){
+        else if(getData["tutorApproval"] != "Not yet" && getData["classAdvisor"] == selfId && getData["classAdvisorApproval"] == "Not yet"){
           canAdd = true;
           getData["requestingAs"] = "classAdvisor";
         }
-        else if(getData["hod"] == selfId && getData["hodApproval"] == "Not yet"){
+        else if(getData["tutorApproval"] != "Not yet" && getData["classAdvisorApproval"] != "Not yet" && getData["hod"] == selfId && getData["hodApproval"] == "Not yet"){
           canAdd = true;
           getData["requestingAs"] = "hod";
         }

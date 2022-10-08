@@ -727,7 +727,7 @@ class _attendanceChecklistState extends State<attendanceChecklist> {
         onPressed: () async {
           Navigator.pop(context);
 
-          Map newMap = {"checkBy" : "${global.accObj!.firstName} ${global.accObj!.lastName}"};
+          Map newMap = {"checkBy" : "${global.accObj!.title} ${global.accObj!.firstName} ${global.accObj!.lastName}"};
 
           for(var x in leaveData.keys) {
             if(leaveData[x] == true) {

@@ -554,7 +554,7 @@ String hod = "No one";
                                         value: x.key,
                                         child: Padding(
                                           padding: const EdgeInsets.all(15),
-                                          child: global.textWidget("${x.value["firstName"]} ${x.value["lastName"]}"),
+                                          child: global.textWidget("${x.value["title"]?? ""} ${x.value["firstName"]} ${x.value["lastName"]}"),
                                         ),
                                       )
                                   ],
@@ -607,7 +607,7 @@ String hod = "No one";
                                         value: x.key,
                                         child: Padding(
                                           padding: const EdgeInsets.all(15),
-                                          child: global.textWidget("${x.value["firstName"]} ${x.value["lastName"]}"),
+                                          child: global.textWidget("${x.value["title"]??""} ${x.value["firstName"]} ${x.value["lastName"]}"),
                                         ),
                                       )
                                   ],
@@ -660,7 +660,7 @@ String hod = "No one";
                                         value: x.key,
                                         child: Padding(
                                           padding: const EdgeInsets.all(15),
-                                          child: global.textWidget("${x.value["firstName"]} ${x.value["lastName"]}"),
+                                          child: global.textWidget("${x.value["title"]??""} ${x.value["firstName"]} ${x.value["lastName"]}"),
                                         ),
                                       )
                                   ],
