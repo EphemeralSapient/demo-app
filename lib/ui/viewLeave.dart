@@ -145,7 +145,7 @@ class _viewLeaveStudentState extends State<viewLeaveStudent> {
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        global.textWidgetWithHeavyFont(x["type"] == "sick" ? "Sick Leave" : (x["type"] == "duty" ? "On Duty Request" : "Other type")),
+                                        global.textWidgetWithHeavyFont(x["type"] == "sick" ? "Sick Leave" : (x["type"] == "duty" ? "On Duty" : "Other type")),
 
                                         global.textWidget("${DateFormat("dd/MM").format(x["startDate"].toDate())} - ${DateFormat("dd/MM").format(x["endDate"].toDate())}  ${DateFormat("yyyy").format(x["endDate"].toDate())} ")
                                       ],
@@ -154,7 +154,7 @@ class _viewLeaveStudentState extends State<viewLeaveStudent> {
                                   :
                                    Padding(
                                      padding: const EdgeInsets.only(left: 15.0),
-                                     child: global.textWidgetWithHeavyFont(x["type"] == "sick" ? "Sick Leave" : (x["type"] == "duty" ? "On Duty Request" : "Other type")),
+                                     child: global.textWidgetWithHeavyFont(x["type"] == "sick" ? "Sick Leave" : (x["type"] == "duty" ? "On Duty" : "Other type")),
                                    )
                                   ;
                                 },
@@ -348,7 +348,7 @@ class _viewLeaveStudentState extends State<viewLeaveStudent> {
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        global.textWidgetWithHeavyFont(x["type"] == "sick" ? "Sick Leave" : (x["type"] == "duty" ? "On Duty Request" : "Other type")),
+                                        global.textWidgetWithHeavyFont(x["type"] == "sick" ? "Sick Leave" : (x["type"] == "duty" ? "On Duty" : "Other type")),
 
                                         global.textWidget("${DateFormat("dd/MM").format(x["startDate"].toDate())} - ${DateFormat("dd/MM").format(x["endDate"].toDate())}  ${DateFormat("yyyy").format(x["endDate"].toDate())} ")
                                       ],
@@ -357,7 +357,7 @@ class _viewLeaveStudentState extends State<viewLeaveStudent> {
                                   :
                                    Padding(
                                      padding: const EdgeInsets.only(left: 15.0),
-                                     child: global.textWidgetWithHeavyFont(x["type"] == "sick" ? "Sick Leave" : (x["type"] == "duty" ? "On Duty Request" : "Other type")),
+                                     child: global.textWidgetWithHeavyFont(x["type"] == "sick" ? "Sick Leave" : (x["type"] == "duty" ? "On Duty" : "Other type")),
                                    )
                                   ;
                                 },
@@ -643,7 +643,7 @@ class _viewLeaveFacultyState extends State<viewLeaveFaculty> {
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        global.textWidgetWithHeavyFont(x["type"] == "sick" ? "Sick Leave" : (x["type"] == "duty" ? "On Duty Request" : "Other type")),
+                                        global.textWidgetWithHeavyFont(x["type"] == "sick" ? "Sick Leave" : (x["type"] == "duty" ? "On Duty" : "Other type")),
 
                                         global.textWidget("${DateFormat("dd/MM").format(x["startDate"].toDate())} - ${DateFormat("dd/MM").format(x["endDate"].toDate())}  ${DateFormat("yyyy").format(x["endDate"].toDate())} "),
                                       
@@ -654,7 +654,7 @@ class _viewLeaveFacultyState extends State<viewLeaveFaculty> {
                                   :
                                    Padding(
                                      padding: const EdgeInsets.only(left: 15.0),
-                                     child: global.textWidgetWithHeavyFont(x["type"] == "sick" ? "Sick Leave" : (x["type"] == "duty" ? "On Duty Request" : "Other type")),
+                                     child: global.textWidgetWithHeavyFont(x["type"] == "sick" ? "Sick Leave" : (x["type"] == "duty" ? "On Duty" : "Other type")),
                                    )
                                   ;
                                 },
@@ -679,16 +679,12 @@ class _viewLeaveFacultyState extends State<viewLeaveFaculty> {
                                         ),
                                       ),
 
-                                      Padding(
-                                        padding: const EdgeInsets.only(bottom:15.0, right: 15),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            global.textDoubleSpanWiget("Register Number : ", x["regNo"].toString()),
-                                            global.textDoubleSpanWiget("Roll Number : ", x["rollNo"].toString().toUpperCase()),
-                                          ],
-                                        ),
-                                      ),
+                                      
+                                      global.textDoubleSpanWiget("Register Number : ", x["regNo"].toString()),
+
+                                      SizedBox(height: 15,),
+
+                                      global.textDoubleSpanWiget("Roll Number : ", x["rollNo"].toString().toUpperCase()),
 
                                       SizedBox(height: 15,),
 
