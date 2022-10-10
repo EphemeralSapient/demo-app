@@ -22,6 +22,90 @@ Future<void> fnInit() async {
   if (fnLock == true) return;
   fnLock = true;
 
+  bool updated = false;
+  global.classroom_updateFns.add((Map newData) async {
+    updated = false;
+
+    debugPrint("Time table function update got called!");
+
+    if(global.accountType == 2) {
+      if(newData.isEmpty || newData["course"] == null || newData["timeTable"] == null) {
+        // Data is not avail?
+        return;
+      }
+
+      List courses = newData["course"];
+      Map timeTable = newData["timeTable"];
+
+      for(var x in timeTable.entries) {
+        var l = [];
+
+        for(var y in x.value) {
+          Map<String, dynamic> courseItem = {};
+          try {
+            courseItem = courses[y];
+          } catch(e) {
+            debugPrint(e.toString());
+            courseItem = {"name" : "Unknown", "faculty" : "Unknown"};
+          }
+          l.add("${courseItem["name"]}  by ${courseItem["faculty"]}");
+        }
+
+        if(l.length < 10) {
+          for(int a = l.length; a<= 10; a++) {
+            l.add("No data were given.");
+          }
+        }
+
+        global.timetable_subject[(int.parse(x.key.toString())+1).toString()] = l;
+      }
+    } else {
+
+      // Faculty time table update
+      if(newData.isEmpty) {
+        return;
+      }
+
+      Map<String, dynamic> facultyTimeTable = {};
+      for(int days = 0; days<=6; days++) {
+        List daysData = List.filled(10, "Data not filled");
+
+        for(var classes in newData.values){
+          List cCourses = classes["course"] ?? [];
+          Map cTimeTable = classes["timeTable"] ?? {};
+
+          if(cCourses.isEmpty || cTimeTable.isEmpty) {
+            continue;
+          }
+
+          List acceptableCourseNum = [];
+
+          for(Map<String, dynamic> x in cCourses) {
+            if(x["faculty"] == global.loggedUID) {
+              acceptableCourseNum.add(cCourses.indexOf(x));
+            }
+          }
+
+          debugPrint("Acceptable : ${acceptableCourseNum.toString()}");
+
+          int _counter = 0;
+          for(var x in (cTimeTable[days.toString()] ?? [])){
+            if(acceptableCourseNum.contains(x)) {
+              daysData[_counter] = "${cCourses[x]["name"]}  ${classes["year"].toString().toUpperCase()}-${classes["section"].toString().toUpperCase()} ${classes["department"].toString().toUpperCase()}";
+            }
+            _counter++;
+          }
+        }
+
+        facultyTimeTable[(days+1).toString()] = daysData;
+      }
+      global.timetable_subject = facultyTimeTable;
+    }
+
+    updated = true;
+    return;
+  });
+
   List<dynamic> ttT;
   Map<dynamic, dynamic> ttS;
   bool flag = false;
@@ -33,7 +117,7 @@ Future<void> fnInit() async {
     ttT = global.timetable_timing;
 
     // Timing or subject data isn't there, yet.
-    if (ttS.isEmpty == true || ttT.isEmpty == true) continue;
+    if (ttS.isEmpty == true || ttT.isEmpty == true || global.classroomEventLoaded == false || updated == false) continue;
 
     //debugPrint("5 second check running");
 

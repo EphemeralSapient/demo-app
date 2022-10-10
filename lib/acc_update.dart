@@ -34,6 +34,12 @@ void initUpdater(bool? override) async {
       await Future.delayed(const Duration(milliseconds: 250));
     }
     debugPrint("Class value got assigned | ${global.accObj!.classBelong}");
+    
+    // Class value is not assigned?
+    if((global.accObj!.classBelong??"pending") == "pending"){
+      isLock = false;
+      return;
+    }
     isNew = true;    
   }
 
@@ -41,6 +47,113 @@ void initUpdater(bool? override) async {
     debugPrint("Automatic sign in verified");
     global.prefs!.setBool("classPending", false);
   }
+
+  var classroomCollection = global.Database!.addCollection("class", "/class");
+  StreamSubscription<dynamic>? classroomSub;
+  // Classroom data fetching
+  if(global.accountType == 2) {
+    // Student account requires only specified classroom updates
+    Future.delayed(Duration(), () async {
+      while(global.accObj!.classBelong == "None") {
+        await Future.delayed(const Duration(milliseconds: 250));
+      }
+      debugPrint(">>>>>>>>>>> test : ${global.accObj!.classBelong.toString()}");
+      var get = await global.Database!.get(classroomCollection, global.accObj!.classBelong!);
+      Map info = global.classroom_data;
+
+      if(get.status == db_fetch_status.nodata) {
+        debugPrint("Creating new class data on database");
+        var data = {"department" : global.accObj!.department, "classCode" : global.accObj!.classBelong ,"year" : global.accObj!.year ,"section" : global.accObj!.section};
+        await global.Database!.create(classroomCollection, global.accObj!.classBelong!, data);
+        info = data;
+      } else {
+        debugPrint("Classroom data exists already | ${get.data}");
+        info = get.data as Map;
+      }
+
+
+
+      if(global.classroom_data == {}) {
+        global.classroom_data = Map.from(info);
+      }
+
+      global.classroomEventLoaded = true;
+      classroomSub = classroomCollection.doc(global.accObj!.classBelong!).snapshots().listen((event) async { 
+
+        if(rev!=lockRev) {
+          debugPrint("Canceling /class update event");
+          classroomSub?.cancel();
+          return;
+        }
+
+        dynamic data = event.data();
+
+        if(data == null) return debugPrint("Data was not supplied in /class collection stream event listener");
+
+        var oldData = Map.from(global.classroom_data);
+        var newData = data as Map<String, dynamic>;
+
+        //if(newData.toString() == oldData.toString()) {
+          //debugPrint("No updates found from /class update event");
+          //return;
+        //}
+
+        if(newData.isEmpty) {
+          debugPrint("New data is empty from /class update event");
+          return;
+        }
+
+        for(var x in global.classroom_updateFns) {
+          await x.call(newData);
+        }
+
+        global.classroom_data = newData;
+        global.updateMapToStorage("classroom", newData);
+        //debugPrint("/class Update : ${newData.toString()}}");
+      });
+    });
+  
+  } else {
+    
+    var get = await classroomCollection.get();
+    var getData = get.docs;
+    Map<String, dynamic> mapping = {};
+
+    for(var x in getData) {
+      mapping[x.reference.id] = x.data();
+    }
+
+    global.classroom_data = mapping;
+
+    Future.delayed(Duration(seconds: 3), () async {
+      global.classroomEventLoaded = true;
+    });
+    
+    classroomSub = classroomCollection.snapshots().listen((event) async {
+      var get = await classroomCollection.get();
+      var getData = get.docs;
+      Map<String, dynamic> mapping = {};
+
+      for(var x in getData) {
+        mapping[x.reference.id] = x.data();
+      }
+
+      for(var x in global.classroom_updateFns) {
+          await x.call(mapping);
+        }
+
+      global.classroom_data = mapping;
+      global.updateMapToStorage("classroom", mapping);
+    });
+  }
+
+  debugPrint("Creating /acc update event listener");
+  var getInfo = await global.Database!.addCollection("acc", "/acc").get();
+  Map<String,dynamic> getInfoData = {};
+  for(var x in getInfo.docs.asMap().entries) {
+    getInfoData[x.value.reference.id.toString()] = x.value.data();
+  }
+  global.accountsInDatabase = getInfoData;
 
   // Upate occurred on user database
   StreamSubscription<DocumentSnapshot<Object?>>? sub;

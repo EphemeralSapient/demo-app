@@ -81,7 +81,7 @@ class _dashState extends State<dash> {
                             TextSpan(
                                 text: global.account!.isAnonymous == true
                                     ? "Guest"
-                                    : (global.accObj != null)
+                                    : (global.accObj != null && global.accObj?.firstName != null)
                                       ? "${global.accObj!.title ?? ""} ${global.accObj!.firstName} ${global.accObj!.lastName}"
                                       : "${global.account!.displayName}!",
                                 style: TextStyle(
@@ -117,7 +117,7 @@ class _dashState extends State<dash> {
       
                   global.accountType == 2 ? assignmentUi() : const SizedBox(),
       
-                  global.accountType == 1 ? modifyTimetableUi() : const SizedBox(),
+                  //global.accountType == 1 ? modifyTimetableUi() : const SizedBox(),
       
                   
                 ],

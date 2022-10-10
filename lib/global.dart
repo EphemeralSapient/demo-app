@@ -56,6 +56,9 @@ Map<String, dynamic> year = {
   }
 };
 Map<String, dynamic> course_data = {};
+Map<String, dynamic> classroom_data = {};
+Map<String, dynamic> accountsInDatabase = {};
+List<Function> classroom_updateFns = [];
 Map<dynamic, dynamic> timetable_subject =
     {}; // Weekend days : int | Subject list : List<String> aka dynamic here
 List<dynamic> timetable_timing = []; // List of timing in string : List<String>
@@ -71,6 +74,7 @@ int test = 0;
 bool networkAvailable = false;
 bool isLoggedIn = false;
 bool loaded = false;
+bool classroomEventLoaded = false;
 bool loginScreenRoute = false;
 bool choiceRoute = false;
 bool loginRoute = false;
@@ -133,6 +137,9 @@ void updateSettingsFromStorage() async {
       jsonDecode(jsonDecode(prefs!.getString("timetable_subject") ?? "\"{}\""));
   course_data =
       jsonDecode(jsonDecode(prefs!.getString("course_data") ?? "\"{}\""));
+
+  classroom_data = 
+      jsonDecode(prefs!.getString("classroom")??"{}");
   rootRefresh!();
 }
 

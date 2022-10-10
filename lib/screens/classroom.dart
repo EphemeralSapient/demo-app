@@ -300,6 +300,12 @@ class _classroomState extends State<classroom> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ChoiceChip(
+                  disabledColor: Theme.of(context).buttonColor.withOpacity(0.6),
+                  surfaceTintColor: Colors.transparent,
+                  selectedShadowColor: Colors.transparent,
+                  shadowColor: Colors.transparent,
+                  backgroundColor: Theme.of(context).buttonColor.withOpacity(0.6),
+                  selectedColor: Theme.of(context).buttonColor.withOpacity(0.6),
                   label: global.textWidget("Department : ${depart.join(",")}"),
                   onSelected:(value) {
                     global.alert.quickAlert(
@@ -353,7 +359,6 @@ class _classroomState extends State<classroom> {
                     );
                   },
                   selected: false,
-                  backgroundColor: Theme.of(context).buttonColor,
                 ),
           
                 SizedBox(height: 25,),
@@ -367,7 +372,8 @@ class _classroomState extends State<classroom> {
                           Card(
                              shadowColor: Colors.transparent,
                              surfaceTintColor: Colors.transparent,
-                             color: Theme.of(context).buttonColor.withOpacity(0.5),
+                            clipBehavior: Clip.antiAlias,
+                             color: Theme.of(context).buttonColor.withOpacity(0.8),
                              child: InkWell(
                               onTap: () {
                                 data = x;
@@ -934,13 +940,39 @@ class timeTableEditUi extends StatefulWidget {
 class _timeTableEditUiState extends State<timeTableEditUi> {
 
   Map timetable = {};
-  List courseList = [];
+  List courseList = [
+    {"code" : "Lunch", "faculty" : "no one", "full" : "Break", "name" : "Lunch - Break"},
+    {"code" : "Morning", "faculty" : "no one", "full" : "Interval", "name" : "Morning Interval"},
+    {"code" : "Evening", "faculty" : "no one", "full" : "Interval", "name" : "Evening Interval"},
+  ];
+  Map isExpanded = {};
+  Map facultyList = {};
+  List options = [["No one", "no one"],["Custom name instead of choice", "cn"]];
 
   @override
   void initState() {
     super.initState();
-    timetable = jsonDecode(data["timeTable"] ?? "{}");
-    courseList = data["course"] ?? [];
+    timetable = (data["timeTable"] ?? {});
+    courseList = data["course"] ??  [
+    {"code" : "Lunch", "faculty" : "no one", "full" : "Break", "name" : "Lunch - Break"},
+    {"code" : "Morning", "faculty" : "no one", "full" : "Interval", "name" : "Morning Interval"},
+    {"code" : "Evening", "faculty" : "no one", "full" : "Interval", "name" : "Evening Interval"},
+  ];
+    data["course"] = courseList;
+    Future.delayed(Duration(), () async {
+      var get = await global.Database!.addCollection("acc", "/acc").where("isStudent", isEqualTo: false).get();
+      for(var x in get.docs) {
+        Map<String, dynamic> data = x.data() as Map<String, dynamic>;
+        if(data["phoneNo"] != null) {
+          Map<dynamic, dynamic> xy = data;
+          facultyList[x.reference.id] = xy;
+          debugPrint(xy.toString());
+          options.add(["${xy["title"]} ${xy["firstName"]} ${xy["lastName"]}",x.reference.id]);
+        }
+      }
+      debugPrint(options.toString());
+      setState(() {});
+    });
   }
 
   @override
@@ -992,7 +1024,7 @@ class _timeTableEditUiState extends State<timeTableEditUi> {
                 spacing: 5,
                 children: [
                   ChoiceChip(
-                    label: const Text("Create a new course data"),
+                    label: const Text("Create a new course data", style: TextStyle(fontSize: 13),),
                     avatar: Icon(Icons.create),
                     selected: false,
                     onSelected: (bool val) {
@@ -1001,25 +1033,8 @@ class _timeTableEditUiState extends State<timeTableEditUi> {
                       TextEditingController fullName = TextEditingController();
                       TextEditingController facultyName = TextEditingController();
         
-                      List facultyList = [];
                       String chosenF = "no one";
-        
-                      Future.delayed(Duration(), () async {
-                        var get = await global.collectionMap["acc"]!.where("isStudent", isEqualTo: false).where("phoneNo", isNotEqualTo: null).get();
-        
-                        var l = [
-                          for(var x in get.docs)
-                            x.data()
-                        ];
-                        
-                        global.quickAlertGlobalVar(() {
-                          for(dynamic x in l) {
-                            if(x["phoneNo"] != null) {
-                              facultyList.add("${x["firstName"]} ${x["lastName"]}");
-                            }
-                          }
-                        });
-                      });
+      
         
                       global.alert.quickAlert(context, SizedBox(),bodyFn: () => Column(
                         mainAxisSize: MainAxisSize.min,
@@ -1038,16 +1053,10 @@ class _timeTableEditUiState extends State<timeTableEditUi> {
         
                           DropdownButton(
                             items: [
-                              for(var x in [["No one", "no one"],["Custom name instead of choice", "cn"]])
+                              for(var x in options)
                                 DropdownMenuItem(
                                   value : x[1],
                                   child: global.textWidget(x[0]),
-                                )
-                            ,
-                              for(var x in facultyList)
-                                DropdownMenuItem(
-                                  value : x,
-                                  child: global.textWidget(x)
                                 )
                             ],
                             onChanged: (val) {
@@ -1104,7 +1113,7 @@ class _timeTableEditUiState extends State<timeTableEditUi> {
                   ),
         
                   ChoiceChip(
-                    label: const Text("Change the timing"),
+                    label: const Text("Change the timing", style: TextStyle(fontSize: 13),),
                     avatar: Icon(Icons.timeline),
                     selected: false,
                     onSelected: (bool val) {
@@ -1175,250 +1184,261 @@ class _timeTableEditUiState extends State<timeTableEditUi> {
         
               SizedBox(height: 30),
         
-              Flexible(
-                child : SingleChildScrollView(
-                  child: Column(
+              DragTarget(
+                onAccept:(dataa) {
+                  debugPrint("Ok deleting the ${dataa.toString()}");
+                  int val =  courseList.indexOf(dataa);
+                  var fakeTimeTable = Map.from(timetable);
+                  debugPrint(fakeTimeTable.toString());
+                  var success = "";
+                  try{
+                    for(var x in fakeTimeTable.entries) {
+                      int indexs = 0;
+                      for(var y in List.from(x.value ?? [])) {
+                        if(y == val){
+                          (timetable[x.key] as List).removeAt(indexs);
+                          indexs--;
+                        } else if(y>val) {
+                          timetable[x.key][indexs] = y-1;
+                        }
+                        indexs++;
+                      }
+                    }
+                    courseList.remove(dataa);
+                  } catch(e) {
+                    debugPrint(e.toString());
+                    success = e.toString();
+                  }
+        
+                  Future.delayed(Duration(), () async {
+                    debugPrint("Delete operation on future function");
+                    String message = "Successfully removed the course in the list";
+                    
+                    if(success == ""){
+                        data["timeTable"] = timetable;
+                        data["course"] = courseList;   
+
+                        debugPrint("Removed the data from the list");
+                        var get = await global.Database!.update(global.collectionMap["classroom"]!, data["classCode"], data);
+          
+                        if(get.status != db_fetch_status.success) {
+                          message = "Error, ${get.data}";
+                        }
+                    } else {
+                      message = "Failed to update, $success";
+                    } 
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text(message),
+                    ));
+                    setState(() {});
+                  });
+        
+                },
+                onWillAccept: (data) => true,
+                builder: (BuildContext buildContext, List a, List b) => Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      for(var x in {"0": "Monday", "1": "Tuesday","2": "Wednessday", "3": "Thursday","4": "Friday", "5":"Saturday"}.entries)
-                        DragTarget(
-                          onAccept:(dynamic dataa) {
-                            List info = [
-                              dataa["name"],
-                              dataa["faculty"]
-                            ];
+                      global.textWidget("Remove The Course [Drag it here]"),
+                    ],
+                  ),
+                ),
+              ),
         
-                            if(timetable[x.key] != null && timetable[x.key].isNotEmpty) {
-                              timetable[x.key].add(info);
-                            } else {
-                              timetable[x.key] = [info];
-                            }
+              DragTarget(
+                onAccept:(dynamic dataa) {
+                  TextEditingController codeName = TextEditingController(text: dataa["code"]);
+                  TextEditingController fullName = TextEditingController(text: dataa["full"]);
+                  TextEditingController facultyName = TextEditingController(text: dataa["faculty"]);
         
-                            setState(() {
-                              data["timeTable"] = jsonEncode(timetable);
-                            });
-                          },
-                          onWillAccept: (data) => true,
-                          builder: (BuildContext buildContext, List a, List b) => Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: ShaderMask(
-                              shaderCallback: (Rect rect) {
-                                return const LinearGradient(
-                                  begin: Alignment.centerLeft,
-                                  end: Alignment.centerRight,
-                                  colors: [
-                                    Colors.black,
-                                    Colors.transparent,
-                                    Colors.transparent,
-                                    Colors.black,
-                                  ],
-                                  stops: [0.0, 0.1, 0.9, 1.0],
-                                ).createShader(rect);
-                              },
-                              blendMode: BlendMode.dstOut,
-                              child: SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    global.textWidgetWithHeavyFont("${x.value} :"),
-                              
-                                    for(List y in timetable[x.key]??{} )
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            border: Border.all(color: Colors.cyanAccent),
-                                            borderRadius: BorderRadius.circular(10)
-                                          ),
-                              
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Padding(
-                                                padding: const EdgeInsets.all(8.0),
-                                                child: global.textWidget(y[0]),
-                                              ),
-                              
-                                              IconButton(
-                                                onPressed: () {
-                                                  setState(() => timetable[x.key].remove(y));
-                                                  data["timeTable"] = jsonEncode(timetable);
-                                                },
-                                                icon: Icon(Icons.close, color: Theme.of(context).textSelectionTheme.selectionColor,),
-                                              )
-                              
-                                            ],
-                                          ),
-                                        ),
-                                      )
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        )
+                  String chosenF = "no one";
         
-                      ,
+                  global.alert.quickAlert(context, SizedBox(),bodyFn: () => Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
         
-                    SizedBox(height:40),
+                      global.textWidget("Fill the following details"),
+                      SizedBox(height:20),
         
-                    DragTarget(
-                        onAccept:(dataa) {
-                          debugPrint("Ok deleting the ${dataa.toString()}");
-                          courseList.remove(dataa);
+                      global.textField("Subject Code Name", controller: codeName),
+        
+                      SizedBox(height:10),
+        
+                      global.textField("Subject Full Name", controller: fullName),
+        
+                      SizedBox(height: 20),
+        
+                      DropdownButton(
+                        items: [
+                          for(var x in options)
+                            DropdownMenuItem(
+                              value : x[1],
+                              child: global.textWidget(x[0]),
+                            )
+                        ],
+                        onChanged: (val) {
+                          global.quickAlertGlobalVar(() => chosenF = val.toString());
+                        },
+                        value: chosenF,
+                        dropdownColor: Theme.of(context).buttonColor,
+                      ),
+        
+                      SizedBox(height: 20),
+        
+                      if(chosenF == "cn")
+                        global.textField("Faculty name", controller: facultyName)
+                    ],
+                  ),
+        
+                    action: [
+                      FloatingActionButton(
+                        onPressed: () {
+                          Navigator.pop(context);
         
                           Future.delayed(Duration(), () async {
-                            String message = "Successfully removed the course in the list";
+                            String message = "Successfully updated the course in the list";
+        
+                            if(codeName.text == "" || fullName.text == "") {
+                              message = "Failed, field values was not properly filled!";
+                            } else {
+                              courseList[courseList.indexOf(dataa)] =
+                              {
+                                "name" : "${codeName.text} - ${fullName.text}",
+                                "code" : codeName.text,
+                                "full" : fullName.text,
+                                "faculty" : chosenF == "cn" ? facultyName.text : chosenF
+                              };
                               data["course"] = courseList;
+        
                               var get = await global.Database!.update(global.collectionMap["classroom"]!, data["classCode"], data);
         
                               if(get.status != db_fetch_status.success) {
                                 message = "Error, ${get.data}";
                               }
+                            }
         
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: Text(message),
                             ));
                             setState(() {});
                           });
-        
                         },
-                        onWillAccept: (data) => true,
-                        builder: (BuildContext buildContext, List a, List b) => Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              global.textWidget("Remove The Course [Drag it here]"),
-                            ],
-                          ),
-                        ),
-                      ),
-        
-                      DragTarget(
-                        onAccept:(dynamic dataa) {
-                          TextEditingController codeName = TextEditingController(text: dataa["code"]);
-                          TextEditingController fullName = TextEditingController(text: dataa["full"]);
-                          TextEditingController facultyName = TextEditingController(text: dataa["faculty"]);
-        
-                          List facultyList = [];
-                          String chosenF = "no one";
-        
-                          Future.delayed(Duration(), () async {
-                            var get = await global.collectionMap["acc"]!.where("isStudent", isEqualTo: false).where("phoneNo", isNotEqualTo: null).get();
-        
-                            var l = [
-                              for(var x in get.docs)
-                                x.data()
-                            ];
-                            
-                            global.quickAlertGlobalVar(() {
-                              for(dynamic x in l) {
-                                if(x["phoneNo"] != null) {
-                                  facultyList.add("${x["firstName"]} ${x["lastName"]}");
-                                }
-                              }
-        
-                            });
-                          });
-        
-                          global.alert.quickAlert(context, SizedBox(),bodyFn: () => Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-        
-                              global.textWidget("Fill the following details"),
-                              SizedBox(height:20),
-        
-                              global.textField("Subject Code Name", controller: codeName),
-        
-                              SizedBox(height:10),
-        
-                              global.textField("Subject Full Name", controller: fullName),
-        
-                              SizedBox(height: 20),
-        
-                              DropdownButton(
-                                items: [
-                                  for(var x in [["No one", "no one"],["Custom name instead of choice", "cn"]])
-                                    DropdownMenuItem(
-                                      value : x[1],
-                                      child: global.textWidget(x[0]),
-                                    )
-                                ,
-                                  for(var x in facultyList)
-                                    DropdownMenuItem(
-                                      value : x,
-                                      child: global.textWidget(x)
-                                    )
-                                ],
-                                onChanged: (val) {
-                                  global.quickAlertGlobalVar(() => chosenF = val.toString());
-                                },
-                                value: chosenF,
-                                dropdownColor: Theme.of(context).buttonColor,
-                              ),
-        
-                              SizedBox(height: 20),
-        
-                              if(chosenF == "cn")
-                                global.textField("Faculty name", controller: facultyName)
-                            ],
-                          ),
-        
-                            action: [
-                              FloatingActionButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-        
-                                  Future.delayed(Duration(), () async {
-                                    String message = "Successfully updated the course in the list";
-        
-                                    if(codeName.text == "" || fullName.text == "") {
-                                      message = "Failed, field values was not properly filled!";
-                                    } else {
-                                      courseList[courseList.indexOf(dataa)] =
-                                      {
-                                        "name" : "${codeName.text} - ${fullName.text}",
-                                        "code" : codeName.text,
-                                        "full" : fullName.text,
-                                        "faculty" : chosenF == "cn" ? facultyName.text : chosenF
-                                      };
-                                      data["course"] = courseList;
-        
-                                      var get = await global.Database!.update(global.collectionMap["classroom"]!, data["classCode"], data);
-        
-                                      if(get.status != db_fetch_status.success) {
-                                        message = "Error, ${get.data}";
-                                      }
-                                    }
-        
-                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                      content: Text(message),
-                                    ));
-                                    setState(() {});
-                                  });
-                                },
-                                child: Text("Update")
-                              )
-                            ]
-                          );
-                        },
-                        onWillAccept: (data) => true,
-                        builder: (BuildContext buildContext, List a, List b) => Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              global.textWidget("Update The Course data [Drag it here]"),
-                            ],
-                          ),
-                        ),
+                        child: Text("Update")
                       )
+                    ]
+                  );
+                },
+                onWillAccept: (data) => true,
+                builder: (BuildContext buildContext, List a, List b) => Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      global.textWidget("Update The Course data [Drag it here]"),
                     ],
                   ),
-                )
+                ),
               ),
+              
+              Wrap(children: [
+              for(var x in {"0": "Monday", "1": "Tuesday","2": "Wednesday", "3": "Thursday","4": "Friday", "5":"Saturday"}.entries)
+                DragTarget(
+                  onAccept:(dynamic dataa) {
+                    List info = [
+                      dataa["name"],
+                      dataa["faculty"]
+                    ];
+        
+                    if(timetable[x.key] != null && timetable[x.key].isNotEmpty) {
+                      timetable[x.key].add(courseList.indexOf(dataa));
+                    } else {
+                      timetable[x.key] = [courseList.indexOf(dataa)];
+                    }
+                    debugPrint(courseList.indexOf(dataa).toString());
+        
+                    setState(() {
+                      data["timeTable"] = timetable;
+                    });
+                  },
+                  onWillAccept: (data) => true,
+                  builder: (BuildContext buildContext, List a, List b) => InkWell(
+                    onTap: () {
+                      setState( () => isExpanded[x.key] = isExpanded[x.key] == null ? true : !isExpanded[x.key]);
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.all(isExpanded[x.key] == null ? 1 : (isExpanded[x.key] ? 4 : 1)),
+                      child: AnimatedCrossFade(
+                        duration: Duration(milliseconds: 500),
+                        crossFadeState: isExpanded[x.key] == null ? CrossFadeState.showFirst : (isExpanded[x.key] ? CrossFadeState.showSecond : CrossFadeState.showFirst),
+                        firstChild: ChoiceChip(
+                          selected: false,
+                          clipBehavior: Clip.antiAlias,
+                          //color: Colors.white,
+                          //shadowColor: Colors.transparent,
+                          //surfaceTintColor: Colors.transparent,
+                          label: Text("${x.value.toString()} [${(timetable[x.key] ?? []).length}]", style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold
+                          ),),
+                        ),
+                        secondChild: Wrap(
+                          runAlignment: WrapAlignment.center,
+                          runSpacing: 0,
+                          spacing: 0,
+                          //mainAxisSize: MainAxisSize.min,
+                          children: [
+                            global.textWidgetWithHeavyFont("${x.value} :"),
+                        
+                            for(int y in timetable[x.key]??{} )
+                              Padding(
+                                padding: const EdgeInsets.all(2.0),
+                                child: Container(
+                                  height: 30,
+                                  clipBehavior: Clip.antiAlias,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.cyanAccent),
+                                    borderRadius: BorderRadius.circular(10)
+                                  ),
+                        
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      InkWell(
+                                        onTap: () {
+                                          setState(() => timetable[x.key].remove(y));
+                                          data["timeTable"] = timetable;
+                                        },
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(left : 8.0, top : 8.0, bottom: 8),
+                                          child: Icon(
+                                            Icons.close, 
+                                            color: Theme.of(context).textSelectionTheme.selectionColor,size: 15,
+                                          ),
+                                        ),
+                                      ),
+                                      
+                                      
+                                      Padding(
+                                        padding: const EdgeInsets.only(right: 5, left: 3, top: 2, bottom: 2),
+                                        child: global.textWidget(courseList[y]["name"]),
+                                      ),
+                        
+                                    ],
+                                  ),
+                                ),
+                              )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                )])
+        
+              ,
+        
+                SizedBox(height:40),
               SizedBox(height: 30)
             ],
           ),
