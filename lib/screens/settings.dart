@@ -189,19 +189,19 @@ class _settingsState extends State<settings> {
             ],
           ),
 
-          ElevatedButton(
-            onPressed: () {
-              global.accountType == 2 ? promptStudentsInfoEdit() : promptStaffInfoEdit();
-            },
-            style:
-                ElevatedButton.styleFrom(primary: Theme.of(context).buttonColor, shadowColor: Colors.transparent),
-            child: Text("Change your ${global.accountType == 2 ? "Student" : "Faculty"} information data",
-                style: TextStyle(
-                    fontSize: 12,
-                    color: Theme.of(context).textSelectionTheme.selectionColor
-              )
-            ),
-          ),
+          // ElevatedButton(
+          //   onPressed: () {
+          //     global.accountType == 2 ? promptStudentsInfoEdit() : promptStaffInfoEdit();
+          //   },
+          //   style:
+          //       ElevatedButton.styleFrom(primary: Theme.of(context).buttonColor, shadowColor: Colors.transparent),
+          //   child: Text("Change your ${global.accountType == 2 ? "Student" : "Faculty"} information data",
+          //       style: TextStyle(
+          //           fontSize: 12,
+          //           color: Theme.of(context).textSelectionTheme.selectionColor
+          //     )
+          //   ),
+          // ),
 
           ElevatedButton(
             onPressed: () {

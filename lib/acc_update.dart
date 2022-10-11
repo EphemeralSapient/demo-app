@@ -71,8 +71,6 @@ void initUpdater(bool? override) async {
         info = get.data as Map;
       }
 
-
-
       if(global.classroom_data == {}) {
         global.classroom_data = Map.from(info);
       }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:ngp/global.dart' as global;
 import 'package:flutter/widgets.dart';
+import 'package:ngp/sub_screen/infoEdit.dart';
 import 'package:ngp/ui/leaveForm.dart';
 
 class moreActionsShort extends StatelessWidget {
@@ -23,6 +24,23 @@ class moreActionsShort extends StatelessWidget {
         onPressed: () {
           debugPrint("Go to leave form page");
           leaveFormPrompt(context);
+        },
+        style: ElevatedButton.styleFrom(
+              shadowColor: Colors.transparent,
+              primary: Colors.transparent,
+              surfaceTintColor: Colors.transparent,
+              onPrimary: Theme.of(context).buttonColor
+            )
+      )
+    );
+
+    childrens.add(
+      ElevatedButton.icon(
+        icon: Icon(Icons.edit, color: Theme.of(context).textSelectionTheme.cursorColor,),
+        label: global.textWidget("Edit your faculty information"),
+
+        onPressed: () {
+          promptStaffInfoEdit();
         },
         style: ElevatedButton.styleFrom(
               shadowColor: Colors.transparent,
@@ -56,13 +74,14 @@ class moreActionsShort extends StatelessWidget {
       )
     );
 
-
     childrens.add(
       ElevatedButton.icon(
-        icon: Icon(Icons.request_quote, color: Theme.of(context).textSelectionTheme.cursorColor,),
-        label: global.textWidget("What to add here? hmmmmm"),
+        icon: Icon(Icons.edit, color: Theme.of(context).textSelectionTheme.cursorColor,),
+        label: global.textWidget("Edit your student information"),
 
-        onPressed: () {},
+        onPressed: () {
+          promptStudentsInfoEdit();
+        },
         style: ElevatedButton.styleFrom(
               shadowColor: Colors.transparent,
               primary: Colors.transparent,
