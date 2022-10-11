@@ -175,7 +175,7 @@ Future<void> fnInit() async {
         });
       } else if (flag == false && ttS[timeNow.weekday.toString()] == null) {
         flag = true;
-        subjectName[next] = "Is this sunday? hoLiDaY";
+        subjectName[next] = "No class info";
         startTime[next] = "00:00";
         endTime[next] = "00:00";
 
