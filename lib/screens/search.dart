@@ -126,7 +126,7 @@ class _searchState extends State<search> {
 
     return AnimatedContainer(
       duration: Duration(seconds: 1),
-      color: bgColor,
+      color: searchSorted.isEmpty ? Colors.red.withOpacity(0.5) : bgColor,
       padding: EdgeInsets.only(top: 10, right: 10, left: 10, bottom: 60),
 
       child: Stack(
@@ -175,7 +175,7 @@ class _searchState extends State<search> {
                                   child: ClipOval(
                                     child: x["avatar"] != null
                                         ? FadeInImage.assetNetwork(placeholder: "asset/images/loading.gif", image: x["avatar"])
-                                        : const Icon(Icons.person),
+                                        : Icon(Icons.person, color: Theme.of(context).textSelectionTheme.selectionColor!),
                                   ),
                                 ),
                       
@@ -205,6 +205,7 @@ class _searchState extends State<search> {
           
           StatefulDragArea(
             callback: () {
+              searchSorted = accounts;
               setState(() {});
             },
             child: searchBar,

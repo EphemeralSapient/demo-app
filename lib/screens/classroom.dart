@@ -30,6 +30,12 @@ class _classroomState extends State<classroom> {
   bool loading = true;
   bool isDisposed = false;
 
+  int selfAbsentCount = 0;
+  int selfOnDutyCount = 0;
+
+  int classAbsentCount = 0;
+  int classOnDutyCount = 0;
+
   @override void dispose() {
     super.dispose();
     isDisposed = true;
@@ -43,17 +49,32 @@ class _classroomState extends State<classroom> {
 
     Future.delayed(const Duration(), () async { 
       if(global.accountType == 2){
-         var get = await global.Database!.get( global.Database!.addCollection("classroom", "/class"), global.accObj!.classBelong!);
+        data=global.classroom_data;
 
-        if(get.status == db_fetch_status.nodata) {
-          // Create the damned thing
-          var data = {"department" : global.accObj!.department, "classCode" : global.accObj!.classBelong ,"year" : global.accObj!.year ,"section" : global.accObj!.section};
-          await global.Database!.create(global.collectionMap["classroom"]!, global.accObj!.classBelong!, data);
-          info = data;
-        } else {
-          info = get.data as Map;
+        //Counting the data for absent and on duty
+        String selfRollNo = (int.parse(global.accObj!.rollNo!.substring(global.accObj!.rollNo!.length-3))).toString();
+
+        for(var dates in (data["leaveData"] as Map).entries) {
+          for(var x in ((dates.value as List).last as Map).entries) {
+            if(x.key != "checkBy") {
+              if(x.value == false) {
+                if(x.key == selfRollNo) {
+                  selfOnDutyCount++;
+                }
+                classOnDutyCount++;
+              } else {
+                if(x.key == selfRollNo) {
+                  selfAbsentCount++;
+                }
+                classAbsentCount++;
+              }
+
+            }
+          }
         }
-        data=info;
+
+
+
       } else {
         CollectionReference _collectionRef = global.Database!.addCollection("classroom", "/class");
         QuerySnapshot querySnapshot = await _collectionRef.get();
@@ -145,8 +166,7 @@ class _classroomState extends State<classroom> {
                                   borderOnForeground: false,
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
-                                    child: Stack(
-                                      clipBehavior: Clip.none,
+                                    child: Column(
                                       children: [
                                         Padding(
                                           padding: const EdgeInsets.all(8.0),
@@ -155,25 +175,13 @@ class _classroomState extends State<classroom> {
 
                                         Padding(
                                           padding: const EdgeInsets.all(8.0),
-                                          child: Center(
-                                            child: SemicircularIndicator(
-                                              radius: 30,
-                                              strokeWidth: 2,
-                                              contain: true,
-                                              backgroundColor: Colors.white,
-                                              color: Colors.orange,
-                                              bottomPadding: 0,
-                                              child: Text(
-                                                '75%',
-                                                style: TextStyle(
-                                                    fontSize: 15,
-                                                    fontWeight: FontWeight.w600,
-                                                    color: Theme.of(context).textSelectionTheme.cursorColor),
-                                              ),
-                                            ),
-                                          ),
+                                          child: global.textDoubleSpanWiget("Absent: ", selfAbsentCount.toString())
                                         ),
 
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: global.textDoubleSpanWiget("On-Duty: ", selfOnDutyCount.toString())
+                                        ),
                                       ],
                                     )
                                   ),
@@ -252,7 +260,94 @@ class _classroomState extends State<classroom> {
                     child: SizedBox(
                       width: double.infinity,
                       height: 150,
-                      child: SingleChildScrollView()
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            children: [
+                              SizedBox(
+                                height: 130,
+                                width: 110,
+                                child: Card(
+                                  color: Theme.of(context).buttonColor.withOpacity(0.6),
+                                  surfaceTintColor: Colors.transparent,
+                                  shadowColor: Colors.transparent,
+                                  borderOnForeground: false,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: global.textWidget("Attendance"),
+                                        ),
+
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: global.textDoubleSpanWiget("Absent: ", classAbsentCount.toString())
+                                        ),
+
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: global.textDoubleSpanWiget("On-Duty: ", classOnDutyCount.toString())
+                                        ),
+                                      ],
+                                    )
+                                  ),
+                                ),
+                              ),
+
+
+                              SizedBox(
+                                height: 130,
+                                width: 110,
+                                child: Card(
+                                  color: Theme.of(context).buttonColor.withOpacity(0.6),
+                                  surfaceTintColor: Colors.transparent,
+                                  shadowColor: Colors.transparent,
+                                  borderOnForeground: false,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Stack(
+                                      clipBehavior: Clip.none,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: global.textWidget("Avg score"),
+                                        ),
+
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Center(
+                                            child: SemicircularIndicator(
+                                              radius: 30,
+                                              strokeWidth: 2,
+                                              progress: 0.35,
+                                              contain: true,
+                                              backgroundColor: Colors.white,
+                                              color: Colors.blue,
+                                              bottomPadding: 0,
+                                              child: Text(
+                                                '35%',
+                                                style: TextStyle(
+                                                    fontSize: 15,
+                                                    fontWeight: FontWeight.w600,
+                                                    color: Theme.of(context).textSelectionTheme.cursorColor),
+                                              ),
+                                            ),
+                                          ),
+                                        ), 
+
+                                      ],
+                                    )
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
                     )
                   ),
                 ),
