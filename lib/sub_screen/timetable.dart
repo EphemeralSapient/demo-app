@@ -48,7 +48,7 @@ Future<void> fnInit() async {
             debugPrint(e.toString());
             courseItem = {"name" : "Unknown", "faculty" : "Unknown"};
           }
-          l.add("${courseItem["name"]}  by ${courseItem["faculty"]}");
+          l.add("${courseItem["name"]}  ${courseItem["faculty"] == "no one" ? "" : "by ${courseItem["faculty"]}"}");
         }
 
         if(l.length < 10) {

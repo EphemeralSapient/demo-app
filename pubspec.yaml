@@ -58,6 +58,7 @@ dependencies:
   flutter_spinkit: ^5.1.0
   flutter_colorpicker: ^1.0.3
   semicircle_indicator: ^1.1.1
+  string_similarity: ^2.0.0
 
 dev_dependencies:
   flutter_test:

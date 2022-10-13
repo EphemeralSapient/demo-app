@@ -28,6 +28,13 @@ class _classroomState extends State<classroom> {
   Map<dynamic,dynamic> info = {};
   List<dynamic> allClassInfo = [];
   bool loading = true;
+  bool isDisposed = false;
+
+  @override void dispose() {
+    super.dispose();
+    isDisposed = true;
+  }
+
 
   @override void initState() {
     super.initState();
@@ -53,7 +60,9 @@ class _classroomState extends State<classroom> {
         allClassInfo = querySnapshot.docs.map((doc) => doc.data()).toList();
       }
 
-      setState( () => loading = false);
+      if(isDisposed == false) {
+        setState( () => loading = false);
+      }
 
     });
   }

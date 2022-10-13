@@ -198,22 +198,22 @@ void initUpdater(bool? override) async {
             global.updateListToStorage("timetable_timing", jsonEncode(fetchedData["time"]));
           } else { canUpdate = false; debugPrint("${get.status} | ${get.data.toString()}");}
   
-        } if(oh["timetable_subject"] != nh["timetable_subject"]){
-           debugPrint("Updating time table subject data");
-          // Time table subjects contains Map<String, Map<String, dynamic>>
-          var ttCollectRef = global.Database!.addCollection("course", "/course");
+        // } if(oh["timetable_subject"] != nh["timetable_subject"]){
+        //    debugPrint("Updating time table subject data");
+        //   // Time table subjects contains Map<String, Map<String, dynamic>>
+        //   var ttCollectRef = global.Database!.addCollection("course", "/course");
 
-          var get = await global.Database!.get(ttCollectRef, newData.classBelong ?? "??");
-          debugPrint("Updating time table subjects [/course] for ${newData.classBelong ?? "??"} class.");
+        //   var get = await global.Database!.get(ttCollectRef, newData.classBelong ?? "??");
+        //   debugPrint("Updating time table subjects [/course] for ${newData.classBelong ?? "??"} class.");
 
-          if(get.status == db_fetch_status.exists) {
-            dynamic fetchedData = get.data;
-            fetchedData = fetchedData["courseMap"];
+        //   if(get.status == db_fetch_status.exists) {
+        //     dynamic fetchedData = get.data;
+        //     fetchedData = fetchedData["courseMap"];
 
-            debugPrint("Successfully fetched the time table subject data! | ${fetchedData.toString()}");
-            global.timetable_subject = fetchedData;
-            global.updateListToStorage("timetable_subject", jsonEncode(fetchedData));
-          } else { canUpdate = false; debugPrint("${get.status} | ${get.data.toString()}");}
+        //     debugPrint("Successfully fetched the time table subject data! | ${fetchedData.toString()}");
+        //     global.timetable_subject = fetchedData;
+        //     global.updateListToStorage("timetable_subject", jsonEncode(fetchedData));
+        //   } else { canUpdate = false; debugPrint("${get.status} | ${get.data.toString()}");}
         } if(oh["course_data"] != nh["course_data"]) {
           debugPrint("Updating course data");
           // Contains course info such as subject full details

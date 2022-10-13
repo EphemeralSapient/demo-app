@@ -23,11 +23,13 @@ class _staffs_infoState extends State<staffs_info> {
   TextEditingController firstName = TextEditingController(text: global.accObj?.firstName);
   TextEditingController lastName = TextEditingController(text: global.accObj?.lastName);
   TextEditingController phoneNo = TextEditingController(text: global.nullIfNullElseString(global.accObj?.phoneNo));
+  TextEditingController facultyCode = TextEditingController(text: global.nullIfNullElseString(global.accObj?.facultyCode));
   TextEditingController passwordController = TextEditingController(text: global.passcode);
 
   Map<String, dynamic> choices = {};
 
   String title = global.accObj!.title ?? "Mr./Mrs.";
+  String designation = global.accObj!.position ?? "Designation";
 
   bool ob = true;
 
@@ -94,7 +96,7 @@ class _staffs_infoState extends State<staffs_info> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Future.delayed(const Duration(), () async {
-            if(firstName.text == "" || title == "Mr./Mrs." || lastName.text == "" || phoneNo.text == "" || passwordController.text == "") {
+            if(firstName.text == "" || designation == "Designation" || title == "Mr./Mrs." || lastName.text == "" || phoneNo.text == "" || passwordController.text == "") {
               global.alert.quickAlert(
                 context,
                 global.textWidget("Please fill the following form")
@@ -110,10 +112,13 @@ class _staffs_infoState extends State<staffs_info> {
                 newAcc.lastName = lastName.text;
                 newAcc.lastSeen = Timestamp.now();
                 newAcc.updatedAt = Timestamp.now();
+                newAcc.avatarUrl = global.account?.photoURL;
                 newAcc.phoneNo = int.parse(phoneNo.text);
                 newAcc.isStudent = false;
                 newAcc.title = title;
                 newAcc.handlingDepartment = [];
+                newAcc.position = designation;
+                newAcc.facultyCode = int.parse(facultyCode.text);
                 for(var x in choices.entries) {
                   if(x.value[0] == true) {
                     newAcc.handlingDepartment!.add(x.key);
@@ -197,6 +202,26 @@ class _staffs_infoState extends State<staffs_info> {
             const SizedBox(height: 25),          
 
             global.textField("Phone Number", preText: "+91 " ,controller: phoneNo , initialText: phoneNo.text,keyboardType: TextInputType.number, inputFormats: [ FilteringTextInputFormatter.digitsOnly ] , maxLength: 10),
+
+            const SizedBox(height: 25),
+
+            global.textField("Faculty Code Number",controller: facultyCode , initialText: facultyCode.text,keyboardType: TextInputType.number, inputFormats: [ FilteringTextInputFormatter.digitsOnly ] , maxLength: 5),
+
+            const SizedBox(height: 25),
+
+            DropdownButton(
+              hint: global.textWidget("Designation"),
+              dropdownColor: Theme.of(context).buttonColor.withOpacity(0.8),
+              isExpanded: true,
+              value: designation,
+              items : [
+                for(String val in ["Designation", "Head of the Department", "Professor", "Associate Professor", "Assistant Professor (SG)", "Assistant Professor"])
+                  DropdownMenuItem(value: val, child: global.textWidget(val))
+              ],
+              onChanged : (val) {
+                setState(() => designation = val.toString());
+              }
+            ),
 
             const SizedBox(height: 25),
 
@@ -304,6 +329,7 @@ class _stuents_infoState extends State<students_info> {
                 newAccObj.updatedAt = Timestamp.now();
                 newAccObj.firstName = firstName.text;
                 newAccObj.lastName = lastName.text;
+                newAccObj.avatarUrl = global.account?.photoURL;
                 newAccObj.phoneNo = int.parse(phoneNo.text);
                 newAccObj.collegeBus = busStudent;
                 newAccObj.collegeBusId = int.parse(busNo.text != "" ? busNo.text : "0");

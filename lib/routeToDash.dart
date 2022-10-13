@@ -13,6 +13,7 @@ import 'package:ngp/database.dart';
 import 'package:ngp/screens/classroom.dart';
 import 'package:ngp/screens/dashboard.dart';
 import 'package:ngp/screens/profile.dart';
+import 'package:ngp/screens/search.dart';
 import 'package:ngp/screens/settings.dart';
 import 'package:ngp/sub_screen/infoEdit.dart';
 import 'package:ngp/acc_update.dart';
@@ -161,7 +162,7 @@ class _dashboardState extends State<dashboard> {
         children: <Widget>[
           dash(),
           classroom(),
-          Container(color: Colors.blueGrey,),
+          search(),
           const settings(),
           profile(),
           Container(color: Colors.blue,),

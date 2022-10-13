@@ -29,6 +29,7 @@ class account_obj {
 
   String? classBelong = "None";
   String? firstName, lastName;
+  String? avatarUrl;
 
   String? title;
 
@@ -50,6 +51,8 @@ class account_obj {
   
   // Staff
   List<dynamic>? handlingDepartment;
+  int? facultyCode;
+  String? position;
   
 
   String? department = "-";
@@ -73,6 +76,7 @@ class account_obj {
     newObj.firstName = Data["firstName"] as String?;
     newObj.lastName = Data["lastName"] as String?;
     newObj.rollNo = Data["rollNo"] as String?;
+    newObj.avatarUrl = Data["avatar"] as String?;
 
     newObj.isDayscholar = Data["isDayscholar"] as bool?;
     newObj.collegeBus = Data["collegeBus"] as bool?;
@@ -89,6 +93,8 @@ class account_obj {
     newObj.section = Data["section"] as String?;
     
     newObj.handlingDepartment = Data["handlingDepartment"] as List<dynamic>?;
+    newObj.facultyCode = Data["facultyCode"] as int?;
+    newObj.position = Data["position"] as String?;
 
     newObj.title = Data["title"] as String?;
 
@@ -109,6 +115,7 @@ class account_obj {
       "lastSeen" : lastSeen,
       "firstName" : firstName,
       "lastName" : lastName,
+      "avatar" : avatarUrl,
 
       "rollNo" : rollNo,
       "registerNum" : registerNum,
@@ -118,6 +125,8 @@ class account_obj {
       "collegeBusId" : collegeBusId,
 
       "handlingDepartment" : handlingDepartment,
+      "facultyCode" : facultyCode,
+      "position" : position,
       
       "new" : true,
       "notifications" : notificationCount,

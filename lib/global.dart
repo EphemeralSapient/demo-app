@@ -97,6 +97,7 @@ dynamic temp;
 dynamic quickAlertGlobalVar;
 dynamic uiSecondaryScrollPhysics = const NeverScrollableScrollPhysics();
 dynamic restartApp;
+Offset? dragUiPosition;
 Widget? uiSecondaryWidgetFn;
 Color uiBackgroundColor = Colors.lightBlueAccent;
 
