@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:ngp/database.dart';
 import 'package:ngp/global.dart' as global;
 import 'package:flutter/material.dart';
@@ -147,7 +148,15 @@ String hod = "No one";
               const EdgeInsets.only(top: 30, bottom: 30, left: 10, right: 10),
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            children: [
+            children: AnimationConfiguration.toStaggeredList(
+              duration: const Duration(milliseconds: 375),
+              childAnimationBuilder: (widget) => SlideAnimation(
+                verticalOffset: 50.0,
+                child: FadeInAnimation(
+                  child: widget,
+                ),
+              ),
+              children:[
               Row(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -739,6 +748,7 @@ String hod = "No one";
               ),
       
             ],
+            )
           ),
         ),
       ),

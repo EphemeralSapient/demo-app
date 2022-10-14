@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:ngp/sub_screen/assignments.dart';
 import 'package:ngp/sub_screen/modifyTimeTable.dart';
 import 'package:ngp/sub_screen/moreActions.dart';
@@ -38,94 +39,104 @@ class _dashState extends State<dash> {
 
         //child:
          SingleChildScrollView(
-          child: Column(children: [
-      
-            SizedBox(
-              height: 200,
-              child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Stack(
-                    children: [
+          child: Column(
+              children: AnimationConfiguration.toStaggeredList(
+              duration: const Duration(milliseconds: 375),
+              childAnimationBuilder: (widget) => SlideAnimation(
+                horizontalOffset: -150.0,
+                child: FadeInAnimation(
+                  child: widget,
+                ),
+              ),
+              children: [
         
-                      Container(
-                        padding: const EdgeInsets.all(3),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(50),
-                          color: Colors.transparent,
-                          border: Border.all(
-                            width: 1.1,
-                            color: Colors.red,
+              SizedBox(
+                height: 200,
+                child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Stack(
+                      children: [
+          
+                        Container(
+                          padding: const EdgeInsets.all(3),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(50),
+                            color: Colors.transparent,
+                            border: Border.all(
+                              width: 1.1,
+                              color: Colors.red,
+                            ),
+                          ),
+                          width: 45,
+                          height: 45,
+                          child: ClipOval(
+                            child: global.account?.isAnonymous != true
+                                ? FadeInImage.assetNetwork(placeholder: "asset/images/loading.gif", image: global.account!.photoURL!)
+                                : const Icon(Icons.person),
                           ),
                         ),
-                        width: 45,
-                        height: 45,
-                        child: ClipOval(
-                          child: global.account?.isAnonymous != true
-                              ? FadeInImage.assetNetwork(placeholder: "asset/images/loading.gif", image: global.account!.photoURL!)
-                              : const Icon(Icons.person),
-                        ),
-                      ),
-                      Positioned(
-                          top: 20,
-                          left: 60,
-                          child: RichText(
-                              text: TextSpan(children: [
-                            TextSpan(
-                                text: "Welcome, ",
-                                style: TextStyle(
-                                  fontSize: 11,
-                                    color: Theme.of(context)
-                                        .textSelectionTheme
-                                        .selectionHandleColor,
-                                    fontFamily: "Montserrat")),
-                            TextSpan(
-                                text: global.account!.isAnonymous == true
-                                    ? "Guest"
-                                    : (global.accObj != null && global.accObj?.firstName != null)
-                                      ? "${global.accObj!.title ?? ""} ${global.accObj!.firstName} ${global.accObj!.lastName}"
-                                      : "${global.account!.displayName}!",
-                                style: TextStyle(
-                                  fontSize: 12,
-                                    color: Theme.of(context)
-                                        .textSelectionTheme
-                                        .cursorColor,
-                                    fontFamily: "Montserrat"))
-                          ]))),
-                      Padding(
-                          padding: EdgeInsets.only(top: 60, left: 75),
-                          child: timetable_short(),)
-                   
+                        Positioned(
+                            top: 20,
+                            left: 60,
+                            child: RichText(
+                                text: TextSpan(children: [
+                              TextSpan(
+                                  text: "Welcome, ",
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                      color: Theme.of(context)
+                                          .textSelectionTheme
+                                          .selectionHandleColor,
+                                      fontFamily: "Montserrat")),
+                              TextSpan(
+                                  text: global.account!.isAnonymous == true
+                                      ? "Guest"
+                                      : (global.accObj != null && global.accObj?.firstName != null)
+                                        ? "${global.accObj!.title ?? ""} ${global.accObj!.firstName} ${global.accObj!.lastName}"
+                                        : "${global.account!.displayName}!",
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                      color: Theme.of(context)
+                                          .textSelectionTheme
+                                          .cursorColor,
+                                      fontFamily: "Montserrat"))
+                            ]))),
+                        Padding(
+                            padding: EdgeInsets.only(top: 60, left: 75),
+                            child: timetable_short(),)
                     
-                    
-                    ],
-                  )),
-            ),
-            
-            Padding(
-              padding: EdgeInsets.all(20),
-              child: Column(
-                children: [
-                  global.accountType != 3 ? notifyUi() : const SizedBox(), // Meant only for students and faculty 
-      
-                  const SizedBox(height: 25,),
-      
-                  global.accountType != 3 ? moreActionsShort() : const SizedBox(),
-      
-                  eventsUi(), // Can be accessed by any member
-      
-                  const SizedBox(height: 25,),
-      
-                  global.accountType == 2 ? assignmentUi() : const SizedBox(),
-      
-                  //global.accountType == 1 ? modifyTimetableUi() : const SizedBox(),
-      
-                  
-                ],
+                      
+                      
+                      ],
+                    )),
               ),
-            ),
-          
-            const SizedBox(height: 100)
-          ]),
+              
+              Padding(
+                padding: EdgeInsets.all(20),
+                child: Column(
+                  children: [
+                    global.accountType != 3 ? notifyUi() : const SizedBox(), // Meant only for students and faculty 
+        
+                    const SizedBox(height: 25,),
+        
+                    global.accountType != 3 ? moreActionsShort() : const SizedBox(),
+        
+                    eventsUi(), // Can be accessed by any member
+        
+                    const SizedBox(height: 25,),
+        
+                    global.accountType == 2 ? assignmentUi() : const SizedBox(),
+        
+                    //global.accountType == 1 ? modifyTimetableUi() : const SizedBox(),
+        
+                    
+                  ],
+                ),
+              ),
+            
+              const SizedBox(height: 100)
+            ]),
+          )
         ),
       //),
     );

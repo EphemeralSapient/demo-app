@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:ngp/database.dart';
 import 'package:ngp/global.dart' as global;
 import 'package:ngp/ui/toggleButton.dart';
@@ -158,17 +159,44 @@ class _staffs_infoState extends State<staffs_info> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       backgroundColor: Theme.of(context).backgroundColor,
+      appBar: AppBar(
+        title: global.textWidgetWithHeavyFont("Staff Information Form"),
+        centerTitle: true,
+        leading: IconButton(
+          onPressed: () {
+            global.switchToPrimaryUi();
+          },
+          icon: Icon(Icons.arrow_back, color: Theme.of(context).textSelectionTheme.selectionHandleColor,),
+        ),
+        backgroundColor: Theme.of(context).buttonColor.withOpacity(0.8),
+        shadowColor: Colors.transparent,
+        foregroundColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+              bottomRight: Radius.circular(35),
+              bottomLeft: Radius.circular(35)),
+        ),
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(25),
         //reverse: true,
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          children: [  
-            Center(
-                child: global.textWidgetWithHeavyFont(
-                    "Staff Information Form [Required]")),
+          children: AnimationConfiguration.toStaggeredList(
+            duration: const Duration(milliseconds: 375),
+            childAnimationBuilder: (widget) => SlideAnimation(
+              horizontalOffset: 50.0,
+              child: FadeInAnimation(
+                child: widget,
+              ),
+            ),
+            children:[  
+            // Center(
+            //     child: global.textWidgetWithHeavyFont(
+            //         "Staff Information Form [Required]")),
 
-            const SizedBox(height: 40),
+            //const SizedBox(height: 40),
             // Name
             Row(
               mainAxisSize: MainAxisSize.min,
@@ -272,6 +300,7 @@ class _staffs_infoState extends State<staffs_info> {
               ],
             )
           ]
+          )
         )
       )
     );
@@ -370,17 +399,44 @@ class _stuents_infoState extends State<students_info> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       backgroundColor: Theme.of(context).backgroundColor,
+      appBar: AppBar(
+        title: global.textWidgetWithHeavyFont("Student Information Form"),
+        centerTitle: true,
+        leading: IconButton(
+          onPressed: () {
+            global.switchToPrimaryUi();
+          },
+          icon: Icon(Icons.arrow_back, color: Theme.of(context).textSelectionTheme.selectionHandleColor,),
+        ),
+        backgroundColor: Theme.of(context).buttonColor.withOpacity(0.8),
+        shadowColor: Colors.transparent,
+        foregroundColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+              bottomRight: Radius.circular(35),
+              bottomLeft: Radius.circular(35)),
+        ),
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(25),
         //reverse: true,
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          children: [
-            Center(
-                child: global.textWidgetWithHeavyFont(
-                    "Student Information Form [Required]")),
+          children: AnimationConfiguration.toStaggeredList(
+            duration: const Duration(milliseconds: 375),
+            childAnimationBuilder: (widget) => SlideAnimation(
+              horizontalOffset: 50.0,
+              child: FadeInAnimation(
+                child: widget,
+              ),
+            ),
+            children:[
+            // Center(
+            //     child: global.textWidgetWithHeavyFont(
+            //         "Student Information Form [Required]")),
 
-            const SizedBox(height: 40),
+            //const SizedBox(height: 40),
             // Name
             Row(
               mainAxisSize: MainAxisSize.min,
@@ -503,6 +559,7 @@ class _stuents_infoState extends State<students_info> {
 
 
           ],
+          )
         ),
       ),
     );

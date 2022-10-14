@@ -23,7 +23,7 @@ Future main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-
+  debugPrint("running the app now");
   runApp(
     RestartWidget(
       child: const MyApp(),

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:ngp/database.dart';
 import 'package:ngp/global.dart' as global;
 import 'package:intl/intl.dart';
@@ -80,7 +81,15 @@ class _viewLeaveStudentState extends State<viewLeaveStudent> {
       body: (updated == true) ? SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+          children: AnimationConfiguration.toStaggeredList(
+            duration: const Duration(milliseconds: 375),
+            childAnimationBuilder: (widget) => SlideAnimation(
+              horizontalOffset: 50.0,
+              child: FadeInAnimation(
+                child: widget,
+              ),
+            ),
+            children:[
             SizedBox(height: 30),
             Text(
               "     PENDING",
@@ -466,6 +475,7 @@ class _viewLeaveStudentState extends State<viewLeaveStudent> {
                 ),
               )
           ],
+          )
         ),
       ) : Center(child: SpinKitWave(color: Theme.of(context).textSelectionTheme.selectionColor,))
     );
@@ -578,7 +588,15 @@ class _viewLeaveFacultyState extends State<viewLeaveFaculty> {
       body: (updated == true) ? SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+          children: AnimationConfiguration.toStaggeredList(
+            duration: const Duration(milliseconds: 375),
+            childAnimationBuilder: (widget) => SlideAnimation(
+              horizontalOffset: 50.0,
+              child: FadeInAnimation(
+                child: widget,
+              ),
+            ),
+            children:[
             SizedBox(height: 30),
             Text(
               "     PENDING",
@@ -871,6 +889,7 @@ class _viewLeaveFacultyState extends State<viewLeaveFaculty> {
               )
           
           ]     
+          )
         )
       )  : Center(child: SpinKitWave(color: Theme.of(context).textSelectionTheme.selectionColor,))
     );

@@ -121,10 +121,12 @@ class _dashboardState extends State<dashboard> {
   Widget build(context) {
     List<Icon> items = [
       Icon(Icons.dashboard, size: 23, color: Theme.of(context).shadowColor),
-      Icon(Icons.class_rounded, size: 23,color: Theme.of(context).shadowColor),
+      if(global.accountType != 3)
+       Icon(Icons.class_rounded, size: 23,color: Theme.of(context).shadowColor),
       Icon(Icons.search, size: 23,color: Theme.of(context).shadowColor),
       Icon(Icons.settings, size: 23, color: Theme.of(context).shadowColor),
-      Icon(Icons.person,size: 23, color: Theme.of(context).shadowColor),
+      if(global.accountType != 3)
+        Icon(Icons.person,size: 23, color: Theme.of(context).shadowColor),
     ];
     debugPrint("Building route for nagivation [routeToDash]");
 
@@ -161,10 +163,12 @@ class _dashboardState extends State<dashboard> {
         //},
         children: <Widget>[
           dash(),
-          classroom(),
+          if(global.accountType != 3)
+            classroom(),
           search(),
           const settings(),
-          profile(),
+          if(global.accountType != 3)
+            profile(),
           Container(color: Colors.blue,),
         ],
       ))

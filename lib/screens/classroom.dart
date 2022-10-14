@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:ui';
 
 import 'package:flutter/services.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:intl/intl.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -118,278 +119,287 @@ class _classroomState extends State<classroom> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
 
-              children: [
-                global.padHeight(10),
-                Card(
-                  color: Theme.of(context).buttonColor.withOpacity(0.3),
-                  surfaceTintColor: Colors.transparent,
-                  shadowColor: Colors.transparent,
-                  borderOnForeground: false,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text("         ${global.accObj!.year!.toUpperCase()}   ${global.accObj!.department!.toUpperCase()}-${global.accObj!.section!.toUpperCase()}         ", 
-                      style: TextStyle(
-                        color: Theme.of(context).textSelectionTheme.selectionHandleColor,
-                        fontSize: 23
+              children: AnimationConfiguration.toStaggeredList(
+                duration: const Duration(milliseconds: 300),
+                childAnimationBuilder: (widget) => SlideAnimation(
+                  verticalOffset: 50.0,
+                  child: FadeInAnimation(
+                    child: widget,
+                  ),
+                ),
+                children:[
+                  global.padHeight(10),
+                  Card(
+                    color: Theme.of(context).buttonColor.withOpacity(0.3),
+                    surfaceTintColor: Colors.transparent,
+                    shadowColor: Colors.transparent,
+                    borderOnForeground: false,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text("         ${global.accObj!.year!.toUpperCase()}   ${global.accObj!.department!.toUpperCase()}-${global.accObj!.section!.toUpperCase()}         ", 
+                        style: TextStyle(
+                          color: Theme.of(context).textSelectionTheme.selectionHandleColor,
+                          fontSize: 23
+                        ),
                       ),
                     ),
                   ),
-                ),
 
-                global.padHeight(45),
+                  global.padHeight(45),
 
-                global.textWidgetWithHeavyFont("PERSONAL RECORD"),
-                global.padHeight(10),
-                Card(
-                  color: Theme.of(context).buttonColor.withOpacity(0.3),
-                  surfaceTintColor: Colors.transparent,
-                  shadowColor: Colors.transparent,
-                  borderOnForeground: false,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: SizedBox(
-                      width: double.infinity,
-                      height: 150,
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            children: [
-                              SizedBox(
-                                height: 130,
-                                width: 110,
-                                child: Card(
-                                  color: Theme.of(context).buttonColor.withOpacity(0.6),
-                                  surfaceTintColor: Colors.transparent,
-                                  shadowColor: Colors.transparent,
-                                  borderOnForeground: false,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Column(
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: global.textWidget("Attendance"),
-                                        ),
+                  global.textWidgetWithHeavyFont("PERSONAL RECORD"),
+                  global.padHeight(10),
+                  Card(
+                    color: Theme.of(context).buttonColor.withOpacity(0.3),
+                    surfaceTintColor: Colors.transparent,
+                    shadowColor: Colors.transparent,
+                    borderOnForeground: false,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SizedBox(
+                        width: double.infinity,
+                        height: 150,
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                                SizedBox(
+                                  height: 130,
+                                  width: 110,
+                                  child: Card(
+                                    color: Theme.of(context).buttonColor.withOpacity(0.6),
+                                    surfaceTintColor: Colors.transparent,
+                                    shadowColor: Colors.transparent,
+                                    borderOnForeground: false,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Column(
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: global.textWidget("Attendance"),
+                                          ),
 
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: global.textDoubleSpanWiget("Absent: ", selfAbsentCount.toString())
-                                        ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: global.textDoubleSpanWiget("Absent: ", selfAbsentCount.toString())
+                                          ),
 
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: global.textDoubleSpanWiget("On-Duty: ", selfOnDutyCount.toString())
-                                        ),
-                                      ],
-                                    )
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: global.textDoubleSpanWiget("On-Duty: ", selfOnDutyCount.toString())
+                                          ),
+                                        ],
+                                      )
+                                    ),
                                   ),
                                 ),
-                              ),
 
 
-                              SizedBox(
-                                height: 130,
-                                width: 110,
-                                child: Card(
-                                  color: Theme.of(context).buttonColor.withOpacity(0.6),
-                                  surfaceTintColor: Colors.transparent,
-                                  shadowColor: Colors.transparent,
-                                  borderOnForeground: false,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Stack(
-                                      clipBehavior: Clip.none,
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: global.textWidget("Test score"),
-                                        ),
+                                SizedBox(
+                                  height: 130,
+                                  width: 110,
+                                  child: Card(
+                                    color: Theme.of(context).buttonColor.withOpacity(0.6),
+                                    surfaceTintColor: Colors.transparent,
+                                    shadowColor: Colors.transparent,
+                                    borderOnForeground: false,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Stack(
+                                        clipBehavior: Clip.none,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: global.textWidget("Test score"),
+                                          ),
 
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Center(
-                                            child: SemicircularIndicator(
-                                              radius: 30,
-                                              strokeWidth: 2,
-                                              progress: 0.35,
-                                              contain: true,
-                                              backgroundColor: Colors.white,
-                                              color: Colors.blue,
-                                              bottomPadding: 0,
-                                              child: Text(
-                                                '35%',
-                                                style: TextStyle(
-                                                    fontSize: 15,
-                                                    fontWeight: FontWeight.w600,
-                                                    color: Theme.of(context).textSelectionTheme.cursorColor),
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Center(
+                                              child: SemicircularIndicator(
+                                                radius: 30,
+                                                strokeWidth: 2,
+                                                progress: 0.35,
+                                                contain: true,
+                                                backgroundColor: Colors.white,
+                                                color: Colors.blue,
+                                                bottomPadding: 0,
+                                                child: Text(
+                                                  '35%',
+                                                  style: TextStyle(
+                                                      fontSize: 15,
+                                                      fontWeight: FontWeight.w600,
+                                                      color: Theme.of(context).textSelectionTheme.cursorColor),
+                                                ),
                                               ),
                                             ),
                                           ),
-                                        ),
 
-                                      ],
-                                    )
+                                        ],
+                                      )
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      )
-                    )
-                  ),
-                ),
-
-                global.padHeight(),
-                global.textDoubleSpanWiget("Status :", " Present on the class right now."),
-                                
-
-                global.padHeight(45),
-
-                global.textWidgetWithHeavyFont("CLASS RECORD"),
-                global.padHeight(10),
-                Card(
-                  color: Theme.of(context).buttonColor.withOpacity(0.3),
-                  surfaceTintColor: Colors.transparent,
-                  shadowColor: Colors.transparent,
-                  borderOnForeground: false,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: SizedBox(
-                      width: double.infinity,
-                      height: 150,
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            children: [
-                              SizedBox(
-                                height: 130,
-                                width: 110,
-                                child: Card(
-                                  color: Theme.of(context).buttonColor.withOpacity(0.6),
-                                  surfaceTintColor: Colors.transparent,
-                                  shadowColor: Colors.transparent,
-                                  borderOnForeground: false,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Column(
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: global.textWidget("Attendance"),
-                                        ),
-
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: global.textDoubleSpanWiget("Absent: ", classAbsentCount.toString())
-                                        ),
-
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: global.textDoubleSpanWiget("On-Duty: ", classOnDutyCount.toString())
-                                        ),
-                                      ],
-                                    )
-                                  ),
-                                ),
-                              ),
-
-
-                              SizedBox(
-                                height: 130,
-                                width: 110,
-                                child: Card(
-                                  color: Theme.of(context).buttonColor.withOpacity(0.6),
-                                  surfaceTintColor: Colors.transparent,
-                                  shadowColor: Colors.transparent,
-                                  borderOnForeground: false,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Stack(
-                                      clipBehavior: Clip.none,
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: global.textWidget("Avg score"),
-                                        ),
-
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Center(
-                                            child: SemicircularIndicator(
-                                              radius: 30,
-                                              strokeWidth: 2,
-                                              progress: 0.35,
-                                              contain: true,
-                                              backgroundColor: Colors.white,
-                                              color: Colors.blue,
-                                              bottomPadding: 0,
-                                              child: Text(
-                                                '35%',
-                                                style: TextStyle(
-                                                    fontSize: 15,
-                                                    fontWeight: FontWeight.w600,
-                                                    color: Theme.of(context).textSelectionTheme.cursorColor),
-                                              ),
-                                            ),
-                                          ),
-                                        ), 
-
-                                      ],
-                                    )
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      )
-                    )
-                  ),
-                ),
-
-                global.padHeight(30),
-
-                Wrap(
-                  children: [
-                    ChoiceChip(
-                      label: Text("Check Class Attendance Sheet"),
-                      avatar: Icon(Icons.add_task),
-                      onSelected: (bool val) {
-                        Navigator.push(
-                      context,
-                      PageRouteBuilder(
-                        pageBuilder: (c, a1, a2) => attendanceChecklist(),
-                        opaque: false,
-                        transitionsBuilder: (context, animation, secondaryAnimation, child) => FadeTransition(opacity: animation, child:
-                          ScaleTransition(
-                            scale: animation.drive(
-                              Tween(begin: 1.5, end: 1.0).chain(
-                                CurveTween(curve: Curves.easeOutCubic)
-                              ),
+                              ],
                             ),
-                            child: BackdropFilter(
-                                filter: ImageFilter.blur(sigmaX: animation.value * 20, sigmaY: animation.value * 20),
-                                child:  child,
-                            )
-                          )
-                        ),  
-                        transitionDuration: const Duration(seconds: 1)
+                          ),
+                        )
                       )
-                    );
-                      },
-                      selected: false,
-                      
-                    )
-                  ],
-                ),
+                    ),
+                  ),
 
-                SizedBox(height: 40)
-              ],
+                  global.padHeight(),
+                  global.textDoubleSpanWiget("Status :", " Present on the class right now."),
+                                  
+
+                  global.padHeight(45),
+
+                  global.textWidgetWithHeavyFont("CLASS RECORD"),
+                  global.padHeight(10),
+                  Card(
+                    color: Theme.of(context).buttonColor.withOpacity(0.3),
+                    surfaceTintColor: Colors.transparent,
+                    shadowColor: Colors.transparent,
+                    borderOnForeground: false,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SizedBox(
+                        width: double.infinity,
+                        height: 150,
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                                SizedBox(
+                                  height: 130,
+                                  width: 110,
+                                  child: Card(
+                                    color: Theme.of(context).buttonColor.withOpacity(0.6),
+                                    surfaceTintColor: Colors.transparent,
+                                    shadowColor: Colors.transparent,
+                                    borderOnForeground: false,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Column(
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: global.textWidget("Attendance"),
+                                          ),
+
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: global.textDoubleSpanWiget("Absent: ", classAbsentCount.toString())
+                                          ),
+
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: global.textDoubleSpanWiget("On-Duty: ", classOnDutyCount.toString())
+                                          ),
+                                        ],
+                                      )
+                                    ),
+                                  ),
+                                ),
+
+
+                                SizedBox(
+                                  height: 130,
+                                  width: 110,
+                                  child: Card(
+                                    color: Theme.of(context).buttonColor.withOpacity(0.6),
+                                    surfaceTintColor: Colors.transparent,
+                                    shadowColor: Colors.transparent,
+                                    borderOnForeground: false,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Stack(
+                                        clipBehavior: Clip.none,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: global.textWidget("Avg score"),
+                                          ),
+
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Center(
+                                              child: SemicircularIndicator(
+                                                radius: 30,
+                                                strokeWidth: 2,
+                                                progress: 0.35,
+                                                contain: true,
+                                                backgroundColor: Colors.white,
+                                                color: Colors.blue,
+                                                bottomPadding: 0,
+                                                child: Text(
+                                                  '35%',
+                                                  style: TextStyle(
+                                                      fontSize: 15,
+                                                      fontWeight: FontWeight.w600,
+                                                      color: Theme.of(context).textSelectionTheme.cursorColor),
+                                                ),
+                                              ),
+                                            ),
+                                          ), 
+
+                                        ],
+                                      )
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                      )
+                    ),
+                  ),
+
+                  global.padHeight(30),
+
+                  Wrap(
+                    children: [
+                      ChoiceChip(
+                        label: Text("Check Class Attendance Sheet"),
+                        avatar: Icon(Icons.add_task),
+                        onSelected: (bool val) {
+                          Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder: (c, a1, a2) => attendanceChecklist(),
+                          opaque: false,
+                          transitionsBuilder: (context, animation, secondaryAnimation, child) => FadeTransition(opacity: animation, child:
+                            ScaleTransition(
+                              scale: animation.drive(
+                                Tween(begin: 1.5, end: 1.0).chain(
+                                  CurveTween(curve: Curves.easeOutCubic)
+                                ),
+                              ),
+                              child: BackdropFilter(
+                                  filter: ImageFilter.blur(sigmaX: animation.value * 20, sigmaY: animation.value * 20),
+                                  child:  child,
+                              )
+                            )
+                          ),  
+                          transitionDuration: const Duration(seconds: 1)
+                        )
+                      );
+                        },
+                        selected: false,
+                        
+                      )
+                    ],
+                  ),
+
+                  SizedBox(height: 40)
+                ],
+              )
             )
           ),
         )
@@ -402,7 +412,15 @@ class _classroomState extends State<classroom> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+              children: AnimationConfiguration.toStaggeredList(
+                duration: const Duration(milliseconds: 375),
+                childAnimationBuilder: (widget) => SlideAnimation(
+                  horizontalOffset: 50.0,
+                  child: FadeInAnimation(
+                    child: widget,
+                  ),
+                ),
+                children:[
                 ChoiceChip(
                   disabledColor: Theme.of(context).buttonColor.withOpacity(0.6),
                   surfaceTintColor: Colors.transparent,
@@ -518,6 +536,7 @@ class _classroomState extends State<classroom> {
                   ),
                 )
               ],
+              )
             ),
           ),
         )
@@ -974,18 +993,27 @@ class _attendanceChecklistState extends State<attendanceChecklist> {
                       padding: const EdgeInsets.all(8.0),
                       child: Wrap(
                         clipBehavior: Clip.antiAlias,
-                        children: [
-                          for(int i = startRoll; i<= endRoll; i++)
-                            ChoiceChip(
-                              onSelected: (bool val) {
-                                setState(() {
-                                  leaveData[i.toString()] = val;
-                                });
-                              },
-                              selected : leaveData[i.toString()] ?? false,
-                              label: Text("${i.toString()}${studentInfo[i] != null ? "- ${studentInfo[i]}" : ""}", style: TextStyle(fontSize: 10),),
-                            )
-                        ],
+                        children: AnimationConfiguration.toStaggeredList(
+                          duration: const Duration(milliseconds: 375),
+                          childAnimationBuilder: (widget) => SlideAnimation(
+                            verticalOffset: 50.0,
+                            child: FadeInAnimation(
+                              child: widget,
+                            ),
+                          ),
+                          children:[
+                            for(int i = startRoll; i<= endRoll; i++)
+                              ChoiceChip(
+                                onSelected: (bool val) {
+                                  setState(() {
+                                    leaveData[i.toString()] = val;
+                                  });
+                                },
+                                selected : leaveData[i.toString()] ?? false,
+                                label: Text("${i.toString()}${studentInfo[i] != null ? "- ${studentInfo[i]}" : ""}", style: TextStyle(fontSize: 10),),
+                              )
+                          ],
+                        ),
                       ),
                     ),
                   ),

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:ngp/global.dart' as global;
 import 'package:ngp/ui/dragUi.dart';
 import 'package:ngp/ui/searchButton.dart';
 import 'package:string_similarity/string_similarity.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 Color bgColor = Colors.transparent;
 TextEditingController textController = TextEditingController();
@@ -25,10 +28,11 @@ class _searchState extends State<search> {
         if(x.value["isStudent"] == true) {
           accounts.add({
             "avatar" : x.value["avatar"],
-            "name" : "${x.value["firstName"]} ${x.value["lastName"]}",
+            "name" : "${x.value["firstName"]} ${x.value["lastName"]}${x.key == global.loggedUID ? " (You)" : ""}",
             "nextToName" : "Student",
             "id" : x.key,
             "title" : "${x.value["department"].toString().toUpperCase()}-${x.value["section"].toString().toUpperCase()} ${x.value["year"].toString().toUpperCase()} Year",
+            "isStudent" : true
           });
         } else {
           accounts.add({
@@ -36,12 +40,36 @@ class _searchState extends State<search> {
             "name" : "${x.value["title"]} ${x.value["firstName"]} ${x.value["lastName"]}",
             "nextToName" : "Faculty",
             "id" : x.key,
-            "title" : x.value["position"]            
+            "title" : x.value["position"],       
+            "isStudent" : false,
           });
         }
       }
+      
+      List<Map<String, dynamic>> _accounts = [];
+      
+      for(var x in accounts) {
+        if(x["id"] == global.loggedUID! && _accounts.contains(x) == false) {
+          _accounts.add(x);
+          break;
+        }
+      }
 
+      for(var x in accounts) {
+        if(x["isStudent"] == false && _accounts.contains(x)==false) {
+          _accounts.add(x);
+        }
+      }
+
+      for(var x in accounts) {
+        if(x["isStudent"] == true && _accounts.contains(x) == false) {
+          _accounts.add(x);
+        }
+      }
+
+      accounts = List.from(_accounts);
       searchSorted = accounts;
+
     }
     
     super.initState();
@@ -123,7 +151,6 @@ class _searchState extends State<search> {
       ),
     );
 
-
     return AnimatedContainer(
       duration: Duration(seconds: 1),
       color: searchSorted.isEmpty ? Colors.red.withOpacity(0.5) : bgColor,
@@ -133,72 +160,125 @@ class _searchState extends State<search> {
         children: [
           
           SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(height: 40,),
-
-                for(Map x in searchSorted) 
-                  Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: Card(
-                      surfaceTintColor: Colors.transparent,
-                      color: Theme.of(context).buttonColor,
-                      elevation: 0,
-                      clipBehavior: Clip.antiAlias,
-
-                      child: InkWell(
-                        onTap: () {
-
-                        },
-                        child: SizedBox(
-                          height: 75,
-                          width: double.infinity,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Wrap(
-                              alignment: WrapAlignment.start,
-                              runAlignment: WrapAlignment.center,
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.all(3),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(50),
-                                    color: Colors.transparent,
-                                    border: Border.all(
-                                      width: 1.1,
-                                      color: Colors.red,
-                                    ),
-                                  ),
-                                  width: 50,
-                                  height: 50,
-                                  child: ClipOval(
-                                    child: x["avatar"] != null
-                                        ? FadeInImage.assetNetwork(placeholder: "asset/images/loading.gif", image: x["avatar"])
-                                        : Icon(Icons.person, color: Theme.of(context).textSelectionTheme.selectionColor!),
-                                  ),
-                                ),
-                      
-                                SizedBox(width: 10),
-                      
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    global.textDoubleSpanWiget("${x["name"]}   ", x["nextToName"]),
-                      
-                                    SizedBox(height: 10,),
-                      
-                                    global.textWidget(x["title"] ?? "")
-                                  ],
-                                )
-                              ],
-                            )
-                          ),
-                        ),
+            child: AnimationLimiter(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                  children: AnimationConfiguration.toStaggeredList(
+                    duration: const Duration(milliseconds: 375),
+                    childAnimationBuilder: (widget) => SlideAnimation(
+                      verticalOffset: 50.0,
+                      child: FadeInAnimation(
+                        child: widget,
                       ),
                     ),
-                  ) 
-              ],
+                    children:[
+                          SizedBox(height: 40,),
+                    
+                          for(Map x in searchSorted) 
+                            Padding(
+                              padding: const EdgeInsets.all(5.0),
+                              child: Card(
+                                surfaceTintColor: Colors.transparent,
+                                color: Theme.of(context).buttonColor,
+                                elevation: 0,
+                                clipBehavior: Clip.antiAlias,
+                    
+                                child: Slidable(
+                                  startActionPane: ActionPane(
+                                    extentRatio: 0.2,
+                                    motion: const ScrollMotion(),
+                                    children: [
+                                      SlidableAction(
+                                        onPressed: (a) {
+                                          debugPrint('+91${global.accountsInDatabase[x["id"]]["phoneNo"].toString()}');
+                                          launchUrl(
+                                            Uri(scheme: 'tel', path: '+91${global.accountsInDatabase[x["id"]]["phoneNo"].toString()}')
+                                          );
+                                        },
+                                        backgroundColor: Colors.green,
+                                        foregroundColor: Colors.white,
+                                        icon: Icons.phone,
+                                        label: 'Call',
+                                      ),
+                                    ],
+                                  ),
+                                  endActionPane: ActionPane(
+                                    motion: const ScrollMotion(),
+                                    extentRatio: 0.2,
+                                    children: [
+                                      SlidableAction(
+                                        onPressed: (a) {
+                                          launchUrl(
+                                            Uri(scheme: 'tel', path: '+91${global.accountsInDatabase[x["id"]]["phoneNo"].toString()}')
+                                          );
+                                        },
+                                        backgroundColor: Colors.green,
+                                        foregroundColor: Colors.white,
+                                        icon: Icons.phone,
+                                        label: 'Call',
+                                      ),
+                                    ],
+                                  ),
+                    
+                                  child: InkWell(
+                                    onTap: () {
+                                      debugPrint("clicked");
+                                    },
+                                    child: SizedBox(
+                                      height: 75,
+                                      width: double.infinity,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Wrap(
+                                          alignment: WrapAlignment.start,
+                                          runAlignment: WrapAlignment.center,
+                                          children: [
+                                            Container(
+                                              padding: const EdgeInsets.all(3),
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(50),
+                                                color: Colors.transparent,
+                                                border: Border.all(
+                                                  width: 1.1,
+                                                  color: Colors.red,
+                                                ),
+                                              ),
+                                              width: 50,
+                                              height: 50,
+                                              child: ClipOval(
+                                                child: x["avatar"] != null
+                                                    ? FadeInImage.assetNetwork(placeholder: "asset/images/loading.gif", image: x["avatar"])
+                                                    : Icon(Icons.person, color: Theme.of(context).textSelectionTheme.selectionColor!),
+                                              ),
+                                            ),
+                                    
+                                            SizedBox(width: 10),
+                                    
+                                            Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                global.textDoubleSpanWiget("${x["name"]}   ", x["nextToName"]),
+                                    
+                                                SizedBox(height: 10,),
+                                    
+                                                global.textWidget(x["title"] ?? "")
+                                              ],
+                                            )
+                                          ],
+                                        )
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ) 
+                        
+                        ,
+                    
+                          SizedBox(height: 70,),
+                        ],
+                  )
+              ),
             ),
           ),
           
