@@ -995,8 +995,8 @@ class _attendanceChecklistState extends State<attendanceChecklist> {
                         clipBehavior: Clip.antiAlias,
                         children: AnimationConfiguration.toStaggeredList(
                           duration: const Duration(milliseconds: 375),
-                          childAnimationBuilder: (widget) => SlideAnimation(
-                            verticalOffset: 50.0,
+                          delay: const Duration(milliseconds: 0),
+                          childAnimationBuilder: (widget) => ScaleAnimation(
                             child: FadeInAnimation(
                               child: widget,
                             ),
@@ -1019,7 +1019,6 @@ class _attendanceChecklistState extends State<attendanceChecklist> {
                   ),
                 ),
               ),
-
 
               SizedBox(height: 20,),
               global.textWidgetWithHeavyFont("Select roll no. to mark On-Duty"),

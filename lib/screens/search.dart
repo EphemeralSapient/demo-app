@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:ngp/global.dart' as global;
+import 'package:ngp/sub_screen/profileInfo.dart';
 import 'package:ngp/ui/dragUi.dart';
 import 'package:ngp/ui/searchButton.dart';
 import 'package:string_similarity/string_similarity.dart';
@@ -222,7 +223,7 @@ class _searchState extends State<search> {
                     
                                   child: InkWell(
                                     onTap: () {
-                                      debugPrint("clicked");
+                                      promptProfileInfo(global.accountsInDatabase[x["id"]]);
                                     },
                                     child: SizedBox(
                                       height: 75,

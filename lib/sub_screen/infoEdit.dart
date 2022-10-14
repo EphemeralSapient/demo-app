@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:ngp/database.dart';
 import 'package:ngp/global.dart' as global;
 import 'package:ngp/ui/toggleButton.dart';
@@ -183,20 +182,8 @@ class _staffs_infoState extends State<staffs_info> {
         //reverse: true,
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          children: AnimationConfiguration.toStaggeredList(
-            duration: const Duration(milliseconds: 375),
-            childAnimationBuilder: (widget) => SlideAnimation(
-              horizontalOffset: 50.0,
-              child: FadeInAnimation(
-                child: widget,
-              ),
-            ),
-            children:[  
-            // Center(
-            //     child: global.textWidgetWithHeavyFont(
-            //         "Staff Information Form [Required]")),
-
-            //const SizedBox(height: 40),
+          children: [  
+          
             // Name
             Row(
               mainAxisSize: MainAxisSize.min,
@@ -300,7 +287,6 @@ class _staffs_infoState extends State<staffs_info> {
               ],
             )
           ]
-          )
         )
       )
     );
@@ -423,20 +409,7 @@ class _stuents_infoState extends State<students_info> {
         //reverse: true,
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          children: AnimationConfiguration.toStaggeredList(
-            duration: const Duration(milliseconds: 375),
-            childAnimationBuilder: (widget) => SlideAnimation(
-              horizontalOffset: 50.0,
-              child: FadeInAnimation(
-                child: widget,
-              ),
-            ),
-            children:[
-            // Center(
-            //     child: global.textWidgetWithHeavyFont(
-            //         "Student Information Form [Required]")),
-
-            //const SizedBox(height: 40),
+          children: [
             // Name
             Row(
               mainAxisSize: MainAxisSize.min,
@@ -559,7 +532,6 @@ class _stuents_infoState extends State<students_info> {
 
 
           ],
-          )
         ),
       ),
     );

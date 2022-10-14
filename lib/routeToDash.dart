@@ -166,7 +166,7 @@ class _dashboardState extends State<dashboard> {
           if(global.accountType != 3)
             classroom(),
           search(),
-          const settings(),
+          settings(),
           if(global.accountType != 3)
             profile(),
           Container(color: Colors.blue,),
