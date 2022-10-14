@@ -7,7 +7,20 @@ void promptProfileInfo(Map userData) {
   global.switchToSecondaryUi(profileInfo());
 }
 
-class profileInfo extends StatelessWidget {
+class profileInfo extends StatefulWidget {
+  @override
+  State<profileInfo> createState() => _profileInfoState();
+}
+
+class _profileInfoState extends State<profileInfo> with SingleTickerProviderStateMixin {
+  TabController? controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = TabController(length: 3, vsync: this);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,31 +50,49 @@ class profileInfo extends StatelessWidget {
               ),
                                             
             ),
-          ),
-          // const SliverToBoxAdapter(
-          //   child: SizedBox(
-          //     height: 20,
-          //     child: Center(
-          //       child: Text('Scroll to see the SliverAppBar in effect.'),
-          //     ),
-          //   ),
-          // ),
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (BuildContext context, int index) {
-                return Container(
-                  height: 1000.0,
-                  child: Center(
-                    child: global.textWidget("Implementing process on-going"),
-                  ),
-                );
-              },
-              childCount: 1,
+            bottom: TabBar(
+              controller: controller,
+              tabs: [
+                Tab(
+                  icon: Icon(Icons.cloud_outlined, color: Theme.of(context).textSelectionTheme.selectionColor,),
+                ),
+                Tab(
+                  icon: Icon(Icons.beach_access_sharp, color: Theme.of(context).textSelectionTheme.selectionColor,),
+                ),
+                Tab(
+                  icon: Icon(Icons.brightness_5_sharp, color: Theme.of(context).textSelectionTheme.selectionColor),
+                ),
+              ],
             ),
           ),
+          SliverToBoxAdapter(
+            child: SizedBox(
+              height: 1000,
+              child: TabBarView(
+                controller: controller,
+                children: <Widget>[
+                    global.textWidget("Tab 1"),
+                    global.textWidget("Tab 2"),
+                    global.textWidget("Tab 3"),
+                ],
+              ),
+            ),
+          ),
+          // SliverList(
+          //   delegate: SliverChildBuilderDelegate(
+          //     (BuildContext context, int index) {
+          //       return Container(
+          //         height: 1000.0,
+          //         child: Center(
+          //           child: global.textWidget("Implementing process on-going"),
+          //         ),
+          //       );
+          //     },
+          //     childCount: 1,
+          //   ),
+          // ),
         ]
       )
     ); 
   }
-
 }
