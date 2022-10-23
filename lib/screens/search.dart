@@ -160,125 +160,136 @@ class _searchState extends State<search> {
       child: Stack(
         children: [
           
-          SingleChildScrollView(
-            child: AnimationLimiter(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                  children: AnimationConfiguration.toStaggeredList(
-                    duration: const Duration(milliseconds: 375),
-                    childAnimationBuilder: (widget) => SlideAnimation(
-                      verticalOffset: 50.0,
-                      child: FadeInAnimation(
-                        child: widget,
+          ShaderMask(
+            shaderCallback: (Rect rect) {
+              return const LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Colors.transparent, Colors.black],
+                stops: [0.8, 1.0],
+              ).createShader(rect);
+            },
+            blendMode: BlendMode.dstOut,
+            child: SingleChildScrollView(
+              child: AnimationLimiter(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                    children: AnimationConfiguration.toStaggeredList(
+                      duration: const Duration(milliseconds: 375),
+                      childAnimationBuilder: (widget) => SlideAnimation(
+                        verticalOffset: 50.0,
+                        child: FadeInAnimation(
+                          child: widget,
+                        ),
                       ),
-                    ),
-                    children:[
-                          SizedBox(height: 40,),
-                    
-                          for(Map x in searchSorted) 
-                            Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child: Card(
-                                surfaceTintColor: Colors.transparent,
-                                color: Theme.of(context).buttonColor,
-                                elevation: 0,
-                                clipBehavior: Clip.antiAlias,
-                    
-                                child: Slidable(
-                                  startActionPane: ActionPane(
-                                    extentRatio: 0.2,
-                                    motion: const ScrollMotion(),
-                                    children: [
-                                      SlidableAction(
-                                        onPressed: (a) {
-                                          debugPrint('+91${global.accountsInDatabase[x["id"]]["phoneNo"].toString()}');
-                                          launchUrl(
-                                            Uri(scheme: 'tel', path: '+91${global.accountsInDatabase[x["id"]]["phoneNo"].toString()}')
-                                          );
-                                        },
-                                        backgroundColor: Colors.green,
-                                        foregroundColor: Colors.white,
-                                        icon: Icons.phone,
-                                        label: 'Call',
-                                      ),
-                                    ],
-                                  ),
-                                  endActionPane: ActionPane(
-                                    motion: const ScrollMotion(),
-                                    extentRatio: 0.2,
-                                    children: [
-                                      SlidableAction(
-                                        onPressed: (a) {
-                                          launchUrl(
-                                            Uri(scheme: 'tel', path: '+91${global.accountsInDatabase[x["id"]]["phoneNo"].toString()}')
-                                          );
-                                        },
-                                        backgroundColor: Colors.green,
-                                        foregroundColor: Colors.white,
-                                        icon: Icons.phone,
-                                        label: 'Call',
-                                      ),
-                                    ],
-                                  ),
-                    
-                                  child: InkWell(
-                                    onTap: () {
-                                      promptProfileInfo(global.accountsInDatabase[x["id"]]);
-                                    },
-                                    child: SizedBox(
-                                      height: 75,
-                                      width: double.infinity,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Wrap(
-                                          alignment: WrapAlignment.start,
-                                          runAlignment: WrapAlignment.center,
-                                          children: [
-                                            Container(
-                                              padding: const EdgeInsets.all(3),
-                                              decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(50),
-                                                color: Colors.transparent,
-                                                border: Border.all(
-                                                  width: 1.1,
-                                                  color: Colors.red,
+                      children:[
+                            SizedBox(height: 40,),
+                      
+                            for(Map x in searchSorted) 
+                              Padding(
+                                padding: const EdgeInsets.all(5.0),
+                                child: Card(
+                                  surfaceTintColor: Colors.transparent,
+                                  color: Theme.of(context).buttonColor,
+                                  elevation: 0,
+                                  clipBehavior: Clip.antiAlias,
+                      
+                                  child: Slidable(
+                                    startActionPane: ActionPane(
+                                      extentRatio: 0.2,
+                                      motion: const ScrollMotion(),
+                                      children: [
+                                        SlidableAction(
+                                          onPressed: (a) {
+                                            debugPrint('+91${global.accountsInDatabase[x["id"]]["phoneNo"].toString()}');
+                                            launchUrl(
+                                              Uri(scheme: 'tel', path: '+91${global.accountsInDatabase[x["id"]]["phoneNo"].toString()}')
+                                            );
+                                          },
+                                          backgroundColor: Colors.green,
+                                          foregroundColor: Colors.white,
+                                          icon: Icons.phone,
+                                          label: 'Call',
+                                        ),
+                                      ],
+                                    ),
+                                    endActionPane: ActionPane(
+                                      motion: const ScrollMotion(),
+                                      extentRatio: 0.2,
+                                      children: [
+                                        SlidableAction(
+                                          onPressed: (a) {
+                                            launchUrl(
+                                              Uri(scheme: 'tel', path: '+91${global.accountsInDatabase[x["id"]]["phoneNo"].toString()}')
+                                            );
+                                          },
+                                          backgroundColor: Colors.green,
+                                          foregroundColor: Colors.white,
+                                          icon: Icons.phone,
+                                          label: 'Call',
+                                        ),
+                                      ],
+                                    ),
+                      
+                                    child: InkWell(
+                                      onTap: () {
+                                        promptProfileInfo(global.accountsInDatabase[x["id"]]);
+                                      },
+                                      child: SizedBox(
+                                        height: 75,
+                                        width: double.infinity,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Wrap(
+                                            alignment: WrapAlignment.start,
+                                            runAlignment: WrapAlignment.center,
+                                            children: [
+                                              Container(
+                                                padding: const EdgeInsets.all(3),
+                                                decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(50),
+                                                  color: Colors.transparent,
+                                                  border: Border.all(
+                                                    width: 1.1,
+                                                    color: Colors.red,
+                                                  ),
+                                                ),
+                                                width: 50,
+                                                height: 50,
+                                                child: ClipOval(
+                                                  child: x["avatar"] != null
+                                                      ? FadeInImage.assetNetwork(placeholder: "asset/images/loading.gif", image: x["avatar"])
+                                                      : Icon(Icons.person, color: Theme.of(context).textSelectionTheme.selectionColor!),
                                                 ),
                                               ),
-                                              width: 50,
-                                              height: 50,
-                                              child: ClipOval(
-                                                child: x["avatar"] != null
-                                                    ? FadeInImage.assetNetwork(placeholder: "asset/images/loading.gif", image: x["avatar"])
-                                                    : Icon(Icons.person, color: Theme.of(context).textSelectionTheme.selectionColor!),
-                                              ),
-                                            ),
-                                    
-                                            SizedBox(width: 10),
-                                    
-                                            Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                global.textDoubleSpanWiget("${x["name"]}   ", x["nextToName"]),
-                                    
-                                                SizedBox(height: 10,),
-                                    
-                                                global.textWidget(x["title"] ?? "")
-                                              ],
-                                            )
-                                          ],
-                                        )
+                                      
+                                              SizedBox(width: 10),
+                                      
+                                              Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  global.textDoubleSpanWiget("${x["name"]}   ", x["nextToName"]),
+                                      
+                                                  SizedBox(height: 10,),
+                                      
+                                                  global.textWidget(x["title"] ?? "")
+                                                ],
+                                              )
+                                            ],
+                                          )
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ) 
-                        
-                        ,
-                    
-                          SizedBox(height: 70,),
-                        ],
-                  )
+                              ) 
+                          
+                          ,
+                      
+                            SizedBox(height: 70,),
+                          ],
+                    )
+                ),
               ),
             ),
           ),

@@ -1,7 +1,10 @@
 import 'dart:convert';
 import 'dart:ui';
 
+import 'package:clickable_list_wheel_view/clickable_list_wheel_widget.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:intl/intl.dart';
 
@@ -55,25 +58,10 @@ class _classroomState extends State<classroom> {
         //Counting the data for absent and on duty
         String selfRollNo = (int.parse(global.accObj!.rollNo!.substring(global.accObj!.rollNo!.length-3))).toString();
 
-        for(var dates in (data["leaveData"] as Map).entries) {
-          for(var x in ((dates.value as List).last as Map).entries) {
-            if(x.key != "checkBy") {
-              if(x.value == false) {
-                if(x.key == selfRollNo) {
-                  selfOnDutyCount++;
-                }
-                classOnDutyCount++;
-              } else {
-                if(x.key == selfRollNo) {
-                  selfAbsentCount++;
-                }
-                classAbsentCount++;
-              }
-
-            }
-          }
-        }
-
+        selfAbsentCount = data["absents"]?[selfRollNo.toString()]?.length ?? 0;
+        selfOnDutyCount = data["onDuties"]?[selfRollNo.toString()]?.length ?? 0;
+        classAbsentCount = data["absent"] ?? 0;
+        classOnDutyCount = data["onDuty"] ?? 0;
 
 
       } else {
@@ -412,15 +400,7 @@ class _classroomState extends State<classroom> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: AnimationConfiguration.toStaggeredList(
-                duration: const Duration(milliseconds: 375),
-                childAnimationBuilder: (widget) => SlideAnimation(
-                  horizontalOffset: 50.0,
-                  child: FadeInAnimation(
-                    child: widget,
-                  ),
-                ),
-                children:[
+              children: [
                 ChoiceChip(
                   disabledColor: Theme.of(context).buttonColor.withOpacity(0.6),
                   surfaceTintColor: Colors.transparent,
@@ -487,7 +467,15 @@ class _classroomState extends State<classroom> {
           
                 SingleChildScrollView(
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: AnimationConfiguration.toStaggeredList(
+                    duration: const Duration(milliseconds: 300),
+                    childAnimationBuilder: (widget) => SlideAnimation(
+                      verticalOffset: 50.0,
+                      child: FadeInAnimation(
+                        child: widget,
+                      ),
+                    ),
                     children: [
                       for(var x in allClassInfo)
                         if(x["department"] != null && (depart.contains("All") || depart.contains(x["department"])))
@@ -517,8 +505,8 @@ class _classroomState extends State<classroom> {
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                                         children: [
-                                          global.textDoubleSpanWiget("Absentees Count : ", "${x["leaveData"] != null && x["leaveData"][todayDate] != null ? x["leaveData"][todayDate].last?.values?.where((e) => e == true).length.toString() : "-"} | ${per((x["endRoll"] ?? 61) - (x["startRoll"] ?? 1), x["leaveData"] != null && x["leaveData"][todayDate] != null ? x["leaveData"][todayDate].last?.values?.where((e) => e == true).length: null)}%"),
-                                          global.textDoubleSpanWiget("On Duty Count : ", "${x["leaveData"] != null && x["leaveData"][todayDate] != null ? x["leaveData"][todayDate].last?.values?.where((e) => e == false).length.toString() : "-"} | ${per((x["endRoll"] ?? 61) - (x["startRoll"] ?? 1), x["leaveData"] != null && x["leaveData"][todayDate] != null ? x["leaveData"][todayDate].last?.values?.where((e) => e == false).length: null)}%"),
+                                          global.textDoubleSpanWiget("Absentees Count : ", "${x["absentUpdate"] != null && x["absentUpdate"][todayDate] != null ? x["absentUpdate"][todayDate].toString() : "-"} | ${per((x["endRoll"] ?? 61) - (x["startRoll"] ?? 1), x["absentUpdate"] != null && x["absentUpdate"][todayDate] != null ? x["absentUpdate"][todayDate] : null)}%"),
+                                          global.textDoubleSpanWiget("On Duty Count : ", "${x["onDutyUpdate"] != null && x["onDutyUpdate"][todayDate] != null ? x["onDutyUpdate"][todayDate].toString() : "-"} | ${per((x["endRoll"] ?? 61) - (x["startRoll"] ?? 1), x["onDutyUpdate"] != null && x["onDutyUpdate"][todayDate] != null ? x["onDutyUpdate"][todayDate]: null)}%"),
                                         ],
                                       ),
                                       global.padHeight(15),
@@ -533,10 +521,10 @@ class _classroomState extends State<classroom> {
                              ),
                           )
                     ],
+                        ) // Stagged animation
                   ),
                 )
               ],
-              )
             ),
           ),
         )
@@ -781,28 +769,78 @@ class _attendanceChecklistState extends State<attendanceChecklist> {
   DateTime chosenDay = DateTime.now();
   final int startRoll = data["startRoll"] ?? 1;
   final int endRoll = data["endRoll"] ?? 60;
-  Map studentInfo = {};
+  Map studentInfo = {}; // Specified for current classCode
+  String chosenDateStr = "";
+
+  Map<String, dynamic> absent = {};
+  Map<String, dynamic> onDuty = {};
+  Map<String, dynamic> prevAbsent = {};
+  Map<String, dynamic> prevOnDuty = {};
+
+  int indexPos = 0;
+  final _scrollController = FixedExtentScrollController();
+
+  dynamic fetchedData;  
+
+  bool loaded = false;
+  bool sheetEmpty = false;
+  bool errored = false;
+
+  @override
+  void dispose() {
+    super.dispose();
+    _scrollController.dispose();
+  }
+
   @override
   void initState() {
+    chosenDateStr = DateFormat("dd-MM-yyyy").format(chosenDay).toString();
     super.initState();
+    debugPrint("Loading Attendance for $chosenDateStr");
     Future.delayed( const Duration() ,() async {
+      loaded = false;
       try{
-        var get = await global.collectionMap["acc"]!.where("class", isEqualTo: data["classCode"]).get();
-        var l = [
-          for(var x in get.docs)
-            x.data()
-        ];
-        for(dynamic x in l)
-          // ignore: curly_braces_in_flow_control_structures
-          if(x["registerNum"] != null) {
-            debugPrint(int.parse(x["registerNum"].toString().substring(x["registerNum"].toString().length - 3)) .toString());
-            studentInfo[int.parse(x["registerNum"].toString().substring(x["registerNum"].toString().length - 3))] = "${x["firstName"]} ${x["lastName"]}";
+        var leaveDatas = await global.Database!.get(global.Database!.addCollection("attendance","/attendance"), "$chosenDateStr ${data["classCode"]}");
+        
+        // If empty leave as it is, or else update the data 
+        if(leaveDatas.status == db_fetch_status.nodata) {
+          sheetEmpty = true;
+        } else {
+          var leaveData = {};
+          for(var x in (leaveDatas.data as Map).entries) {
+            leaveData[x.key.toString()] = x.value;
           }
 
+          for(var x in (leaveData["absent"].last as Map).entries){
+            absent[x.key] = true; 
+          }
+          for(var x in (leaveData["onDuty"].last as Map).entries){
+            onDuty[x.key] = true; 
+          }
+          fetchedData = leaveData;
+          prevAbsent = Map.from(absent);
+          prevOnDuty = Map.from(onDuty);
+          indexPos = leaveData["absent"].length-1;
+        }
+
+
+        //var get = await global.collectionMap["acc"]!.where("class", isEqualTo: data["classCode"]).get();
+
+        // Loading register number mapped names in the sheet [if found]
+        for(dynamic x in global.accountsInDatabase.values) {
+          if(x["registerNum"] != null) {
+            studentInfo[int.parse(x["registerNum"].toString().substring(x["registerNum"].toString().length - 3))] = "${x["firstName"]} ${x["lastName"]}";
+          }
+        }
+
+        loaded = true;
         setState(() {});
+        _scrollController.animateToItem(indexPos, duration: Duration(seconds: 1), curve: Curves.decelerate);
       } catch(e) {
         debugPrint(e.toString());
+        errored = true;
       }
+      //loaded = true;
     }); 
   }
  
@@ -813,26 +851,7 @@ class _attendanceChecklistState extends State<attendanceChecklist> {
   Widget build(BuildContext context) {
     String chosenDateStr = DateFormat("dd-MM-yyyy").format(chosenDay).toString();
 
-    if(data["leaveData"] == null) {
-      data["leaveData"] = {};
-    }
-
-    if(data["leaveData"][chosenDateStr] == null) {
-      data["leaveData"][chosenDateStr] = [{}];
-    }
-
-    Map leaveData = data["leaveData"][chosenDateStr].last;
-
-    if(odCheck == false && data["leaveData"][chosenDateStr].length > 0) {
-      odCheck = true;
-      for(var x in data["leaveData"][chosenDateStr][data["leaveData"][chosenDateStr].length-1].entries) {
-        if(x.value == false) {
-          od[x.key] = true;
-        }
-      }
-    }
-
-
+    //debugPrint(data["leaveData"][chosenDateStr].toString());
     return Scaffold(
       backgroundColor: Theme.of(context).buttonColor.withOpacity(0.3),
       appBar: AppBar(
@@ -854,211 +873,378 @@ class _attendanceChecklistState extends State<attendanceChecklist> {
               bottomLeft: Radius.circular(35)),
         ),
       ),
-      floatingActionButton: (global.accountType == 1) ? FloatingActionButton.extended(
+      floatingActionButton: (global.accountType == 1 && loaded) ? FloatingActionButton.extended(
         onPressed: () async {
           Navigator.pop(context);
 
           Map newMap = {"checkBy" : "${global.accObj!.title} ${global.accObj!.firstName} ${global.accObj!.lastName}"};
 
-          for(var x in leaveData.keys) {
-            if(leaveData[x] == true) {
-              newMap[x.toString()] = true;
-            }
-          }
-          for(var x in od.keys) {
-            if(od[x] == true) {
-              newMap[x.toString()] = false;
-            }
-          }
-
           //Removing the cache
-          data["leaveData"][chosenDateStr].remove(data["leaveData"][chosenDateStr].last);
+          // data["leaveData"][chosenDateStr].remove(data["leaveData"][chosenDateStr].last);
 
-          if(data["leaveData"][chosenDateStr].isEmpty || data["leaveData"][chosenDateStr].last["checkBy"] != newMap["checkBy"]) {
-            data["leaveData"][chosenDateStr].add(newMap);
+          // if(data["leaveData"][chosenDateStr].isEmpty || data["leaveData"][chosenDateStr].last["checkBy"] != newMap["checkBy"]) {
+          //   data["leaveData"][chosenDateStr].add(newMap);
           
-          } else {
-            data["leaveData"][chosenDateStr].last = newMap;
+          // } else {
+          //   data["leaveData"][chosenDateStr].last = newMap;
+          // }
+
+          debugPrint("Updating attendance | ${data.toString()}");
+          var success = true;
+
+          // Specific roll number leave and on duty
+          var mark = "$chosenDateStr ${indexPos.toString()}";
+          var absents = {};
+          for(var x in absent.entries){
+            absents[x.key] = fetchedData?["absents"]?.add(mark) ?? [mark];
+          }
+          var onDuties = {};
+          for(var x in onDuties.entries){
+            onDuties[x.key] = fetchedData?["onDuties"]?.add(mark) ?? [mark];
           }
 
-          debugPrint(data.toString());
-          final get = await global.Database!.update(global.Database!.addCollection("class", "/class"), data["classCode"], data);
+          if(sheetEmpty == true) {
+            final get = await global.Database!.create(global.collectionMap["attendance"]!, "$chosenDateStr ${data["classCode"]}", {
+              
+              "classCode" : data["classCode"],
+              "absent" : [absent],
+              "onDuty" : [onDuty],
+              "checkedBy" : [
+                "${global.accObj!.title} ${global.accObj!.firstName} ${global.accObj!.lastName}"
+              ],
 
-          ScaffoldMessenger.of(global.rootCTX!).showSnackBar(SnackBar(
-            content: Text(get.status == db_fetch_status.success ? "Successfully updated the attendance!" : "Failed to update, ${get.data.toString()}"),
-          ));
+            });
+
+            if(get.status != db_fetch_status.success) {
+              global.snackbarText("Failed create attendance | ${get.data.toString()}");
+              success = false;
+            } else {
+              global.snackbarText("Successfully created attendance!");
+            }
+          } else {
+
+              (fetchedData["absent"] as List).add(absent);
+              (fetchedData["onDuty"] as List).add(onDuty);
+              (fetchedData["checkedBy"] as List).add("${global.accObj!.title} ${global.accObj!.firstName} ${global.accObj!.lastName}");
+            
+            final get = await global.Database!.update(global.collectionMap["attendance"]!, "$chosenDateStr ${data["classCode"]}", global.convertDynamicToMap(fetchedData));
+            
+            if(get.status != db_fetch_status.success) {
+              success = false;
+              global.snackbarText("Failed update attendance | ${get.data.toString()}");
+            } else {
+              global.snackbarText("Successfully updated attendance!");
+            }
+          }
+          
+          if(success) {
+            data["absentUpdate"] = {
+              chosenDateStr : absent.length
+            };
+            data["onDutyUpdate"] = {
+              chosenDateStr : onDuty.length
+            };
+            data["absents"] = absents;
+            data["onDuties"] = onDuties;
+            data["absent"] = data["absent"] == null ? absent.length : (data["absent"]+ (absent.length - prevAbsent.length));
+            data["onDuty"] = data["onDuty"] == null ? onDuty.length : (data["onDuty"]+ (onDuty.length - prevOnDuty.length));
+            await global.Database!.update(global.Database!.addCollection("class", "/class"), data["classCode"], data);
+          }
+
         },
         label: const Text("UPDATE", style: TextStyle(color: Colors.white),),
         icon: const Icon(CupertinoIcons.refresh_thick),
       ) : null,
 
-      body: Padding(
+      body: loaded == true ? Padding(
         padding: const EdgeInsets.all(8.0),
         child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.start,
-        
+          child: Stack(
             children: [
-              SizedBox(height:30),
-        
-              Center(
-                child: Container(
-                  height: 50,
-                  width: 200,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Theme.of(context).textSelectionTheme.selectionColor!),
-                    borderRadius: BorderRadius.circular(10)
-                  ),
-                  clipBehavior: Clip.antiAlias,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: InkWell(
-                      onTap: () {
-                        
+              Container(
+                alignment: Alignment.topRight,
+                child: SizedBox(
+                  width: 60,
+                  height: 130,
+                  child: ShaderMask(
+                    shaderCallback: (Rect rect) {
+                      return const LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [Colors.black, Colors.transparent, Colors.transparent, Colors.black],
+                        stops: [0.0, 0.3, 0.7, 1.0],
+                      ).createShader(rect);
+                    },
+                    blendMode: BlendMode.dstOut,
+                    child: ClickableListWheelScrollView(
+                      scrollController: _scrollController,
+                      itemCount: fetchedData?["checkedBy"]?.length ?? 0,
+                      itemHeight: 40,
+                      onItemTapCallback:(index) {
+                        setState(() {
+                          indexPos = index;
+                          absent = {};
+                          onDuty = {};
+                          for(var x in (fetchedData["absent"][index] as Map).entries){
+                            absent[x.key] = true; 
+                          }
+                          for(var x in (fetchedData["onDuty"][index] as Map).entries){
+                            onDuty[x.key] = true; 
+                          }
+                        });
                       },
-                      child: DateTimeField(
-                        initialEntryMode:
-                            DatePickerEntryMode.calendarOnly,
-                        mode: DateTimeFieldPickerMode.date,
-                        dateTextStyle: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context)
-                                .textSelectionTheme.selectionColor),
-                        decoration: const InputDecoration(
-                          isDense: true,
-                          border: InputBorder.none,
-                        ),
-                        selectedDate: chosenDay,
-                        onDateSelected: (DateTime value) {
-                          setState(() {
-                            chosenDay = value;
-                            odCheck = false;
-                          });
-                        }),
-                    ),
-                  ),
-                ),
-              ),
-        
-              SizedBox(height:30),
-        
-              Padding(
-                padding: const EdgeInsets.all(25.0),
-                child: AnimatedContainer(
-                  duration: const Duration(seconds: 1),
-                  //clipBehavior: Clip.antiAlias,
-                  color: Theme.of(context).buttonColor,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        for(var x in [[Icons.warning, "Class information is not defined properly [such as starting/end roll no]; Advised to update classroom info.", data["startRoll"] == null || data["endRoll"] == null],[Icons.info, "Attendance has been checked by ${data["leaveData"][chosenDateStr].isNotEmpty ? data["leaveData"][chosenDateStr].last["checkBy"] : "null"}", data["leaveData"][chosenDateStr].last["checkBy"] != null]]..iterator)
-                          if(x[2] == true)
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Flexible(child: Icon(x[0] as IconData, color: Theme.of(context).textSelectionTheme.selectionHandleColor)),
-        
-                                  Flexible(flex: 8,child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: global.textWidget(x[1] as String),
-                                  )),
-                                ],
-                              ),
-                            )
-        
-                      ],
-                    ),
-                  )
-                ),
-              ),
-        
-        
-              SizedBox(height: 20,),
-              global.textWidgetWithHeavyFont("Select roll no. to mark as absent"),
-              SizedBox(height:10),
-        
-              Flexible(
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 60, top: 5, left: 8, right: 8),
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.vertical,
-              
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Wrap(
-                        clipBehavior: Clip.antiAlias,
-                        children: AnimationConfiguration.toStaggeredList(
-                          duration: const Duration(milliseconds: 375),
-                          delay: const Duration(milliseconds: 0),
-                          childAnimationBuilder: (widget) => ScaleAnimation(
-                            child: FadeInAnimation(
-                              child: widget,
+                      child: ListWheelScrollView.useDelegate(
+                        perspective: 0.006,
+                        itemExtent: 40,
+                        controller: _scrollController,
+                        physics: const FixedExtentScrollPhysics(),
+                        overAndUnderCenterOpacity: 0.5,
+                        childDelegate: ListWheelChildBuilderDelegate(
+                          childCount: fetchedData?["checkedBy"]?.length ?? 0,
+                          builder: (context, index) => AnimatedContainer(
+                            duration: const Duration(seconds: 1),
+                            width: 30,
+                            height: 30,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,// You can use like this way or like the below line
+                              //borderRadius: new BorderRadius.circular(30.0),
+                              color: indexPos != index ? Colors.white.withOpacity(0.8) : Colors.lightBlueAccent,
                             ),
-                          ),
-                          children:[
-                            for(int i = startRoll; i<= endRoll; i++)
-                              ChoiceChip(
-                                onSelected: (bool val) {
-                                  setState(() {
-                                    leaveData[i.toString()] = val;
-                                  });
-                                },
-                                selected : leaveData[i.toString()] ?? false,
-                                label: Text("${i.toString()}${studentInfo[i] != null ? "- ${studentInfo[i]}" : ""}", style: TextStyle(fontSize: 10),),
-                              )
-                          ],
+                            child: Center(child: Text((index+1).toString())),
+                          )
                         ),
                       ),
                     ),
                   ),
-                ),
+                )
               ),
 
-              SizedBox(height: 20,),
-              global.textWidgetWithHeavyFont("Select roll no. to mark On-Duty"),
-              SizedBox(height:10),
+
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.start,
         
-              Flexible(
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 60, top: 5, left: 8, right: 8),
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.vertical,
-              
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Wrap(
-                        clipBehavior: Clip.antiAlias,
-                        children: [
-                          for(int i = startRoll; i<= endRoll; i++)
-                            ChoiceChip(
-                              selectedColor: Colors.orangeAccent,
-                              onSelected: (bool val) {
-                                setState(() {
-                                  od[i.toString()] = val;
-                                });
-                              },
-                              selected : od[i.toString()] ?? false,
-                              label: Text("${i.toString()}${studentInfo[i] != null ? "- ${studentInfo[i]}" : ""}",style: TextStyle(fontSize: 10),),
-                            )
-                        ],
+                children: [
+                  SizedBox(height:30),
+        
+                  Center(
+                    child: Container(
+                      height: 50,
+                      width: 200,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Theme.of(context).textSelectionTheme.selectionColor!),
+                        borderRadius: BorderRadius.circular(10)
+                      ),
+                      clipBehavior: Clip.antiAlias,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: InkWell(
+                          onTap: () {
+                            // Just for effects used inkwell
+                          },
+                          child: DateTimeField(
+                            initialEntryMode:
+                                DatePickerEntryMode.calendarOnly,
+                            mode: DateTimeFieldPickerMode.date,
+                            dateTextStyle: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(context)
+                                    .textSelectionTheme.selectionColor),
+                            decoration: const InputDecoration(
+                              isDense: true,
+                              border: InputBorder.none,
+                            ),
+                            selectedDate: chosenDay,
+                            onDateSelected: (DateTime value) {
+                                chosenDay = value;
+                                chosenDateStr = DateFormat("dd-MM-yyyy").format(chosenDay).toString();
+                                loaded = false;
+                                 debugPrint("Loading Attendance for $chosenDateStr");
+                                 setState(() {});
+                                  Future.delayed( const Duration() ,() async {
+                                    try{
+                                      var leaveDatas = await global.Database!.get(global.Database!.addCollection("attendance","/attendance"), "$chosenDateStr ${data["classCode"]}");
+                                      
+                                      absent = {};
+                                      onDuty = {};
+                                      prevOnDuty = {};
+                                      prevAbsent = {};
+
+                                      // If empty leave as it is, or else update the data 
+                                      if(leaveDatas.status == db_fetch_status.nodata) {
+                                        sheetEmpty = true;
+                                        fetchedData = {};
+                                      } else {
+                                        sheetEmpty = false;
+                                        var leaveData = {};
+                                        for(var x in (leaveDatas.data as Map).entries) {
+                                          leaveData[x.key.toString()] = x.value;
+                                        }
+
+                                        for(var x in (leaveData["absent"].last as Map).entries){
+                                          absent[x.key] = true; 
+                                        }
+                                        for(var x in (leaveData["onDuty"].last as Map).entries){
+                                          onDuty[x.key] = true; 
+                                        }
+                                        fetchedData = leaveData;
+                                        prevAbsent = Map.from(absent);
+                                        prevOnDuty = Map.from(onDuty);
+                                        indexPos = fetchedData["absent"].length-1;
+                                      }
+
+
+                                      //var get = await global.collectionMap["acc"]!.where("class", isEqualTo: data["classCode"]).get();
+                                      debugPrint(global.classroom_data.toString());
+
+                                      // Loading register number mapped names in the sheet [if found]
+                                      for(dynamic x in global.accountsInDatabase.values) {
+                                        if(x["registerNum"] != null) {
+                                          studentInfo[int.parse(x["registerNum"].toString().substring(x["registerNum"].toString().length - 3))] = "${x["firstName"]} ${x["lastName"]}";
+                                        }
+                                      }
+
+                                      loaded = true;
+                                      setState(() {});
+                                      _scrollController.animateToItem(indexPos, duration: Duration(seconds: 1), curve: Curves.decelerate);
+                                    } catch(e) {
+                                      debugPrint(e.toString());
+                                      errored = true;
+                                    }
+                                    //loaded = true;
+                                  }); 
+
+                              setState( () {} );
+                            }),
+                        ),
                       ),
                     ),
                   ),
-                ),
+        
+                  SizedBox(height:30),
+        
+                  Padding(
+                    padding: const EdgeInsets.all(25.0),
+                    child: AnimatedContainer(
+                      duration: const Duration(seconds: 1),
+                      //clipBehavior: Clip.antiAlias,
+                      color: Theme.of(context).buttonColor,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            for(var x in [
+                                    [Icons.warning, "Class information is not defined properly [such as starting/end roll no]; Advised to update classroom info.", data["startRoll"] == null || data["endRoll"] == null],
+                                    [Icons.info, "Attendance has been checked by ${fetchedData?["checkedBy"] != null ? fetchedData["checkedBy"][indexPos] : "null"}", fetchedData?["checkedBy"] != null],
+                                    [Icons.info_outline_rounded,"Attendance has not been checked for this day.", sheetEmpty]
+                                  ]..iterator)
+
+                              if(x[2] == true)
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Flexible(child: Icon(x[0] as IconData, color: Theme.of(context).textSelectionTheme.selectionHandleColor)),
+        
+                                      Flexible(flex: 8,child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: global.textWidget(x[1] as String),
+                                      )),
+                                    ],
+                                  ),
+                                )
+        
+                          ],
+                        ),
+                      )
+                    ),
+                  ),
+        
+        
+                  SizedBox(height: 20,),
+                  global.textWidgetWithHeavyFont("Select roll no. to mark as absent"),
+                  SizedBox(height:10),
+        
+                  Flexible(
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 60, top: 5, left: 8, right: 8),
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.vertical,
+                  
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Wrap(
+                            clipBehavior: Clip.antiAlias,
+                            children: [
+                              for(int i = startRoll; i<= endRoll; i++)
+                                ChoiceChip(
+                                  onSelected: (bool val) {
+                                    setState(() {
+                                      if(val) {
+                                        absent[i.toString()] = val;
+                                      } else {
+                                        absent.remove(i.toString());
+                                      }
+                                    });
+                                  },
+                                  selected : absent[i.toString()] ?? false,
+                                  label: Text("${i.toString()}${studentInfo[i] != null ? "- ${studentInfo[i]}" : ""}", style: TextStyle(fontSize: 10),),
+                                )
+                              ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(height: 20,),
+                  global.textWidgetWithHeavyFont("Select roll no. to mark On-Duty"),
+                  SizedBox(height:10),
+        
+                  Flexible(
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 60, top: 5, left: 8, right: 8),
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.vertical,
+                  
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Wrap(
+                            clipBehavior: Clip.antiAlias,
+                            children: [
+                              for(int i = startRoll; i<= endRoll; i++)
+                                ChoiceChip(
+                                  selectedColor: Colors.orangeAccent,
+                                  onSelected: (bool val) {
+                                    setState(() {
+                                      if(val) {
+                                        onDuty[i.toString()] = val;
+                                      } else {
+                                        onDuty.remove(i.toString());
+                                      }
+                                    });
+                                  },
+                                  selected : onDuty[i.toString()] ?? false,
+                                  label: Text("${i.toString()}${studentInfo[i] != null ? "- ${studentInfo[i]}" : ""}",style: TextStyle(fontSize: 10),),
+                                )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+        
+        
+                ],
               ),
-        
-        
             ],
           ),
         ),
       ) 
-
+        : SpinKitRing(color: Theme.of(context).textSelectionTheme.selectionColor!),
     );
   }
 }

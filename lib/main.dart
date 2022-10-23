@@ -1,5 +1,8 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'dart:async' show Future;
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -24,6 +27,56 @@ Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   debugPrint("running the app now");
+  ErrorWidget.builder = (details) {
+    var style = const TextStyle(
+      color: Colors.white,
+      fontSize: 12,
+      
+    );
+    return Scaffold(
+      backgroundColor: Colors.red.withOpacity(0.6),
+      body: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX : 20, sigmaY: 20),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: AnimationConfiguration.toStaggeredList(
+            duration: const Duration(milliseconds: 300),
+            childAnimationBuilder: (widget) => SlideAnimation(
+              verticalOffset: 50.0,
+              child: FadeInAnimation(
+                child: widget,
+              ),
+            ),
+            children:[
+              Icon(Icons.error_outline, color: Colors.white,size: 50),
+    
+              SizedBox(height: 30,),
+    
+              Text("Oops! An error occurred, please restart the app", style: style,),
+
+              SizedBox(height: 30),
+
+              Text(details.toStringShort(), style: style),
+
+              SizedBox(height: 15),
+
+              SizedBox(
+                height: 50,
+                child: SingleChildScrollView(
+                  child: Text(details.stack.toString(), style: style)
+                )
+              )
+            ],
+            )
+          ),
+        ),
+      )
+      ,
+    );
+  };
   runApp(
     RestartWidget(
       child: const MyApp(),

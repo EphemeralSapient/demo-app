@@ -304,3 +304,19 @@ class uiSecondaryWidget extends StatelessWidget {
         body: uiSecondaryWidgetFn ?? const SizedBox());
   }
 }
+
+void snackbarText(String text) {
+  ScaffoldMessenger.of(rootCTX!).showSnackBar(SnackBar(
+    content: Text(text),
+  ));
+}
+
+Map<String, dynamic> convertDynamicToMap(dynamic x) {
+  Map<String, dynamic> ret = {};
+
+  for(var a in (x as Map).entries ) {
+    ret[a.key.toString()] = a.value;
+  }
+
+  return ret;
+}
