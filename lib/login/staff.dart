@@ -1,5 +1,6 @@
 // ignore_for_file: camel_case_types, non_constant_identifier_names
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_login/flutter_login.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -93,7 +94,8 @@ class staffLogin extends StatelessWidget {
               scopes: [
                 "https://www.googleapis.com/auth/userinfo.profile",
                 "https://www.googleapis.com/auth/userinfo.email"
-              ]
+              ],
+                              clientId: kIsWeb ? "888144007010-5bt66h2es75mdkpdgtf421u8g4neldga.apps.googleusercontent.com" : null,
             );
 
             GoogleSignInAccount? acc;

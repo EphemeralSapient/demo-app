@@ -153,6 +153,7 @@ void updateListToStorage(String id, dynamic x) async {
 }
 
 Future<bool> checkNetwork() async {
+  if(kIsWeb) return true;
   try {
     final result = await InternetAddress.lookup('example.com');
     if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {

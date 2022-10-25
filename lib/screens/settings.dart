@@ -26,7 +26,7 @@ class _settingsState extends State<settings> {
   Widget build(context) {
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButton: !kIsWeb ? FloatingActionButton.extended(
         heroTag: 'uniqueTag',
         onPressed: () {
           // Update the app
@@ -56,7 +56,7 @@ class _settingsState extends State<settings> {
         elevation: 10,
         icon: Icon(Icons.new_releases, size: 20,),
         label: Text("Update the app", style: TextStyle(fontSize: 11),),
-      ),
+      ) : null,
       backgroundColor: Theme.of(context).buttonColor,
       body: ListView(
         padding: const EdgeInsets.all(24),

@@ -28,6 +28,14 @@ void initUpdater(bool? override) async {
   }
 
   int lockRev = rev;
+
+  if(global.accObj == null) {
+    while(global.accObj == null) {
+      await Future.delayed(const Duration(milliseconds: 250));
+      debugPrint("Account object is not created yet??");
+    }
+  }
+
   // If the student haven't chose the class yet.
   if(global.accountType == 2 && global.accObj!.classBelong == "pending") {
     while(global.accObj!.classBelong == "pending") {

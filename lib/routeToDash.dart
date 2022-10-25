@@ -3,6 +3,7 @@
 import 'dart:ui';
 
 import 'package:another_transformer_page_view/another_transformer_page_view.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:ngp/buildin_transformers.dart';
 
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
@@ -130,9 +131,16 @@ class _dashboardState extends State<dashboard> {
     ];
     debugPrint("Building route for nagivation [routeToDash]");
 
-    bool verified = (global.accountType == 2 && global.accObj!.classBelong != "pending") || (global.accountType == 1 && global.passcode != null && global.passcode != "") || global.accountType == 3;
+    // if(global.accObj == null) {
+    //   return WillPopScope(
+    //   onWillPop: () async => false,
+    //   child: SpinKitFadingCube()
+    // );
+    // }
 
-    if(!verified) prompt(context);
+    bool verified = (global.accountType == 2 && global.accObj != null && global.accObj!.classBelong != "pending") || (global.accountType == 1 && global.passcode != null && global.passcode != "") || global.accountType == 3;
+
+    if(!verified && global.accObj != null) prompt(context);
     debugPrint("Passcode : ${global.passcode.toString()}");
 
     return WillPopScope(
