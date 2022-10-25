@@ -216,7 +216,9 @@ class _settingsState extends State<settings> {
               onPressed: () {
                       
                 FirebaseAuth.instance.signOut();
-                Navigator.popAndPushNamed(context, "/choice");
+                global.accountType = 0;
+                global.updateSettingsFromStorage();
+                global.restartApp();
               },
               style:
                   ElevatedButton.styleFrom(primary: Theme.of(context).buttonColor, shadowColor: Colors.transparent),

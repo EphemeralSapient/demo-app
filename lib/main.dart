@@ -25,7 +25,7 @@ Future main() async {
   await Settings.init();
 
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   debugPrint("running the app now");
   ErrorWidget.builder = (details) {
     var style = const TextStyle(

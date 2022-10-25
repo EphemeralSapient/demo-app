@@ -95,7 +95,7 @@ class dashboard extends StatefulWidget {
 
 int index = 0;
 class _dashboardState extends State<dashboard> {
-  final PageController _page = PageController(initialPage: index);
+  final PageController _page = PageController();
 
   void refresh(){
     setState(() {
@@ -169,7 +169,6 @@ class _dashboardState extends State<dashboard> {
           settings(),
           if(global.accountType != 3)
             profile(),
-          Container(color: Colors.blue,),
         ],
       ))
 ,          
@@ -198,8 +197,11 @@ void toDashbaord() async {
     await Future.delayed(const Duration(seconds: 1));
     debugPrint("Account not found, waiting...");
   }
+  index = 0;
   global.dashboardReached = true;
   global.prefs!.setBool("dashboardReached", true);
+  debugPrint("Pushed /dashboard");
+  
   Navigator.pushNamed(global.rootCTX!, "/dashboard");
 }
 

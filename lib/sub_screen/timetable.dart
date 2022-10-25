@@ -291,7 +291,7 @@ class _timetable_shortState extends State<timetable_short> {
     l1 = createTTSWidget(0);
     l2 = createTTSWidget(1);
     debugPrint("Time table short rebuild");
-    return AnimatedCrossFade(
+    return global.accountType != 3 ? AnimatedCrossFade(
       duration: const Duration(milliseconds: 1250),
       crossFadeState: isExpanded == true
           ? CrossFadeState.showSecond
@@ -307,7 +307,12 @@ class _timetable_shortState extends State<timetable_short> {
             : CrossFadeState.showSecond,
         duration: const Duration(milliseconds: 1250),
       ),
-    );
+    ) :
+      SizedBox.fromSize(
+        size: const Size(double.infinity, 150),
+        child: Center(child: Card(shadowColor: Colors.transparent, surfaceTintColor: Colors.transparent, color: Theme.of(context).buttonColor))
+      )
+    ;
   }
 }
 

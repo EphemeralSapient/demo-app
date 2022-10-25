@@ -83,6 +83,7 @@ class ChoiceImpl extends State<Choice> with TickerProviderStateMixin {
 
     global.loginRouteCloseFn = close;
     global.choiceRoute = true;
+    global.choiceRouteCTX = context;
 
     Future.delayed(const Duration(),() {
       for (int i = 0; i < 3; i++) {
@@ -175,15 +176,18 @@ class ChoiceImpl extends State<Choice> with TickerProviderStateMixin {
         padding : const EdgeInsets.only(left: 30, right: 30, top: 60, bottom: 30),
         child: Wrap(
           children: [
-            Text(
-              "Choose Your Role",
-              textAlign: TextAlign.left,
-              style: TextStyle(
-                fontFamily: "Metropolis",
-                fontWeight: FontWeight.bold,
-                fontSize: 25,
-                color: Theme.of(context).textSelectionTheme.selectionColor,
-              )
+            SizedBox(
+              width: MediaQuery.of(context).size.width-50,
+              child: Text(
+                "Choose Your Role",
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                  fontFamily: "Metropolis",
+                  fontWeight: FontWeight.bold,
+                  fontSize: 25,
+                  color: Theme.of(context).textSelectionTheme.selectionColor,
+                )
+              ),
             ),
 
             const SizedBox(height: 35),
@@ -202,49 +206,55 @@ class ChoiceImpl extends State<Choice> with TickerProviderStateMixin {
 
             const SizedBox(height: 50),
 
-            AnimatedOpacity( opacity: containerOpacity[0],curve: Curves.linear ,duration: const Duration(milliseconds: 600) ,child: SlideTransition(position: _offsetAnimation_1, child:
-            slot(
-              1,
-              [
-                Colors.deepPurple,
-                const Color.fromRGBO(230, 144, 228, 1),
-              ],
-              " Administrator",
-              "   STAFF / FACULTY",
-              Icons.admin_panel_settings
-            )
-           )),
+            InkWell(
+              child: AnimatedOpacity( opacity: containerOpacity[0],curve: Curves.linear ,duration: const Duration(milliseconds: 600) ,child: SlideTransition(position: _offsetAnimation_1, child:
+              slot(
+                1,
+                [
+                  Colors.deepPurple,
+                  const Color.fromRGBO(230, 144, 228, 1),
+                ],
+                " Administrator",
+                "   STAFF / FACULTY",
+                Icons.admin_panel_settings
+              )
+                       )),
+            ),
             
 
             const SizedBox(height: 165),
 
-            AnimatedOpacity( opacity: containerOpacity[1],curve: Curves.linear ,duration: const Duration(milliseconds: 600) ,child: SlideTransition(position: _offsetAnimation_2, child:
-            slot(
-              2,
-              [
-                const Color.fromRGBO(255, 94, 203, 1),
-                const Color.fromRGBO(250, 216, 130, 1),
-              ],
-              " Student",
-              "UG / PG STUDENT",
-              Icons.school_rounded
-            )
-           )),
+            InkWell(
+              child: AnimatedOpacity( opacity: containerOpacity[1],curve: Curves.linear ,duration: const Duration(milliseconds: 600) ,child: SlideTransition(position: _offsetAnimation_2, child:
+              slot(
+                2,
+                [
+                  const Color.fromRGBO(255, 94, 203, 1),
+                  const Color.fromRGBO(250, 216, 130, 1),
+                ],
+                " Student",
+                "UG / PG STUDENT",
+                Icons.school_rounded
+              )
+                       )),
+            ),
 
             const SizedBox(height: 165),
 
-            AnimatedOpacity( opacity: containerOpacity[2], curve: Curves.linear,duration: const Duration(milliseconds: 600) ,child: SlideTransition(position: _offsetAnimation_3, child:
-            slot(
-              3,
-              [
-                const Color.fromRGBO(16,175,233,1),
-                const Color.fromRGBO(228,240,140,1),
-              ],
-              "Guest      ",
-              "NO LOGIN REQUIREMENT",
-              Icons.account_circle_rounded
-            )
-           )),
+            InkWell(
+              child: AnimatedOpacity( opacity: containerOpacity[2], curve: Curves.linear,duration: const Duration(milliseconds: 600) ,child: SlideTransition(position: _offsetAnimation_3, child:
+              slot(
+                3,
+                [
+                  const Color.fromRGBO(16,175,233,1),
+                  const Color.fromRGBO(228,240,140,1),
+                ],
+                "Guest      ",
+                "NO LOGIN REQUIREMENT",
+                Icons.account_circle_rounded
+              )
+                       )),
+            ),
 
             const SizedBox(height: 30),
 

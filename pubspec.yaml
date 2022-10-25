@@ -48,12 +48,9 @@ dependencies:
   crypto: ^3.0.2
   timelines: ^0.1.0
 
-  flutter_chat_ui: ^1.6.4
-  flutter_firebase_chat_core: ^1.6.3
   firebase_storage: ^10.3.8
   ota_update: ^4.0.1
   date_field: ^3.0.1
-  liquid_progress_indicator: ^0.4.0
   another_transformer_page_view: ^2.0.0
   flutter_spinkit: ^5.1.0
   flutter_colorpicker: ^1.0.3
