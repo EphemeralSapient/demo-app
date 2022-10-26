@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:ngp/global.dart' as global;
@@ -101,6 +102,19 @@ class moreActionsShort extends StatelessWidget {
 
     // Tool appending ended
 
+    final scrollViewWidget = SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                //padding: EdgeInsets.all(10),
+                child: Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Wrap(
+                    runSpacing: 1,
+                    spacing: 5,
+                    children: childrens,
+                  ),
+                ),
+              );
+
     return SizedBox(
       height: 180,
       child: Column(
@@ -136,7 +150,7 @@ class moreActionsShort extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
             ),
 
-            child: ShaderMask(
+            child: !kIsWeb ? ShaderMask(
               shaderCallback: (Rect rect) {
                 return const LinearGradient(
                   begin: Alignment.centerLeft,
@@ -148,22 +162,11 @@ class moreActionsShort extends StatelessWidget {
                     Colors.black,
                   ],
                   stops: [0.0, 0.1, 0.9, 1.0],
-                ).createShader(rect);
+                ).createShader(Offset.zero & rect.size);
               },
               blendMode: BlendMode.dstOut,
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                //padding: EdgeInsets.all(10),
-                child: Padding(
-                  padding: EdgeInsets.all(10),
-                  child: Wrap(
-                    runSpacing: 1,
-                    spacing: 5,
-                    children: childrens,
-                  ),
-                ),
-              ),
-            ),
+              child: scrollViewWidget
+            ) : scrollViewWidget,
           )          
 
         ],

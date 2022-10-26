@@ -170,7 +170,7 @@ class _dashboardState extends State<dashboard> {
           //setState(() => _selectedIndex = index);
         //},
         children: <Widget>[
-          dash(),
+          dash() == null ? SizedBox() : dash(),
           if(global.accountType != 3)
             classroom(),
           search(),

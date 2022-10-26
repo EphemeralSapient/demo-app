@@ -160,6 +160,7 @@ class _MyAppState extends State<MyApp> {
       },
       onGenerateRoute: (settings) {
         if (settings.name == "/choice") {
+          debugPrint("Choice route was called");
           return PageRouteBuilder(
             settings: settings, // Pass this to make popUntil(), pushNamedAndRemoveUntil(), works
             pageBuilder: (c, a1, a2) => const Choice(),
@@ -249,6 +250,7 @@ class HomeImpl extends State<home> {
             user = null;
             globals.accountType = 0;
             globals.initGlobalVar();
+            debugPrint("Account is empty??");
             Navigator.pushNamed(context, "/choice");
             return null;
             // Add if something needs to be removed on removed account
@@ -289,6 +291,7 @@ class HomeImpl extends State<home> {
         Future.delayed(const Duration(seconds: 2),() => toDashbaord());
       } else if (globals.choiceRoute != true) {
         // ignore: use_build_context_synchronously
+        debugPrint("choiceRoute is not true");
         Navigator.pushNamed(context, "/choice");
       }
 
