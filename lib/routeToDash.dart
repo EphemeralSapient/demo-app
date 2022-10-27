@@ -140,7 +140,11 @@ class _dashboardState extends State<dashboard> {
 
     bool verified = (global.accountType == 2 && global.accObj != null && global.accObj!.classBelong != "pending") || (global.accountType == 1 && global.passcode != null && global.passcode != "") || global.accountType == 3;
 
-    if(!verified && global.accObj != null) prompt(context);
+    if(!verified && global.accObj != null) {
+      debugPrint("Calling prompt informtion form from dashboard | Verified : " + verified.toString());
+      debugPrint("${global.accountType} | ${global.accObj} | ");
+      prompt(context);
+    }
     debugPrint("Passcode : ${global.passcode.toString()}");
 
     return WillPopScope(
@@ -208,6 +212,11 @@ void toDashbaord() async {
   index = 0;
   global.dashboardReached = true;
   global.prefs!.setBool("dashboardReached", true);
+  if(global.accountType != 3) {
+    global.prefs!.setBool("haveSignedInBefore", true);
+    global.haveSignedInBefore = true;
+  }
+  
   debugPrint("Pushed /dashboard");
   
   Navigator.pushNamed(global.rootCTX!, "/dashboard");

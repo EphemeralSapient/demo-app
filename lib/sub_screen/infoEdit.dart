@@ -144,7 +144,7 @@ class _staffs_infoState extends State<staffs_info> {
               }
 
               if(success) {
-                global.prefs!.setInt("accountType",1);
+                await global.prefs!.setInt("accountType",1);
                 global.accountType = 1;
                 global.restartApp();
               } else {
@@ -328,7 +328,7 @@ class _stuents_infoState extends State<students_info> {
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
+        onPressed: () async {
            if(firstName.text == "" || lastName.text == "" || phoneNo.text == "" || regNo.text == "" || rollNo.text == "" || (busStudent == true && busNo.text == "" || year == null || department == null || section == null)) {
              global.alert.quickAlert(
                 context,
@@ -371,7 +371,7 @@ class _stuents_infoState extends State<students_info> {
               }
 
               if(success == true) {
-                global.prefs!.setInt("accountType",2);
+                await global.prefs!.setInt("accountType",2);
                 global.accountType = 2;
                 global.restartApp();
               } else {

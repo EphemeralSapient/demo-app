@@ -81,6 +81,7 @@ bool loginRoute = false;
 bool bgImage = false;
 bool dashboardReached = false;
 bool customColorEnable = false;
+bool haveSignedInBefore = false;
 int customColor = Colors.lightBlue.value;
 void Function()? loginRouteCloseFn;
 void Function()? rootRefresh;
@@ -91,6 +92,7 @@ BuildContext? loginScreenRouteCTX;
 BuildContext? choiceRouteCTX;
 BuildContext? rootCTX;
 BuildContext? timetableCTX;
+BuildContext? MyAppCTX;
 PageController? pageControl;
 IndexController? uiPageControl;
 dynamic temp;
@@ -120,6 +122,7 @@ void switchToPrimaryUi() {
 void updateSettingsFromStorage() async {
   SharedPreferences pref = await SharedPreferences.getInstance();
   prefs = pref;
+  haveSignedInBefore = prefs!.getBool("haveSignedInBefore") ?? false;
   darkMode = prefs!.getBool("dark mode") != null
       ? (prefs!.getBool("dark mode") == true ? ThemeMode.dark : ThemeMode.light)
       : ThemeMode.light;

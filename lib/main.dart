@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -11,7 +12,7 @@ import 'package:ngp/restartWidget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:drop_shadow/drop_shadow.dart' show DropShadow;
 import 'package:firebase_core/firebase_core.dart' show Firebase;
-import 'package:firebase_auth/firebase_auth.dart' show FirebaseAuth, FirebaseAuthException, GoogleAuthProvider, User;
+import 'package:firebase_auth/firebase_auth.dart' show FirebaseAuth, FirebaseAuthException, GoogleAuthProvider, Persistence, User;
 import 'package:flutter_settings_screens/flutter_settings_screens.dart' show Settings;
 import 'package:ngp/routeToDash.dart';
 import 'firebase_options.dart' show DefaultFirebaseOptions;
@@ -102,6 +103,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState(){
     globals.rootRefresh = refreshRoot;
+    globals.MyAppCTX = context;
     globals.updateSettingsFromStorage();
     super.initState();
   }
@@ -160,7 +162,7 @@ class _MyAppState extends State<MyApp> {
       },
       onGenerateRoute: (settings) {
         if (settings.name == "/choice") {
-          debugPrint("Choice route was called");
+          debugPrint("Choice route was called | ${StackTrace.current}");
           return PageRouteBuilder(
             settings: settings, // Pass this to make popUntil(), pushNamedAndRemoveUntil(), works
             pageBuilder: (c, a1, a2) => const Choice(),
@@ -225,6 +227,11 @@ class HomeImpl extends State<home> {
 
       final FirebaseAuth auth = FirebaseAuth.instance;
       User? user = auth.currentUser;
+      
+      // Website version requires persistance 
+      if(kIsWeb && user == null) {
+        user = await FirebaseAuth.instance.authStateChanges().first;
+      }
             
       debugPrint("Firebase loaded");
       globals.updateSettingsFromStorage();
@@ -237,8 +244,20 @@ class HomeImpl extends State<home> {
         debugPrint("Failed to login; $e");
       }
 
+      //Retry and await till user data is not empty
+      if(user == null && globals.haveSignedInBefore) {
+        for(int i = 0; i<=5 && user == null; i++) {
+          debugPrint("Awaited for $i seconds...");
+          await Future.delayed(const Duration(seconds: 1));
+        }
+
+        if(user == null) {
+          globals.alert.quickAlert(context, globals.textWidget("Previous account login were detected but unable to find the user data, please re-login"));
+        }
+      }
+
       if (user != null) {
-        
+  
         bool network = await globals.checkNetwork();
 
         //Checking if user data exists in cloud or banned[or removed]
@@ -261,6 +280,7 @@ class HomeImpl extends State<home> {
 
         if(user != null && user.photoURL == null && network == true){
           GoogleSignIn signIn = GoogleSignIn();
+          debugPrint("Slient sign-in on process");
           final acc = await signIn.signInSilently();
 
           if(acc != null){
@@ -285,7 +305,7 @@ class HomeImpl extends State<home> {
         globals.loggedUID = user!.uid;
         globals.account = user;
         if(user.isAnonymous != true){
-          if(globals.dashboardReached == false) debugPrint(await validate(2) ?? "Validation completed" );
+          //if(globals.dashboardReached == false) debugPrint(await validate(2) ?? "Validation completed" );
           //globals.accountType = 2;
         } else globals.accountType = 3;
         Future.delayed(const Duration(seconds: 2),() => toDashbaord());

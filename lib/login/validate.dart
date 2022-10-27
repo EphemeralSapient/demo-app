@@ -83,6 +83,7 @@ Future<String?> validate(int typo) async {
 
 
     // }
+    global.updateSettingsFromStorage();
     
 
   Future.delayed(const Duration(milliseconds: 500), () async {
